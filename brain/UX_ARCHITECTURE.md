@@ -35,6 +35,7 @@ Ana kullanıcı 4-5 yaş okul öncesi çocuktur. Satın alma ve güven kararı e
 ## Ana Akışlar
 
 - Çocuk uygulamayı açar, boyama seçer, renklendirir, kaydeder veya yeni resme geçer.
+- Renk karışımı mini oyununda çocuk iki rengi seçer, yeni rengin oluştuğunu görür ve oluşan renkle doğru nesneyi boyar.
 - Ebeveyn yeni içerik paketini açar veya ileride fotoğraf yükleyip boyama sayfası üretir.
 - İlk SLC'de ana akış sadece boyama ve gerekirse tek basit mini oyunla sınırlanabilir.
 

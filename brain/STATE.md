@@ -17,6 +17,7 @@ Flutter prototip içinde ilk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu
 - Kullanıcı geri bildirimiyle çizim repaint bug'ı düzeltildi: Boyama yaparken çizgi artık renk düğmesi gibi başka bir UI aksiyonu beklemeden görünür.
 - Ebeveyn güvenlik kabuğu eklendi; ebeveyn alanı çocuk akışından ayrıldı.
 - Aktif faz gerçek cihaz/çocuk playtest geri bildirim döngüsüdür.
+- Kullanıcı yeni mini oyun yönü verdi: renk karışımıyla yeni renk oluşumunu öğreten, eğitim kazanımı ve motivasyon sağlayan oyun Phase 2C adayı olarak kaydedildi.
 - Phase 2A için güncel uygulama akışına göre playtest planı, gözlem formu, başarı/başarısızlık sinyalleri ve hızlı düzeltme listesi formatı `brain/FIELD_RESEARCH.md` içine eklendi.
 - Gerçek cihaz testi için release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı.
 - Web/HTML test çıktısı `flutter build web --release --base-href /boyamaoyunu/` ile üretildi ve GitHub'a `gh-pages` branch'i olarak push edildi.

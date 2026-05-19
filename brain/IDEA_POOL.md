@@ -12,6 +12,12 @@
 
 ## Yakın Gelecek Adayları
 
+### Renk Karışımı Mini Oyunu
+- Kaynak: 2026-05-19 kullanıcı konuşması.
+- Niyet: Çocuğa iki rengin karışınca yeni renk oluşturduğunu öğretmek; eğitim kazanımı sağlamak ve oyuncuyu daha istekli hale getirmek.
+- Etki: Boyama çekirdeğine doğrudan bağlı kalır, ebeveynin "faydalı oyun" algısını güçlendirir ve tekrar oynama motivasyonu yaratır.
+- Durum: Phase 2C adayı; ilk playtest sonrası scope'a alınmalı.
+
 ### Karakter ve isim seçeneklerini çocuklarla doğrulama
 - Kaynak: 2026-05-19 ikinci kullanıcı konuşması.
 - Niyet: Oyunun adı, karakter profili ve tasarım dilini AI tahminiyle değil gerçek 4-5 yaş çocuk tepkisiyle seçmek.

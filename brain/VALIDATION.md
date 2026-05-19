@@ -86,6 +86,22 @@
 - Temel araçlar eksiksiz olmalı: renk, silgi, temizle, geri dön.
 - Uygulama internete, reklama veya hesap açmaya ihtiyaç duymadan ilk işi yapabilmeli.
 
+## SLC Genişleme Adayı: Renk Karışımı Mini Oyunu
+
+### Eğitim Kazancı
+- Ana kazanım: Çocuk iki rengin karışınca üçüncü bir renge dönüşebileceğini görür.
+- Örnekler: kırmızı + sarı = turuncu, mavi + sarı = yeşil, kırmızı + mavi = mor.
+- Ebeveyn değeri: "Sadece oyalayan oyun" değil, renk bilgisi ve neden-sonuç ilişkisi öğreten etkinlik.
+
+### Oyun Motivasyonu
+- Çocuk doğru karışımı bulunca yıldız, ses veya küçük kutlama alır.
+- 3 doğru karışım sonrası yeni boyama sayfası veya yeni renk rozeti açılabilir.
+- Başarısızlık sert cezalandırılmaz; "bir daha deneyelim" döngüsü kullanılır.
+
+### Scope Notu
+- İlk boyama SLC tamamlandıktan ve playtest düzeltmeleri alındıktan sonra ele alınmalı.
+- Mini oyun ayrı karmaşık sistem değil, boyama akışına bağlı tek ekranlık öğrenme görevi olmalıdır.
+
 ## Devil's Advocate / Kill Report
 
 ### Açık Karşı Argümanlar
