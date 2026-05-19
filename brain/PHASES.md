@@ -76,9 +76,9 @@
 - Durum: pending.
 
 ### Phase 2C - Color Mix Learning Mini Game
-- Amaç: Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı küçük eğitim mini oyunu eklemek.
-- Scope: 2 renk seç, karıştır, oluşan renkle doğru nesneyi boya; puan/yıldız veya kısa seviye ilerlemesiyle çocuğu motive et.
-- Test: Widget test, manuel çocuk akışı smoke, playtestte çocuğun karışımı anlayıp tekrar deneme isteği.
+- Amaç: Renk karışımıyla yeni renk oluşumunu öğreten, heyecan ve merak hissi veren, boyama akışına bağlı küçük eğitim mini oyunu eklemek.
+- Scope: 2 renk seç, karıştır, oluşan renkle doğru nesneyi boya; yıldız/rozet, sürpriz açılma veya kısa seviye ilerlemesiyle çocuğu motive et.
+- Test: Widget test, manuel çocuk akışı smoke, playtestte çocuğun karışımı anlayıp tekrar deneme isteği ve heyecan sinyali.
 - Durum: pending.
 
 ## Phase 3 - Differentiator

@@ -13,9 +13,9 @@
 ## Yakın Gelecek Adayları
 
 ### Renk Karışımı Mini Oyunu
-- Kaynak: 2026-05-19 kullanıcı konuşması.
-- Niyet: Çocuğa iki rengin karışınca yeni renk oluşturduğunu öğretmek; eğitim kazanımı sağlamak ve oyuncuyu daha istekli hale getirmek.
-- Etki: Boyama çekirdeğine doğrudan bağlı kalır, ebeveynin "faydalı oyun" algısını güçlendirir ve tekrar oynama motivasyonu yaratır.
+- Kaynak: 2026-05-19 kullanıcı ve ebeveyn geri bildirimi.
+- Niyet: Çocuğa iki rengin karışınca yeni renk oluşturduğunu öğretmek; eğitim kazanımı sağlamak ve oyunu heyecanlandırıcı hale getirmek.
+- Etki: Boyama çekirdeğine doğrudan bağlı kalır, ebeveynin "faydalı oyun" algısını güçlendirir, çocuğa merak/ödül/ilerleme motivasyonu verir.
 - Durum: Phase 2C adayı; ilk playtest sonrası scope'a alınmalı.
 
 ### Karakter ve isim seçeneklerini çocuklarla doğrulama

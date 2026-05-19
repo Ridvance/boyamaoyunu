@@ -2,7 +2,7 @@
 
 ## Amaç
 
-Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı tek ekranlık eğitim mini oyunu eklemek.
+Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı, çocuğu heyecanlandıran tek ekranlık eğitim mini oyunu eklemek.
 
 ## Oku
 
@@ -18,6 +18,7 @@ Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı t
 - Sistem oluşan ara rengi büyük ve görsel şekilde gösterir.
 - Çocuk oluşan renkle doğru nesneyi boyar veya doğru nesneye dokunur.
 - Doğru seçimde yıldız/rozet/kısa kutlama ile motivasyon verilir.
+- 3 doğru görevden sonra küçük sürpriz açılma veya yeni resim/renk rozeti görünür.
 - İlk karışımlar: kırmızı+sarı=turuncu, mavi+sarı=yeşil, kırmızı+mavi=mor.
 
 ## Scope Dışı
@@ -37,7 +38,7 @@ Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı t
 
 - Mini oyun 4-5 yaş çocuğun anlayacağı kadar basit.
 - Eğitim kazanımı görünür: çocuk karışım sonucunu görür.
-- Oyun motivasyonu görünür: doğru karışımda kısa ödül/ilerleme vardır.
+- Oyun motivasyonu görünür: doğru karışımda kısa ödül/ilerleme ve heyecan döngüsü vardır.
 - Boyama SLC akışı bozulmaz.
 
 ## Test

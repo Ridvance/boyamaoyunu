@@ -96,6 +96,8 @@
 ### Oyun Motivasyonu
 - Çocuk doğru karışımı bulunca yıldız, ses veya küçük kutlama alır.
 - 3 doğru karışım sonrası yeni boyama sayfası veya yeni renk rozeti açılabilir.
+- Ebeveyn geri bildirimi: Oyun sadece sakin boyama değil, çocuğu heyecanlandıran bir hedef ve merak döngüsü de taşımalı.
+- Heyecan döngüsü basit olmalı: kısa görev, karışım animasyonu, sonuç rengi, doğru nesneyi boyama, yıldız/rozet, yeni görev.
 - Başarısızlık sert cezalandırılmaz; "bir daha deneyelim" döngüsü kullanılır.
 
 ### Scope Notu
