@@ -5,11 +5,11 @@
 
 ## Son Durum
 
-- Son yapılan: Flutter scaffold kuruldu, default sayaç demosu kaldırıldı, temel app shell ve widget testi eklendi.
-- Yarım kalan: İlk boyama SLC çekirdeği yapılacak; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
+- Son yapılan: İlk boyama SLC çekirdeği yapıldı; 3 sayfa, çizim kanvası, renk paleti, silgi, temizle ve geri dön çalışıyor.
+- Yarım kalan: Ebeveyn güvenlik kabuğu ve çocuk/ebeveyn alanı ayrımı netleştirilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
 - Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
-- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 1B kapsamında 3 hazır boyama sayfası, renk paleti, silgi, temizle ve geri dön akışını yapmak.
-- Kullanıcıdan beklenen karar: Phase 1B sonrası gerçek cihaz/çocuk testi mi yapılacak, yoksa önce parent safety shell mi eklenecek?
+- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 1C kapsamında ebeveyn alanını çocuk akışından ayırmak ve çocuk akışında reklam/dış link/ödeme olmadığını korumak.
+- Kullanıcıdan beklenen karar: Phase 1C sonrası gerçek cihaz/çocuk testi mi yapılacak, yoksa APK üretimi mi istenecek?
 
 ## Yeni Sohbet Devam Promptu
 
@@ -22,13 +22,13 @@ Repo: /Users/ridvan/Documents/Çocuk Oyun
 3. brain/CURRENT_PHASE.md
 
 Aktif faz:
-Phase 1B - Child Home And Coloring SLC
+Phase 1C - Parent Safety Shell
 
 Son yapılan:
-Flutter scaffold kuruldu. Default sayaç demosu kaldırıldı. İlk SLC sadece reklamsız boyama çekirdeği olarak kilitli; mini oyun sonraki fazlarda.
+İlk boyama SLC çekirdeği yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle ve geri dön çalışıyor.
 
 Sıradaki güvenli adım:
-Çocuk ana ekranı ve basit boyama ekranını yap: 3 hazır sayfa, renk seçimi, silgi, temizle, geri dön.
+Ebeveyn güvenlik kabuğunu yap: çocuk alanından ayrılmış basit ebeveyn alanı, reklam/dış link/ödeme yokluğu ve güvenlik ayrımı.
 
 Test durumu:
 Kod yok; doküman değişikliğinde `git diff --check`.

@@ -49,3 +49,11 @@
 - Etki: Phase 1A repo köküne Flutter scaffold kurar; Phase 1B boyama SLC ekranlarını Flutter içinde geliştirir.
 - Geri alma yolu: Flutter cihaz/build tarafında bloklanırsa native Android veya farklı mobil iskelet yeniden değerlendirilebilir.
 - Kaynak/kanıt: Kullanıcının APK beklentisi, proje mobil hedefi ve 2026-05-19 "Devam" kararı.
+
+### 2026-05-19 - İlk Boyama Etkileşimi Serbest Çizim Olacak
+- Karar: İlk SLC'de boyama, hazır çizgi şablonlarının üstüne serbest parmak çizimi olarak uygulanacak.
+- Neden: Doldurma algoritması veya bölge tabanlı boyama ilk prototipi yavaşlatır; çocuk testi için renk seçme, çizme, silme ve temizleme döngüsü yeterli ilk sinyal verir.
+- Alternatifler: Kapalı alanları tek dokunuşla dolduran fill bucket veya bitmap tabanlı boyama.
+- Etki: Phase 1B daha hızlı tamamlanır; ileri fazda fill bucket gerekirse ayrı micro phase olur.
+- Geri alma yolu: Çocuk testinde serbest çizim yetersiz kalırsa alan doldurma davranışı Phase 2 sonrası eklenir.
+- Kaynak/kanıt: 2026-05-19 pratik ilerleme hedefi ve Phase 1B implementasyonu.

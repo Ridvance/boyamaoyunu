@@ -51,13 +51,14 @@
 - Amaç: Çocuk ana ekranı ve basit boyama ekranını dar ama tamamlanmış SLC seviyesinde oynanabilir yapmak.
 - Scope: Saha doğrulamasından geçen karakter/tema yönü, 3-5 hazır boyama sayfası, renk paleti, silgi, temizle, geri dön. Mini oyun bu fazın scope'una girmez.
 - Test: Widget/unit test veya manuel smoke.
-- Durum: active.
+- Durum: completed.
+- Sonuç: 3 hazır sayfa, çizim kanvası, renk paleti, silgi, temizle ve geri dön akışı çalışır hale getirildi.
 
 ### Phase 1C - Parent Safety Shell
 - Amaç: Reklamsızlık, dış link yokluğu ve ebeveyn alanı ayrımını netleştirmek.
 - Scope: Ebeveyn ayarı/iletişim alanı, çocuk akışından ayrım.
 - Test: Manuel çocuk akışı smoke.
-- Durum: pending.
+- Durum: active.
 
 ## Phase 2 - Retention And Feedback
 
