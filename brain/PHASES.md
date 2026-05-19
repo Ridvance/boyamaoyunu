@@ -22,13 +22,14 @@
 - Amaç: Konuşmadaki ürün fikrini tek küçük SLC kapsamına indirmek ve karakter/isim/tasarım kararını saha doğrulamasına bağlamak.
 - Scope: Hedef kullanıcı, ilk oyun akışı, SLC dışı fikirler, karakter/isim seçenekleri için çocuk geri bildirim planı, research/commercial validation kapıları ve başarı kriterleri.
 - Test: `git diff --check`.
-- Durum: active.
+- Durum: completed.
+- Sonuç: İlk SLC sadece reklamsız boyama çekirdeği olacak; mini oyun sonraki fazlara bırakıldı.
 
 ### Phase 0C - Character And Name Field Validation
 - Amaç: 4-5 yaş çocuklara ve ebeveynlere 4-5 karakter/isim seçeneği gösterip en çekici yönü doğrulamak.
 - Scope: Basit görsel seçenekler, isim seçenekleri, kısa gözlem formu.
 - Test: En az 3 çocuk veya ebeveyn/çocuk gözlemiyle not toplama.
-- Durum: pending.
+- Durum: active.
 
 ### Phase 0D - Commercial Validation And Kill Report
 - Amaç: Çocuk boyama oyunu fikrinin rakip, fiyat, ödeme isteği, dağıtım, AI ikamesi ve zayıf yanlarını hızlı taramayla netleştirmek.
@@ -46,7 +47,7 @@
 
 ### Phase 1B - Child Home And Coloring SLC
 - Amaç: Çocuk ana ekranı ve basit boyama ekranını dar ama tamamlanmış SLC seviyesinde oynanabilir yapmak.
-- Scope: Saha doğrulamasından geçen karakter/tema yönü, 3-5 hazır boyama sayfası, renk paleti, silgi/temizle.
+- Scope: Saha doğrulamasından geçen karakter/tema yönü, 3-5 hazır boyama sayfası, renk paleti, silgi, temizle, geri dön. Mini oyun bu fazın scope'una girmez.
 - Test: Widget/unit test veya manuel smoke.
 - Durum: pending.
 

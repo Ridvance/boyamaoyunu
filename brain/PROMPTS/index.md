@@ -20,6 +20,12 @@ Scope dışı işlere dokunma.
 brain/CURRENT_PHASE.md
 ```
 
+## Aktif Faz Prompt'u
+
+```text
+brain/PROMPTS/phase-00C-character-and-name-field-validation.md
+```
+
 ## Faz Listesi
 
 ```text

@@ -5,11 +5,11 @@
 
 ## Son Durum
 
-- Son yapılan: Boş projeye brain yapısı kuruldu ve 4-5 yaş okul öncesi çocuk oyunu fikri ürün belleğine işlendi.
-- Yarım kalan: SLC kapsamı kullanıcıyla kilitlenecek.
-- Blocker: Kod yazmaya başlamadan önce ilk SLC'nin sadece boyama mı, boyama artı mini oyun mu olacağı netleşmeli.
-- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 0B kapsamında SLC tanımını netleştirmek.
-- Kullanıcıdan beklenen karar: İlk sürüm sadece boyama mı olsun, yoksa bir mini oyun da girsin mi?
+- Son yapılan: İlk SLC kapsamı kullanıcı kararıyla kilitlendi; ilk sürüm sadece reklamsız boyama çekirdeği olacak, mini oyun sonraki fazlara bırakıldı.
+- Yarım kalan: Hazırlanan karakter/isim seçenekleri gerçek çocuk/ebeveyn gözlemiyle test edilecek.
+- Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
+- Sonraki güvenli adım: `brain/FIELD_RESEARCH.md` içindeki adayları en az 3 çocuk veya ebeveyn/çocuk gözleminde denemek.
+- Kullanıcıdan beklenen karar: Saha doğrulama seçenekleri hazırlandıktan sonra gerçek çocuk/ebeveyn gözlemi mi yapılacak, yoksa önce Flutter scaffold'a mı geçilecek?
 
 ## Yeni Sohbet Devam Promptu
 
@@ -22,13 +22,13 @@ Repo: /Users/ridvan/Documents/Çocuk Oyun
 3. brain/CURRENT_PHASE.md
 
 Aktif faz:
-Phase 0B - Discovery To SLC Scope Lock
+Phase 0C - Character And Name Field Validation
 
 Son yapılan:
-Brain yapısı kuruldu. Ürün yönü 4-5 yaş çocuklar için reklamsız, güvenilir, boyama/mini oyun odaklı mobil uygulama olarak kaydedildi.
+Brain yapısı kuruldu. İlk SLC sadece reklamsız boyama çekirdeği olarak kilitlendi; mini oyun sonraki fazlara bırakıldı.
 
 Sıradaki güvenli adım:
-SLC kapsamını kilitle: ilk çocuk akışı, ilk içerik seti, SLC dışı bırakılacak fikirler, saha doğrulama, validation kapıları ve playtest başarı kriterleri.
+Hazırlanan karakter/isim/tasarım adaylarını gerçek çocuk/ebeveyn gözleminde dene veya kullanıcı onayıyla Flutter scaffold kararına geç.
 
 Test durumu:
 Kod yok; doküman değişikliğinde `git diff --check`.

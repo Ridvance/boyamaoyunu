@@ -4,11 +4,11 @@
 
 ## Active Phase
 
-Phase 0B - Discovery To SLC Scope Lock
+Phase 0C - Character And Name Field Validation
 
 ## Neden Bu Faz
 
-Proje yeni ve kod yok. Kullanıcı güçlü bir ürün yönü tarif etti ancak ilk uygulama kapsamı küçük tutulmazsa çıkış gecikir. Güncel template standardına göre iç prototip hızlı olabilir, fakat dışarı çıkacak ilk ürün dar ama sevilebilir ve tamamlanmış SLC olmalıdır. Bu fazın amacı, 4-5 yaş için ilk oynanabilir kapsamın neyi içerip neyi erteleyeceğini kilitlemek, karakter/isim/tasarım kararlarını sahada doğrulanacak seçeneklere indirmek ve ticari doğrulama kapılarını görünür hale getirmektir.
+Phase 0B sonunda kullanıcı ilk SLC'nin sadece boyama çekirdeği olmasını, mini oyunun sonraki fazlara bırakılmasını onayladı. Projede kod yok. İlk oynanabilir uygulamaya geçmeden önce karakter, isim ve görsel dünya AI tahminiyle kesinleştirilmeyecek; 4-5 yaş çocuk ve ebeveyn gözlemiyle doğrulanacak seçenekler hazırlanacak.
 
 ## Oku
 
@@ -18,7 +18,7 @@ Proje yeni ve kod yok. Kullanıcı güçlü bir ürün yönü tarif etti ancak i
 4. `brain/PHASES.md`
 5. `brain/FIELD_RESEARCH.md`
 6. `brain/VALIDATION.md`
-7. `brain/PROMPTS/phase-00B-discovery-to-slc-scope-lock.md`
+7. `brain/PROMPTS/phase-00C-character-and-name-field-validation.md`
 
 ## Planlama Kuralı
 
@@ -27,18 +27,16 @@ Uygulamaya geçmeden önce aktif faz, scope dışı işler, dosya etki alanı, t
 ## Scope Locked Prompt
 
 ```text
-Sadece 4-5 yaş okul öncesi çocuklar için ilk SLC kapsamını netleştir. İç prototip hızlı MVP olabilir; markete veya gerçek aileye verilecek ilk sürüm simple, lovable ve complete olmalıdır. Hedef kullanıcı, ilk oyun akışı, ilk içerik seti, karakter/isim/tasarım doğrulama yöntemi, SLC dışı bırakılacak fikirler, research/commercial validation, AI substitution ve kill report kapılarını yaz. Kod üretme, mobil proje başlatma, ödeme/reklam/fotoğraf AI entegrasyonu yapma. Karakter ve isim kararını sadece AI çıktısıyla kesinleştirme; sahada çocuk/ebeveyn geri bildirimi gerektir. Scope dışına çıkma.
+Sadece 4-5 yaş çocuklar için ilk boyama SLC'sine uygun karakter, isim ve görsel dünya saha doğrulama hazırlığını yap. 4-5 farklı karakter/tema yönü, her yön için kısa isim adayları, ebeveyn güven kontrolü ve çocuk gözlem formunu netleştir. Karakter veya uygulama adını kesinleştirme; karar için en az 3 çocuk veya ebeveyn/çocuk gözlemi gerektiğini koru. Kod üretme, mobil proje başlatma, mini oyun ekleme, ödeme/reklam/fotoğraf AI entegrasyonu yapma. Scope dışına çıkma.
 ```
 
 ## Çıkış Kriterleri
 
-- SLC'nin tek cümlelik tanımı yazılmış.
-- İlk çocuk akışı 3-5 adımda netleşmiş.
-- Karakter/isim/tasarım için 4-5 seçenekli çocuk geri bildirim planı yazılmış.
-- SLC'ye girmeyen ama ileride önemli fikirler ayrılmış.
-- Research/commercial validation, AI substitution ve kill report için ilk kapı notları yazılmış.
-- İlk playtest başarı kriterleri belirlenmiş.
-- Kullanıcıdan bir sonraki faza geçiş onayı alınmış.
+- 4-5 karakter/tema yönü hazırlanmış.
+- Her karakter/tema yönü için 4-5 kısa isim adayı yazılmış.
+- Çocuk gözlem formu ve ebeveyn güven soruları netleşmiş.
+- Karar kriteri yazılmış: ana karakter/ad kesinleşmeden önce en az 3 çocuk veya ebeveyn/çocuk gözlemi.
+- Kullanıcıdan Flutter scaffold fazına geçiş veya önce ticari hızlı tarama yapma kararı alınmış.
 
 ## Test
 
@@ -48,4 +46,4 @@ git diff --check
 
 ## Sonraki Faz
 
-Phase 1A - Flutter Scaffold Decision And Setup
+Phase 0D - Commercial Validation And Kill Report veya kullanıcı onayıyla Phase 1A - Flutter Scaffold Decision And Setup

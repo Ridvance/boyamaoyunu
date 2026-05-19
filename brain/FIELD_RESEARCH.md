@@ -41,6 +41,35 @@
 
 Bu hipotezler karar değildir. Sadece test edilecek seçenek üretmek içindir.
 
+## Saha Testi Adayları
+
+Bu adaylar nihai karar değildir. Amaç, çocukların hangi yöne kendiliğinden yaklaştığını ve ebeveynin hangisini güvenilir bulduğunu ölçmektir.
+
+### 1. Boyacı Kedi
+- Görsel yön: Yumuşak çizgili, gülümseyen, elinde fırça veya boya damlası olan sevimli kedi.
+- İlk boyama temaları: Kedi yüzü, patiler, boya kutusu, ev içi oyuncaklar.
+- İsim adayları: Pati, Mino, Boncuk, Mırmır, Pofik.
+
+### 2. Renk Dostu
+- Görsel yön: Hayvan olmayan, yuvarlak formlu ve yüz ifadeli küçük renk maskotu.
+- İlk boyama temaları: Renk damlaları, balonlar, basit şekiller, neşeli nesneler.
+- İsim adayları: Renkli, Mini, Cici, Lilo, Bobo.
+
+### 3. Minik Tavşan
+- Görsel yön: Sakin, yumuşak kulaklı, korkutucu olmayan tavşan karakteri.
+- İlk boyama temaları: Tavşan, havuç, çiçek, bahçe.
+- İsim adayları: Pufi, Zıpzıp, Lili, Pamuk, Tombi.
+
+### 4. Şekil Arkadaşları
+- Görsel yön: Daire, yıldız, kalp ve üçgen gibi basit şekillerin yüz ifadeli dostlara dönüşmesi.
+- İlk boyama temaları: Şekiller, renk eşleşmeleri, basit desenler.
+- İsim adayları: Şeko, Dodi, Lala, Yumo, Mavi.
+
+### 5. Oyuncak Dost
+- Görsel yön: Çocuğun odasından çıkmış gibi duran sevimli peluş/oyuncak karakter.
+- İlk boyama temaları: Oyuncak araba, ayıcık, top, bloklar.
+- İsim adayları: Tonti, Kuki, Momo, Dudu, Pıtı.
+
 ## Gözlem Formu Taslağı
 
 - Çocuk yaşı:
@@ -49,9 +78,20 @@ Bu hipotezler karar değildir. Sadece test edilecek seçenek üretmek içindir.
 - En uzun baktığı karakter:
 - Beğenmediği veya korktuğu seçenek:
 - Yakıştırdığı isim:
+- İlk basmak istediği ekran/görsel:
+- Tekrar görmek istediği karakter:
 - Ebeveyn güven yorumu:
+- Ebeveyn rahatsız edici bulduğu unsur:
+- Ebeveynin "çocuğuma veririm/vermem" yorumu:
 - Not:
 
 ## Karar Kapısı
 
 Ana karakter, uygulama adı ve ilk görsel dünya; aktif fazda sadece aday olarak hazırlanır. Nihai karar, saha gözlemi sonrası `DECISIONS.md` içine yazılır.
+
+## Başarı Sinyali
+
+- En az 3 çocuk veya ebeveyn/çocuk gözlemi tamamlanır.
+- Bir karakter/tema yönü çocukların en az 2'sinde ilk seçim veya uzun ilgi sinyali alır.
+- Ebeveyn aynı yönü güvenilir ve rahatsız etmeyen bulur.
+- Çocukların belirgin korku, kaçınma veya kafa karışıklığı gösterdiği seçenek elenir.

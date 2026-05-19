@@ -33,3 +33,11 @@
 - Etki: İlk scope daralır ama karakter, güven ve boyama çekirdeği daha tamamlanmış çıkar.
 - Geri alma yolu: Sadece kapalı testlerde MVP kalitesinde prototip kullanılabilir.
 - Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_KAYNAK_NOTLARI.md`, SLC referansları ve 2026-05-19 template güncellemesi.
+
+### 2026-05-19 - İlk SLC Sadece Boyama Olacak
+- Karar: İlk SLC sadece reklamsız boyama çekirdeği olacak; mini oyun sonraki fazlara bırakılacak.
+- Neden: Kullanıcı hızlı ilerlemeyi ve küçük uygulama çıkarıp çocuklarla test etmeyi istiyor. Mini oyun ilk çıkışı genişletir ve boyama çekirdeğinin testini geciktirir.
+- Alternatifler: İlk sürüme tek basit mini oyun eklemek.
+- Etki: Phase 1B scope'u çocuk ana ekranı, 3-5 boyama sayfası, renk paleti, silgi, temizle ve geri dön akışıyla sınırlanır.
+- Geri alma yolu: İlk boyama akışı çocuk testinde yetersiz kalırsa mini oyun Phase 2 veya ayrı bir micro phase olarak öne çekilebilir.
+- Kaynak/kanıt: 2026-05-19 kullanıcı kararı: "Mini oyunu sonraki fazlara bırakırız işi ilerlet".

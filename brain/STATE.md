@@ -10,10 +10,11 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 ## Aktif Odak
 
 - Brain yapısı bu projeye ilk kez kuruldu.
-- Ürün fikri SLC'ye indirgenecek: hızlı prototip yapılabilir ama aileye/markete çıkacak ilk sürüm dar, reklamsız, güvenli, sevilebilir ve tamamlanmış olmalı.
-- İlk aktif faz keşif ve SLC kapsam kilitleme fazıdır; henüz kod yazma fazı değildir.
+- İlk SLC kapsamı kilitlendi: 4-5 yaş çocuk için reklamsız, güvenli, sadece boyama çekirdeği. Mini oyun sonraki fazlara bırakıldı.
+- Aktif faz karakter, isim ve görsel dünya için saha doğrulama hazırlığıdır; henüz kod yazma fazı değildir.
 - Kullanıcının önemli yönlendirmesi: fazla plan yapmadan, doğrudan küçük bir uygulama çıkarıp çocuklarla test etmek.
 - İsim, karakter ve görsel tasarım AI tahminiyle kilitlenmeyecek; 4-5 yaş çocuklara ve yakın çevredeki ebeveyn/anaokulu gözlemine gösterilerek doğrulanacak.
+- `brain/FIELD_RESEARCH.md` içinde 5 karakter/tema yönü ve isim adayları hazırlandı; bunlar karar değil, saha testi adaylarıdır.
 - Güncel template'e göre research, commercial validation, AI substitution, SLC ve kill report kapıları projeye eklendi.
 - Para kazanma ilk aşamada baskın hedef değil; güven, fayda ve geri bildirim toplama öncelikli.
 
@@ -21,9 +22,9 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 
 - Kod: Henüz yok.
 - Platform: Mobil hedefli; Flutter değerlendirilecek.
-- Ürün: 4-5 yaş için reklamsız boyama/mini oyun SLC adayı.
+- Ürün: 4-5 yaş için reklamsız, sadece boyama odaklı SLC.
 - Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini SLC'ye fazla erken almak; çocukların çekileceği karakter/isim/tasarımı sahada doğrulamadan seçmek.
-- Doğrulama: İlk oynanabilir sürüm 2-5 çocukla denenmeli; karakter ve isim seçenekleri de çocuklara gösterilmeli.
+- Doğrulama: Hazırlanan karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle denenmeli.
 
 ## Sonraki Prompt
 

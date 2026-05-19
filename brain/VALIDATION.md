@@ -54,9 +54,27 @@
 
 4-5 yaş çocuk için reklamsız, saha doğrulamalı karakter/tema taşıyan, 3-5 güvenli görselle çalışan, renk paleti/silgi/temizle/geri dön akışı tamamlanmış basit boyama uygulaması.
 
+### Kilitli SLC Kararı
+- Karar: İlk SLC sadece boyama çekirdeği olacak.
+- Kapsam dışı: Mini oyun sonraki fazlara bırakıldı.
+- Kaynak: 2026-05-19 kullanıcı kararı.
+
+### İlk Çocuk Akışı
+1. Çocuk uygulamayı açar ve büyük görselli ana ekrandan boyama seçer.
+2. 3-5 güvenli boyama görselinden birine dokunur.
+3. Büyük renk paletinden renk seçer ve görseli boyar.
+4. Gerekirse silgi, temizle veya geri dön aksiyonunu kullanır.
+5. Yeni görsele geçer veya aynı görseli yeniden boyar.
+
+### İlk İçerik Seti
+- 3-5 hazır boyama sayfası.
+- Korkutucu olmayan, yumuşak çizgili ve okul öncesine uygun tema.
+- Saha doğrulamasından geçen ana karakter/tema yönü.
+- Yazıya bağımlı olmayan büyük seçim kartları.
+
 ### Simple
 - Tek ana iş: çocuk bir görsel seçer ve boyar.
-- İlk sürümde mini oyun, ödeme, AI fotoğraf ve büyük içerik mağazası zorunlu değildir.
+- İlk sürümde mini oyun, ödeme, AI fotoğraf ve büyük içerik mağazası yoktur.
 
 ### Lovable
 - Karakter/isim/tasarım 4-5 yaş çocuklarda sempatiklik sinyali vermeli.
