@@ -1,8 +1,8 @@
-# Phase 0B - Discovery To MVP Lock
+# Phase 0B - Discovery To SLC Scope Lock
 
 ## Amaç
 
-4-5 yaş okul öncesi çocuklar için ilk oynanabilir MVP kapsamını küçük ve net hale getirmek.
+4-5 yaş okul öncesi çocuklar için ilk oynanabilir SLC kapsamını küçük ve net hale getirmek.
 
 ## Oku
 
@@ -12,14 +12,16 @@
 - `brain/PROJECT.md`
 - `brain/VISION.md`
 - `brain/UX_ARCHITECTURE.md`
+- `brain/VALIDATION.md`
 
 ## Scope
 
-- MVP tek cümle tanımı.
+- SLC tek cümle tanımı.
 - İlk çocuk akışı.
 - İlk içerik seti.
 - Karakter, isim ve tasarım doğrulama yöntemi.
-- MVP dışı bırakılan fikirler.
+- SLC dışı bırakılan fikirler.
+- Research/commercial validation, AI substitution ve kill report kapı notları.
 - İlk playtest başarı kriterleri.
 
 ## Scope Dışı
@@ -37,11 +39,12 @@
 - `brain/CURRENT_PHASE.md`
 - `brain/PHASES.md`
 - `brain/FIELD_RESEARCH.md`
+- `brain/VALIDATION.md`
 - Gerekirse `brain/ROADMAP.md`
 
 ## Çıkış Kriterleri
 
-- Kullanıcı MVP kapsamını onaylar.
+- Kullanıcı SLC kapsamını onaylar.
 - Sonraki faz `Phase 1A - Flutter Scaffold Decision And Setup` olarak hazırdır.
 
 ## Test

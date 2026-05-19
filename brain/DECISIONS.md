@@ -5,16 +5,31 @@
 
 ## Kararlar
 
+## Kullanma Kuralı
+
+- Ticari ürün, uzun soluklu proje veya çok fazlı işlerde her büyük yön, scope, teknoloji, pazar veya faz kararı kısa ve kaynaklı yazılır.
+- Kararlar mümkünse kaynak/kanıt iziyle birlikte tutulur.
+
 ### 2026-05-19 - Hedef Yaş 4-5
 - Karar: Ürün okul öncesi 4-5 yaş çocuklara odaklanacak.
 - Neden: Kullanıcı özellikle okula başlamadan önceki, reklam kapatamayacak yaş grubunu tarif etti.
 - Alternatifler: Daha geniş 3-7 yaş aralığı.
 - Etki: UI daha büyük, sade ve yazıdan bağımsız tasarlanacak.
 - Geri alma yolu: Playtest sonrası yaş aralığı genişletilebilir.
+- Kaynak/kanıt: 2026-05-19 kullanıcı konuşması.
 
 ### 2026-05-19 - Reklamsız Güven İlkesi
 - Karar: İlk ürün yönü reklamsız ve güvenilir deneyim olacak.
 - Neden: Hedef çocuk reklamı kapatamaz; ebeveyn güveni ana satın alma gerekçesi.
 - Alternatifler: Reklam destekli ücretsiz model.
-- Etki: Monetizasyon ilk MVP'de geri planda kalır.
+- Etki: Monetizasyon ilk SLC'de geri planda kalır.
 - Geri alma yolu: İleride sadece ebeveyn alanında ücretli paket değerlendirilebilir.
+- Kaynak/kanıt: 2026-05-19 kullanıcı konuşması.
+
+### 2026-05-19 - Public İlk Sürüm SLC Olacak
+- Karar: İçeride hızlı MVP/prototip yapılabilir, ancak aileye veya markete çıkacak ilk sürüm dar ama simple, lovable ve complete olmalıdır.
+- Neden: Güncel Brain template SLC standardını ticari ürünlerde kalite kapısı olarak ekledi; çocuk ürünü ilk izlenim ve güvene daha duyarlı.
+- Alternatifler: Ham MVP'yi doğrudan markete çıkarmak.
+- Etki: İlk scope daralır ama karakter, güven ve boyama çekirdeği daha tamamlanmış çıkar.
+- Geri alma yolu: Sadece kapalı testlerde MVP kalitesinde prototip kullanılabilir.
+- Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_KAYNAK_NOTLARI.md`, SLC referansları ve 2026-05-19 template güncellemesi.

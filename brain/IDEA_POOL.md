@@ -48,7 +48,7 @@
 - Kaynak: 2026-05-19 kullanıcı konuşması.
 - Niyet: Ebeveyn fotoğraf yükler, çocuk onu boyar.
 - Etki: Sonsuz kişisel içerik üretimi sağlar.
-- Durum: MVP sonrası değerlendirilmeli.
+- Durum: ilk SLC sonrası değerlendirilmeli.
 
 ### İngilizce versiyon
 - Kaynak: 2026-05-19 kullanıcı konuşması.
@@ -67,4 +67,4 @@
 ## Reddedilen veya Bekletilenler
 
 - Reklamlı çocuk deneyimi: güven hedefiyle çeliştiği için bekletiliyor.
-- MVP'de büyük AI sistemi: ilk çıkışı yavaşlatacağı için bekletiliyor.
+- İlk SLC'de büyük AI sistemi: ilk çıkışı yavaşlatacağı ve gizlilik riski doğuracağı için bekletiliyor.

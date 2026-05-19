@@ -36,7 +36,7 @@ Ana kullanıcı 4-5 yaş okul öncesi çocuktur. Satın alma ve güven kararı e
 
 - Çocuk uygulamayı açar, boyama seçer, renklendirir, kaydeder veya yeni resme geçer.
 - Ebeveyn yeni içerik paketini açar veya ileride fotoğraf yükleyip boyama sayfası üretir.
-- İlk MVP'de ana akış sadece boyama ve basit mini oyunla sınırlanabilir.
+- İlk SLC'de ana akış sadece boyama ve gerekirse tek basit mini oyunla sınırlanabilir.
 
 ## Stitch Design Brief
 

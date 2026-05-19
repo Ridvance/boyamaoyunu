@@ -16,7 +16,7 @@
 - 4-5 yaş çocuk tek başına ana akışı kullanabilir.
 - Reklam ve dış link yoktur.
 - Ebeveyn uygulamayı güvenilir ve faydalı görür.
-- İlk MVP birkaç çocuk testinde en az 5-10 dakika dikkat tutar.
+- İlk SLC birkaç çocuk testinde en az 5-10 dakika dikkat tutar.
 - İçerik yenileme veya kullanıcıdan gelen görsel ile kısır döngü kırılır.
 - Türkçe ve İngilizce dil desteği için zemin hazır olur.
 
@@ -26,7 +26,7 @@
 
 ## Büyüme Katmanları
 
-1. Reklamsız boyama ve 1-2 mini oyun MVP'si.
+1. Reklamsız boyama ve gerekirse 1 mini oyun SLC'si.
 2. Düzenli eklenen yeni boyama alanları ve küçük içerik paketleri.
 3. Fotoğrafı çizime/boyama sayfasına dönüştürme.
 4. İngilizce versiyon ve global mağaza optimizasyonu.
@@ -44,7 +44,7 @@
 - Kaynak: 2026-05-19 kullanıcı konuşması.
 - Hedef: Ebeveynin yüklediği resmi çizime dönüştürüp çocuğa boyatmak.
 - Neden önemli: İçerik bitince sıkılma döngüsünü kırar.
-- Durum: orta vade; MVP'ye hemen alınmamalı.
+- Durum: orta vade; ilk SLC'ye hemen alınmamalı.
 
 ### Düzenli içerik yenileme
 - Kaynak: 2026-05-19 kullanıcı konuşması.
@@ -54,4 +54,4 @@
 
 ## Şu Anki Gerçeklik
 
-Bu vizyonun kod karşılığı henüz yok. İlk iş uygulama geliştirmek değil, MVP sınırını küçük ve test edilebilir şekilde kilitlemektir.
+Bu vizyonun kod karşılığı henüz yok. İlk iş uygulama geliştirmek değil, SLC sınırını küçük, sevilebilir ve test edilebilir şekilde kilitlemektir.

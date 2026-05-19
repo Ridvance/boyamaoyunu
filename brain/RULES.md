@@ -35,7 +35,7 @@
 ## Kullanıcı Tercihleri
 
 - Kullanıcı APK isterse varsayılan çıktı: APK dosyası masaüstüne kaydedilir, gereksiz büyük tutulmaz ve güncel Android telefonlarla uyumlu hazırlanır.
-- Kullanıcı pratik ilerlemeyi tercih eder: uzun teorik plan yerine küçük MVP, gerçek çocuk testi ve hızlı iterasyon.
+- Kullanıcı pratik ilerlemeyi tercih eder: uzun teorik plan yerine küçük prototip, dar SLC, gerçek çocuk testi ve hızlı iterasyon.
 
 ## Güvenlik
 
