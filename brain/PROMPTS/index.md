@@ -23,7 +23,7 @@ brain/CURRENT_PHASE.md
 ## Aktif Faz Prompt'u
 
 ```text
-brain/PROMPTS/phase-00C-character-and-name-field-validation.md
+brain/PROMPTS/phase-01B-child-home-and-coloring-slc.md
 ```
 
 ## Faz Listesi

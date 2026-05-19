@@ -41,3 +41,11 @@
 - Etki: Phase 1B scope'u çocuk ana ekranı, 3-5 boyama sayfası, renk paleti, silgi, temizle ve geri dön akışıyla sınırlanır.
 - Geri alma yolu: İlk boyama akışı çocuk testinde yetersiz kalırsa mini oyun Phase 2 veya ayrı bir micro phase olarak öne çekilebilir.
 - Kaynak/kanıt: 2026-05-19 kullanıcı kararı: "Mini oyunu sonraki fazlara bırakırız işi ilerlet".
+
+### 2026-05-19 - Flutter Mobil İskelet Seçimi
+- Karar: İlk mobil iskelet Flutter ile kurulacak.
+- Neden: Proje Android APK hedefli ve hızlı prototip/çocuk testi için tek kod tabanlı mobil geliştirme uygun.
+- Alternatifler: Native Android veya React Native.
+- Etki: Phase 1A repo köküne Flutter scaffold kurar; Phase 1B boyama SLC ekranlarını Flutter içinde geliştirir.
+- Geri alma yolu: Flutter cihaz/build tarafında bloklanırsa native Android veya farklı mobil iskelet yeniden değerlendirilebilir.
+- Kaynak/kanıt: Kullanıcının APK beklentisi, proje mobil hedefi ve 2026-05-19 "Devam" kararı.

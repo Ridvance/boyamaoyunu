@@ -5,11 +5,11 @@
 
 ## Son Durum
 
-- Son yapılan: İlk SLC kapsamı kullanıcı kararıyla kilitlendi; ilk sürüm sadece reklamsız boyama çekirdeği olacak, mini oyun sonraki fazlara bırakıldı.
-- Yarım kalan: Hazırlanan karakter/isim seçenekleri gerçek çocuk/ebeveyn gözlemiyle test edilecek.
+- Son yapılan: Flutter scaffold kuruldu, default sayaç demosu kaldırıldı, temel app shell ve widget testi eklendi.
+- Yarım kalan: İlk boyama SLC çekirdeği yapılacak; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
 - Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
-- Sonraki güvenli adım: `brain/FIELD_RESEARCH.md` içindeki adayları en az 3 çocuk veya ebeveyn/çocuk gözleminde denemek.
-- Kullanıcıdan beklenen karar: Saha doğrulama seçenekleri hazırlandıktan sonra gerçek çocuk/ebeveyn gözlemi mi yapılacak, yoksa önce Flutter scaffold'a mı geçilecek?
+- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 1B kapsamında 3 hazır boyama sayfası, renk paleti, silgi, temizle ve geri dön akışını yapmak.
+- Kullanıcıdan beklenen karar: Phase 1B sonrası gerçek cihaz/çocuk testi mi yapılacak, yoksa önce parent safety shell mi eklenecek?
 
 ## Yeni Sohbet Devam Promptu
 
@@ -22,13 +22,13 @@ Repo: /Users/ridvan/Documents/Çocuk Oyun
 3. brain/CURRENT_PHASE.md
 
 Aktif faz:
-Phase 0C - Character And Name Field Validation
+Phase 1B - Child Home And Coloring SLC
 
 Son yapılan:
-Brain yapısı kuruldu. İlk SLC sadece reklamsız boyama çekirdeği olarak kilitlendi; mini oyun sonraki fazlara bırakıldı.
+Flutter scaffold kuruldu. Default sayaç demosu kaldırıldı. İlk SLC sadece reklamsız boyama çekirdeği olarak kilitli; mini oyun sonraki fazlarda.
 
 Sıradaki güvenli adım:
-Hazırlanan karakter/isim/tasarım adaylarını gerçek çocuk/ebeveyn gözleminde dene veya kullanıcı onayıyla Flutter scaffold kararına geç.
+Çocuk ana ekranı ve basit boyama ekranını yap: 3 hazır sayfa, renk seçimi, silgi, temizle, geri dön.
 
 Test durumu:
 Kod yok; doküman değişikliğinde `git diff --check`.
