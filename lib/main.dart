@@ -95,14 +95,16 @@ class _ColoringHomeState extends State<ColoringHome> {
       return;
     }
     setState(() {
-      _strokesByPage[page.id]!.add(
+      final strokes = _strokesByPage[page.id]!;
+      _strokesByPage[page.id] = [
+        ...strokes,
         DrawingStroke(
           color: _selectedColor,
           width: _isErasing ? 28 : 16,
           isEraser: _isErasing,
           points: [point],
         ),
-      );
+      ];
     });
   }
 
@@ -116,7 +118,14 @@ class _ColoringHomeState extends State<ColoringHome> {
       if (strokes.isEmpty) {
         return;
       }
-      strokes.last.points.add(point);
+      final activeStroke = strokes.last;
+      final updatedStroke = activeStroke.copyWith(
+        points: [...activeStroke.points, point],
+      );
+      _strokesByPage[page.id] = [
+        ...strokes.take(strokes.length - 1),
+        updatedStroke,
+      ];
     });
   }
 
@@ -884,6 +893,15 @@ class DrawingStroke {
   final double width;
   final bool isEraser;
   final List<Offset> points;
+
+  DrawingStroke copyWith({List<Offset>? points}) {
+    return DrawingStroke(
+      color: color,
+      width: width,
+      isEraser: isEraser,
+      points: points ?? this.points,
+    );
+  }
 }
 
 class ColoringPage {

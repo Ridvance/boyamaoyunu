@@ -5,7 +5,7 @@
 
 ## Son Durum
 
-- Son yapılan: Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. Web/HTML çıktısı üretildi ve GitHub'a `gh-pages` branch'i olarak push edildi. `flutter test`, `flutter analyze`, release APK build ve web build temiz geçti.
+- Son yapılan: Kullanıcı geri bildirimiyle çizimin sadece renk düğmesi gibi başka bir UI aksiyonundan sonra görünmesine yol açan repaint bug'ı düzeltildi. Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. Web/HTML çıktısı üretildi ve GitHub'a `gh-pages` branch'i olarak push edildi. `flutter test`, `flutter analyze`, release APK build ve web build temiz geçti.
 - Yarım kalan: APK gerçek cihazda çocuk/ebeveyn gözleminde test edilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
 - Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
 - Sonraki güvenli adım: GitHub Pages ayarında kaynak branch'in `gh-pages` ve klasörün `/root` olduğunu kontrol etmek; sonra masaüstündeki APK ile `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullanarak 2-5 gözlem sonucunu toplamak.
@@ -25,13 +25,13 @@ Aktif faz:
 Phase 2A - Child Playtest Feedback Loop
 
 Son yapılan:
-İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor. Phase 2A playtest gözlem formu `brain/FIELD_RESEARCH.md` içine eklendi. Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. Web/HTML çıktısı `gh-pages` branch'ine push edildi.
+İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor. Çizim repaint bug'ı düzeltildi; parmak hareket ederken çizgi başka UI aksiyonu beklemeden görünür. Phase 2A playtest gözlem formu `brain/FIELD_RESEARCH.md` içine eklendi. Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. Web/HTML çıktısı `gh-pages` branch'ine push edildi.
 
 Sıradaki güvenli adım:
 GitHub Pages ayarında kaynak branch'i `gh-pages` root olarak kontrol et. Ardından masaüstündeki APK ile gerçek cihaz/çocuk testine geç. Test sırasında `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullan.
 
 Test durumu:
-`flutter test`, `flutter analyze`, `flutter build apk --release` ve `flutter build web --release --base-href /boyamaoyunu/` temiz geçti. Doküman değişikliğinde `git diff --check`.
+`flutter test`, `flutter analyze`, `flutter build apk --release` ve `flutter build web --release --base-href /boyamaoyunu/` temiz geçti. Repaint fix'i sonrası `flutter test`, `flutter analyze` ve `git diff --check` temiz geçti. Doküman değişikliğinde `git diff --check`.
 
 Kurallar:
 - Türkçe yaz.

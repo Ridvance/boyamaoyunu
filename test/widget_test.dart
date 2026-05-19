@@ -42,6 +42,45 @@ void main() {
     expect(find.text('Boyama'), findsOneWidget);
   });
 
+  testWidgets('drawing updates repaint data while the finger moves', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('page-cat')));
+    await tester.pumpAndSettle();
+
+    final canvasFinder = find.byKey(const ValueKey('drawing-canvas'));
+    final beforePaint =
+        tester
+                .widget<CustomPaint>(
+                  find.descendant(
+                    of: canvasFinder,
+                    matching: find.byType(CustomPaint),
+                  ),
+                )
+                .painter!
+            as ColoringPainter;
+
+    await tester.drag(canvasFinder, const Offset(80, 20));
+    await tester.pump();
+
+    final afterPaint =
+        tester
+                .widget<CustomPaint>(
+                  find.descendant(
+                    of: canvasFinder,
+                    matching: find.byType(CustomPaint),
+                  ),
+                )
+                .painter!
+            as ColoringPainter;
+
+    expect(identical(afterPaint.strokes, beforePaint.strokes), isFalse);
+    expect(afterPaint.strokes, isNotEmpty);
+    expect(afterPaint.strokes.last.points.length, greaterThan(1));
+  });
+
   testWidgets('opens the separated parent safety area through the gate', (
     WidgetTester tester,
   ) async {
