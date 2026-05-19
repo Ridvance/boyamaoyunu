@@ -14,7 +14,8 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 - Karakter, isim ve görsel dünya için saha doğrulama adayları hazırlandı; nihai karar çocuk/ebeveyn gözlemi sonrası verilecek.
 - Flutter proje iskeleti kuruldu; default sayaç demosu kaldırıldı.
 - İlk boyama SLC çekirdeği çalışır: 3 sayfa, çizim kanvası, renk paleti, silgi, temizle ve geri dön.
-- Aktif faz ebeveyn güvenlik kabuğu ve çocuk/ebeveyn alanı ayrımıdır.
+- Ebeveyn güvenlik kabuğu eklendi; ebeveyn alanı çocuk akışından ayrıldı.
+- Aktif faz gerçek cihaz/çocuk playtest geri bildirim döngüsüdür.
 - Kullanıcının önemli yönlendirmesi: fazla plan yapmadan, doğrudan küçük bir uygulama çıkarıp çocuklarla test etmek.
 - İsim, karakter ve görsel tasarım AI tahminiyle kilitlenmeyecek; 4-5 yaş çocuklara ve yakın çevredeki ebeveyn/anaokulu gözlemine gösterilerek doğrulanacak.
 - `brain/FIELD_RESEARCH.md` içinde 5 karakter/tema yönü ve isim adayları hazırlandı; bunlar karar değil, saha testi adaylarıdır.
@@ -23,11 +24,11 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 
 ## Kısa Durum
 
-- Kod: Flutter app içinde ilk oynanabilir boyama çekirdeği mevcut.
+- Kod: Flutter app içinde ilk oynanabilir boyama çekirdeği ve ebeveyn güvenlik kabuğu mevcut.
 - Platform: Mobil hedefli; Flutter seçildi.
 - Ürün: 4-5 yaş için reklamsız, sadece boyama odaklı SLC.
 - Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini SLC'ye fazla erken almak; çocukların çekileceği karakter/isim/tasarımı sahada doğrulamadan seçmek.
-- Doğrulama: Hazırlanan karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle denenmeli.
+- Doğrulama: Uygulama gerçek cihazda 2-5 çocukla denenmeli; karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle ayrıca doğrulanmalı.
 
 ## Sonraki Prompt
 

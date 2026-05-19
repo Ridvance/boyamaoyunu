@@ -23,7 +23,7 @@ brain/CURRENT_PHASE.md
 ## Aktif Faz Prompt'u
 
 ```text
-brain/PROMPTS/phase-01C-parent-safety-shell.md
+brain/PROMPTS/phase-02A-child-playtest-feedback-loop.md
 ```
 
 ## Faz Listesi

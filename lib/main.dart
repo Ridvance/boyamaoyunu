@@ -40,10 +40,12 @@ class _ColoringHomeState extends State<ColoringHome> {
   ColoringPage? _selectedPage;
   Color _selectedColor = paletteColors.first;
   bool _isErasing = false;
+  bool _showParentArea = false;
 
   void _openPage(ColoringPage page) {
     setState(() {
       _selectedPage = page;
+      _showParentArea = false;
       _isErasing = false;
     });
   }
@@ -51,6 +53,15 @@ class _ColoringHomeState extends State<ColoringHome> {
   void _goHome() {
     setState(() {
       _selectedPage = null;
+      _showParentArea = false;
+      _isErasing = false;
+    });
+  }
+
+  void _openParentArea() {
+    setState(() {
+      _selectedPage = null;
+      _showParentArea = true;
       _isErasing = false;
     });
   }
@@ -112,6 +123,9 @@ class _ColoringHomeState extends State<ColoringHome> {
   @override
   Widget build(BuildContext context) {
     final page = _selectedPage;
+    if (_showParentArea) {
+      return ParentSafetyScreen(onBack: _goHome);
+    }
     if (page != null) {
       return ColoringScreen(
         page: page,
@@ -126,14 +140,22 @@ class _ColoringHomeState extends State<ColoringHome> {
         onStrokeUpdate: _appendStrokePoint,
       );
     }
-    return HomeScreen(onPageSelected: _openPage);
+    return HomeScreen(
+      onPageSelected: _openPage,
+      onParentUnlocked: _openParentArea,
+    );
   }
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({required this.onPageSelected, super.key});
+  const HomeScreen({
+    required this.onPageSelected,
+    required this.onParentUnlocked,
+    super.key,
+  });
 
   final ValueChanged<ColoringPage> onPageSelected;
+  final VoidCallback onParentUnlocked;
 
   @override
   Widget build(BuildContext context) {
@@ -144,13 +166,35 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Cocuk Oyun',
-                style: TextStyle(
-                  color: Color(0xFF233238),
-                  fontSize: 34,
-                  fontWeight: FontWeight.w800,
-                ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Cocuk Oyun',
+                      style: TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 34,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  IconButton.filledTonal(
+                    key: const ValueKey('parent-gate-button'),
+                    tooltip: 'Ebeveyn',
+                    onPressed:
+                        () => showDialog<void>(
+                          context: context,
+                          builder:
+                              (context) => ParentGateDialog(
+                                onUnlocked: () {
+                                  Navigator.of(context).pop();
+                                  onParentUnlocked();
+                                },
+                              ),
+                        ),
+                    icon: const Icon(Icons.shield_rounded),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               const Text(
@@ -182,6 +226,152 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                 ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ParentGateDialog extends StatelessWidget {
+  const ParentGateDialog({required this.onUnlocked, super.key});
+
+  final VoidCallback onUnlocked;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Ebeveyn alani'),
+      content: const Text('Acik tut'),
+      actions: [
+        GestureDetector(
+          key: const ValueKey('parent-unlock-button'),
+          onLongPress: onUnlocked,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFF2FA7A0),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const SizedBox(
+              width: 132,
+              height: 56,
+              child: Center(
+                child: Icon(
+                  Icons.lock_open_rounded,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ParentSafetyScreen extends StatelessWidget {
+  const ParentSafetyScreen({required this.onBack, super.key});
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton.filledTonal(
+                    key: const ValueKey('parent-back-button'),
+                    tooltip: 'Geri',
+                    onPressed: onBack,
+                    icon: const Icon(Icons.arrow_back_rounded),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Ebeveyn',
+                      style: TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              const SafetyStatusList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SafetyStatusList extends StatelessWidget {
+  const SafetyStatusList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        SafetyStatusItem(label: 'Reklam yok', icon: Icons.block_rounded),
+        SafetyStatusItem(label: 'Odeme yok', icon: Icons.payments_rounded),
+        SafetyStatusItem(label: 'Dis link yok', icon: Icons.link_off_rounded),
+        SafetyStatusItem(
+          label: 'Kamera galeri yok',
+          icon: Icons.no_photography_rounded,
+        ),
+      ],
+    );
+  }
+}
+
+class SafetyStatusItem extends StatelessWidget {
+  const SafetyStatusItem({required this.label, required this.icon, super.key});
+
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFE6ECE8), width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Row(
+            children: [
+              Icon(icon, color: const Color(0xFF2FA7A0), size: 30),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    color: Color(0xFF233238),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const Icon(
+                Icons.check_circle_rounded,
+                color: Color(0xFF6BCB77),
+                size: 28,
               ),
             ],
           ),

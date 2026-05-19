@@ -58,7 +58,8 @@
 - Amaç: Reklamsızlık, dış link yokluğu ve ebeveyn alanı ayrımını netleştirmek.
 - Scope: Ebeveyn ayarı/iletişim alanı, çocuk akışından ayrım.
 - Test: Manuel çocuk akışı smoke.
-- Durum: active.
+- Durum: completed.
+- Sonuç: Ebeveyn kapısı ve güvenlik ekranı eklendi; reklam, ödeme, dış link, kamera/galeri yokluğu görünür hale getirildi.
 
 ## Phase 2 - Retention And Feedback
 
@@ -66,7 +67,7 @@
 - Amaç: İlk SLC/prototip akışını birkaç çocukla deneyip eksikleri listelemek.
 - Scope: Gözlem formu, geri bildirim notları, hızlı düzeltme listesi.
 - Test: Gerçek cihazda oynatma.
-- Durum: pending.
+- Durum: active.
 
 ### Phase 2B - Content Refresh System
 - Amaç: Yeni boyama alanı ve küçük içerik paketlerini düzenli eklenebilir yapmak.

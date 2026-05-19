@@ -4,11 +4,11 @@
 
 ## Active Phase
 
-Phase 1C - Parent Safety Shell
+Phase 2A - Child Playtest Feedback Loop
 
 ## Neden Bu Faz
 
-İlk boyama SLC çekirdeği çalışır durumda: çocuk ana ekrandan 3 sayfadan birini seçip renk paletiyle boyayabiliyor, silgi/temizle/geri dön aksiyonları çalışıyor. Bu fazın amacı çocuk akışında reklam, dış link, ödeme ve yetişkin alanına yanlışlıkla geçiş riskini görünür şekilde ayırmak; gerçek ödeme, reklam veya dış servis entegrasyonu yapılmayacak.
+İlk oynanabilir boyama SLC çekirdeği ve ebeveyn güvenlik kabuğu tamamlandı. Çocuk ana akışında 3 boyama sayfası, renk paleti, silgi, temizle ve geri dön var; ebeveyn alanı çocuk akışından ayrıldı. Bu fazın amacı gerçek cihazda ve mümkünse 2-5 çocuk/ebeveyn gözleminde ilk kullanım sinyallerini toplamak.
 
 ## Oku
 
@@ -17,8 +17,8 @@ Phase 1C - Parent Safety Shell
 3. `brain/PLANNING.md`
 4. `brain/PHASES.md`
 5. `brain/TESTING.md`
-6. `brain/UX_ARCHITECTURE.md`
-7. `brain/PROMPTS/phase-01C-parent-safety-shell.md`
+6. `brain/FIELD_RESEARCH.md`
+7. `brain/PROMPTS/phase-02A-child-playtest-feedback-loop.md`
 
 ## Planlama Kuralı
 
@@ -27,16 +27,14 @@ Uygulamaya geçmeden önce aktif faz, scope dışı işler, dosya etki alanı, t
 ## Scope Locked Prompt
 
 ```text
-Sadece ebeveyn güvenlik kabuğunu netleştir. Çocuk akışında reklam, ödeme, dış link, kamera/galeri ve hesap akışı olmadığını koru. Ebeveyn alanını çocuk alanından ayıran basit bir giriş/kapı tasarla; gerçek ödeme, reklam, abonelik, dış servis, kamera/galeri veya fotoğraf AI entegrasyonu yapma. Kod değişirse `flutter test` ve `flutter analyze` çalıştır, `git diff --check` temiz olsun.
+Kod değiştirmeden önce mevcut ilk oynanabilir boyama SLC'sini gerçek cihaz/çocuk testi için değerlendir. 2-5 çocuk veya ebeveyn/çocuk gözlemiyle hangi sayfaya basıldığı, çizim yapıp yapmadığı, renk/silgi/temizle kullanımında zorlanma, sıkılma ve ebeveyn güven yorumu toplanacak şekilde kısa playtest planı ve gözlem notu üret. Kod değişikliği yapma; test planı doküman değişirse `git diff --check` çalıştır. Scope dışına çıkma.
 ```
 
 ## Çıkış Kriterleri
 
-- Çocuk akışında reklam, ödeme, dış link, hesap, kamera/galeri erişimi yoktur.
-- Ebeveyn alanı çocuk akışından ayrılmıştır.
-- Güvenlik bilgisi çocuk akışını karmaşıklaştırmadan sunulur.
-- `flutter test` başarılı.
-- `flutter analyze` başarılı.
+- Playtest gözlem formu güncel uygulama akışına göre hazırlanmış.
+- Başarı/başarısızlık sinyalleri yazılmış.
+- Kullanıcıdan gerçek cihaz testi veya APK üretim kararı alınmış.
 - `git diff --check` temiz.
 
 ## Test
@@ -47,4 +45,4 @@ git diff --check
 
 ## Sonraki Faz
 
-Phase 2A - Child Playtest Feedback Loop
+Phase 2B - Content Refresh System veya playtest bulgularına göre düzeltme fazı

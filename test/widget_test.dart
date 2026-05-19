@@ -41,4 +41,28 @@ void main() {
 
     expect(find.text('Boyama'), findsOneWidget);
   });
+
+  testWidgets('opens the separated parent safety area through the gate', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('parent-gate-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('Ebeveyn alani'), findsOneWidget);
+
+    await tester.longPress(find.byKey(const ValueKey('parent-unlock-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ebeveyn'), findsOneWidget);
+    expect(find.text('Reklam yok'), findsOneWidget);
+    expect(find.text('Odeme yok'), findsOneWidget);
+    expect(find.text('Dis link yok'), findsOneWidget);
+    expect(find.text('Kamera galeri yok'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('parent-back-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Boyama'), findsOneWidget);
+  });
 }

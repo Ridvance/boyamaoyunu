@@ -5,11 +5,11 @@
 
 ## Son Durum
 
-- Son yapılan: İlk boyama SLC çekirdeği yapıldı; 3 sayfa, çizim kanvası, renk paleti, silgi, temizle ve geri dön çalışıyor.
-- Yarım kalan: Ebeveyn güvenlik kabuğu ve çocuk/ebeveyn alanı ayrımı netleştirilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
+- Son yapılan: Ebeveyn güvenlik kabuğu eklendi; çocuk akışında reklam/ödeme/dış link/kamera-galeri yolu yok, ebeveyn alanı ayrı kapıyla açılıyor.
+- Yarım kalan: İlk oynanabilir uygulama gerçek cihazda ve çocuk/ebeveyn gözleminde test edilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
 - Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
-- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 1C kapsamında ebeveyn alanını çocuk akışından ayırmak ve çocuk akışında reklam/dış link/ödeme olmadığını korumak.
-- Kullanıcıdan beklenen karar: Phase 1C sonrası gerçek cihaz/çocuk testi mi yapılacak, yoksa APK üretimi mi istenecek?
+- Sonraki güvenli adım: `brain/CURRENT_PHASE.md` içindeki Phase 2A kapsamında playtest gözlem planını güncel uygulama akışına göre hazırlamak veya kullanıcı isterse APK üretmek.
+- Kullanıcıdan beklenen karar: Gerçek cihaz/çocuk testi için APK üretilecek mi?
 
 ## Yeni Sohbet Devam Promptu
 
@@ -22,13 +22,13 @@ Repo: /Users/ridvan/Documents/Çocuk Oyun
 3. brain/CURRENT_PHASE.md
 
 Aktif faz:
-Phase 1C - Parent Safety Shell
+Phase 2A - Child Playtest Feedback Loop
 
 Son yapılan:
-İlk boyama SLC çekirdeği yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle ve geri dön çalışıyor.
+İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor.
 
 Sıradaki güvenli adım:
-Ebeveyn güvenlik kabuğunu yap: çocuk alanından ayrılmış basit ebeveyn alanı, reklam/dış link/ödeme yokluğu ve güvenlik ayrımı.
+Playtest gözlem planı hazırla veya kullanıcı isterse APK üretip gerçek cihaz/çocuk testine geç.
 
 Test durumu:
 Kod yok; doküman değişikliğinde `git diff --check`.
