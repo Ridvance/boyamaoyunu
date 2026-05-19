@@ -18,6 +18,7 @@ Flutter prototip içinde ilk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu
 - Aktif faz gerçek cihaz/çocuk playtest geri bildirim döngüsüdür.
 - Phase 2A için güncel uygulama akışına göre playtest planı, gözlem formu, başarı/başarısızlık sinyalleri ve hızlı düzeltme listesi formatı `brain/FIELD_RESEARCH.md` içine eklendi.
 - Gerçek cihaz testi için release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı.
+- Web/HTML test çıktısı `flutter build web --release --base-href /boyamaoyunu/` ile üretildi ve GitHub'a `gh-pages` branch'i olarak push edildi.
 - Kullanıcının önemli yönlendirmesi: fazla plan yapmadan, doğrudan küçük bir uygulama çıkarıp çocuklarla test etmek.
 - İsim, karakter ve görsel tasarım AI tahminiyle kilitlenmeyecek; 4-5 yaş çocuklara ve yakın çevredeki ebeveyn/anaokulu gözlemine gösterilerek doğrulanacak.
 - `brain/FIELD_RESEARCH.md` içinde 5 karakter/tema yönü ve isim adayları hazırlandı; bunlar karar değil, saha testi adaylarıdır.
@@ -30,7 +31,7 @@ Flutter prototip içinde ilk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu
 - Platform: Mobil hedefli; Flutter seçildi.
 - Ürün: 4-5 yaş için reklamsız, sadece boyama odaklı SLC.
 - Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini SLC'ye fazla erken almak; çocukların çekileceği karakter/isim/tasarımı sahada doğrulamadan seçmek.
-- Doğrulama: Masaüstündeki `cocuk-oyun-playtest-release.apk` gerçek cihazda `brain/FIELD_RESEARCH.md` içindeki Phase 2A formuyla 2-5 çocukla denenmeli; karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle ayrıca doğrulanmalı.
+- Doğrulama: Masaüstündeki `cocuk-oyun-playtest-release.apk` gerçek cihazda `brain/FIELD_RESEARCH.md` içindeki Phase 2A formuyla 2-5 çocukla denenmeli; web çıktısı için GitHub Pages ayarı `gh-pages` branch root olacak şekilde kontrol edilmeli. Karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle ayrıca doğrulanmalı.
 
 ## Sonraki Prompt
 
