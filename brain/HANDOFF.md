@@ -5,11 +5,11 @@
 
 ## Son Durum
 
-- Son yapılan: Phase 2A için güncel uygulama akışına bağlı playtest planı, gözlem formu, başarı/başarısızlık sinyalleri ve hızlı düzeltme listesi formatı `brain/FIELD_RESEARCH.md` içine eklendi.
-- Yarım kalan: İlk oynanabilir uygulama gerçek cihazda ve çocuk/ebeveyn gözleminde test edilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
+- Son yapılan: Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. `flutter test`, `flutter analyze` ve release build temiz geçti.
+- Yarım kalan: APK gerçek cihazda çocuk/ebeveyn gözleminde test edilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
 - Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
-- Sonraki güvenli adım: Kullanıcı isterse gerçek cihaz testi için APK üretmek; ardından `brain/FIELD_RESEARCH.md` içindeki Phase 2A formuyla 2-5 gözlem sonucunu toplamak.
-- Kullanıcıdan beklenen karar: Gerçek cihaz/çocuk testi için APK üretilecek mi?
+- Sonraki güvenli adım: Masaüstündeki APK ile `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullanarak 2-5 gözlem sonucunu toplamak.
+- Kullanıcıdan beklenen karar: Playtest sonuçları geldikten sonra düzeltme fazına mı geçilecek, yoksa içerik yenileme fazına mı geçilecek?
 
 ## Yeni Sohbet Devam Promptu
 
@@ -25,13 +25,13 @@ Aktif faz:
 Phase 2A - Child Playtest Feedback Loop
 
 Son yapılan:
-İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor. Phase 2A playtest gözlem formu `brain/FIELD_RESEARCH.md` içine eklendi.
+İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor. Phase 2A playtest gözlem formu `brain/FIELD_RESEARCH.md` içine eklendi. Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı.
 
 Sıradaki güvenli adım:
-Kullanıcı isterse APK üretip gerçek cihaz/çocuk testine geç. Test sırasında `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullan.
+Masaüstündeki APK ile gerçek cihaz/çocuk testine geç. Test sırasında `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullan.
 
 Test durumu:
-Kod yok; doküman değişikliğinde `git diff --check`.
+`flutter test`, `flutter analyze` ve `flutter build apk --release` temiz geçti. Doküman değişikliğinde `git diff --check`.
 
 Kurallar:
 - Türkçe yaz.
