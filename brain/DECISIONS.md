@@ -42,6 +42,14 @@
 - Geri alma yolu: Gerekirse terminoloji sadeleştirilir, ancak çalışma belleği ve karar kayıtları korunur.
 - Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_TEMPLATE_KLASOR.md`, `/Users/ridvan/Desktop/Brain/BRAIN_KONTROL_LISTESI.md`, 2026-05-19 template güncellemesi.
 
+### 2026-05-20 - Proactive Research Sprint Standardı
+- Karar: Research eksikse ve kaynak erişimi varsa agent sadece eksik raporlamayacak; hızlı research sprint'i üretip Action State ile handoff bırakacak.
+- Neden: Masaüstü Brain template güncellemesi, status ve brain güncellemelerinde güvenli A0/A1 eksiklerin proaktif kapatılmasını istiyor.
+- Alternatifler: Research eksiklerini sadece blocker olarak bırakmak.
+- Etki: `VALIDATION.md` içine çocuk boyama rakipleri için ilk hızlı sprint eklendi; `STATE.md` ve `HANDOFF.md` Action State alanıyla güncellendi.
+- Geri alma yolu: Sprint notları tarihsel kaynak olarak korunur; deep research gerektiğinde yeni research fazı açılır.
+- Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_TEMPLATE_KLASOR.md`, `/Users/ridvan/Desktop/Brain/BRAIN_KONTROL_LISTESI.md`, 2026-05-20 template güncellemesi.
+
 ### 2026-05-19 - İlk SLC Sadece Boyama Olacak
 - Karar: İlk SLC sadece reklamsız boyama çekirdeği olacak; mini oyun sonraki fazlara bırakılacak.
 - Neden: Kullanıcı hızlı ilerlemeyi ve küçük uygulama çıkarıp çocuklarla test etmeyi istiyor. Mini oyun ilk çıkışı genişletir ve boyama çekirdeğinin testini geciktirir.

@@ -83,6 +83,17 @@ Ticari ürün fikrinde agent execution'a geçmeden önce araştırma ve ticari d
 - Hızlı tarama: düşük maliyetli iç prototip, alan ön elemesi veya kısa karar ihtiyacı.
 - Deep research: ticari ürün, aylar sürecek execution, rekabetli pazar veya yüksek fırsat maliyeti.
 
+Research eksikse ve internet/kaynak erişimi varsa agent sadece "araştırma yapılmamış" demekle yetinmez. En azından hızlı research sprint'i başlatır ve şu çıktıları üretir:
+
+- Rakip ve alternatif çözüm listesi.
+- Fiyat/dağıtım/konumlandırma ilk tablosu.
+- AI substitution ilk değerlendirmesi.
+- SLC kapsam yorumu.
+- Kill report ilk taslağı.
+- `Go`, `No-Go`, `Pivot` veya `Research More` ön kararı.
+
+Deep research gerekiyorsa hızlı sprint sonucu bunu gerekçelendirir ve next work handoff içine deep research promptunu koyar.
+
 Research çıktısı:
 
 - Rakip isimleri, fiyatları, özellikleri, platformları ve dağıtım avantajları.
@@ -173,7 +184,12 @@ Rapor şunları içerir:
 - Kararlar ve bekleyen onaylar.
 - Test durumu.
 - Sıradaki iş.
+- Action State: `READY_TO_EXECUTE`, `WAITING_USER_APPROVAL`, `WAITING_USER_DATA`, `BLOCKED_EXTERNAL`, `RESEARCH_NEEDED` veya `NO_ACTIVE_PHASE`.
+- Agent şimdi yapabilir mi.
+- Kullanıcı "devam" derse yapılacak net işlem.
 - Next work handoff.
+
+Brain kurulumu, güncellemesi veya status sorgusunda agent'ın kendi yapabileceği güvenli A0/A1 eksikler varsa sadece rapor yazma; ilgili moda girip ilk somut çıktıyı üret. Eksik iş kullanıcı verisi, saha testi, canlı sistem, ödeme/API erişimi veya destructive işlem gerektiriyorsa bekle; ama gözlem formu, onay sorusu veya veri toplama checklist'i üret. Kullanıcı "devam", "tamam", "olur", "hadi" gibi ima verirse `READY_TO_EXECUTE` durumundaki sıradaki işi uygula.
 
 ## Next Work Handoff
 
@@ -185,6 +201,9 @@ Her mod, fix veya micro phase sonunda handoff şu bilgileri içerir:
 - Güncellenen Brain dosyaları.
 - Sıradaki mod ve uzman pozisyonu.
 - Sıradaki micro phase veya karar işi.
+- Action State.
+- Agent şimdi yapabilir mi.
+- Kullanıcı "devam" derse yapılacak net işlem.
 - Okunacak dosyalar.
 - Scope locked prompt.
 - Scope dışı uyarısı.

@@ -1,6 +1,6 @@
 # VALIDATION.md - Araştırma ve Ticari Doğrulama
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-05-20
 > Rol: Research, commercial validation, AI substitution, SLC ve kill report kapılarını proje özelinde tutar.
 
 ## Kullanma Kuralı
@@ -12,8 +12,8 @@
 ## Research Gate
 
 ### Şu Anki Durum
-- Durum: Açık.
-- Derinlik: Hızlı tarama öneriliyor; uzun execution veya ücretli model öncesi deep research gerekir.
+- Durum: Hızlı sprint yapıldı; deep research açık.
+- Derinlik: İlk kaynak taraması tamamlandı; uzun execution, ücretli model veya global pazarlama öncesi deep research gerekir.
 
 ### Cevaplanacak Sorular
 - Google Play/App Store'da okul öncesi boyama oyunlarında başlıca rakipler kim?
@@ -22,11 +22,32 @@
 - Hangi rakiplerin karakter/tasarım dili çocukları çekiyor ama ebeveyni rahatsız etmiyor?
 - Rakiplerin zayıf yorumları neler: reklam, kilitli içerik, korkutucu karakter, sıkılma, teknik hata?
 
+### Hızlı Research Sprint - 2026-05-20
+
+| Rakip / Alternatif | Platform | Konumlandırma | Monetizasyon / Dağıtım | İlk Not |
+|---|---|---|---|---|
+| Samu's Coloring Book for Kids | App Store | 3-6 yaş, offline, no ads, no IAP, karakterli güvenli boyama | Ücretsiz; iPhone/iPad | Güvenli/offline/no ads iddiası güçlü; karakter dünyası ve gelecekte memory/storybook planı var. |
+| Kids Colouring & Drawing Book / SmartyColors | App Store | Toddlers/preschool, yüzlerce sayfa, 11 tema, ad-free | Free + In-App Purchases | İçerik hacmi yüksek; bizim 3-5 sayfalık SLC'miz içerik sayısıyla rekabet edemez, deneyim ve güvenle ayrışmalı. |
+| Colorir - Coloring Book | App Store | Ücretsiz, no ads/no subscriptions/no IAP, offline, fotoğraf/drawing import | Ücretsiz | Fotoğraf import fikri rakipte var; bizim fotoğraf-to-coloring iddiası gizlilik ve kaliteyle ayrışmalı. |
+| Happy Lines Kids Coloring Book | App Store | 3-5 yaş, sakin, no ads/no external links, tek seferlik unlock | Free + In-App Purchases | Tek seferlik satın alma ve parent gate ebeveyn için iyi sinyal. |
+| Colorino: Kids Coloring Book | Google Play | 2-5 yaş, ad-free, no trackers, 168 hand-drawn SVG page, tap-to-fill | In-app purchases; Teacher Approved | Türk geliştirici ve güçlü içerik hacmi var; tap-to-fill küçük çocuk için avantaj. |
+| Colors & Shapes: Coloring game | Google Play | Renk/şekil öğrenme, no ads, 100% free | Ücretsiz; 10M+ indirme | Eğitim + oyun tarafında çok güçlü dağıtım; renk karışımı mini oyun için çıta yüksek. |
+| Drawing for Kids - Baby Games / Bimi Boo | App Store + Google Play | 2-5 yaş, 176 coloring pages, 11 themes, offline, no ads | Free + IAP; büyük marka | Büyük dağıtım ve marka avantajı var; bizim küçük ürünün niş ve kalite netliği şart. |
+| Pop Drawing | Google Play | 2-5 yaş, ad-free, multi-color pop animation, interactive delight | Ücretsiz/mağaza modeline bakılmalı | "Heyecanlandıran" animasyon/delight sinyali için iyi rakip örneği. |
+
+### Sprint Çıktısı
+
+- Rakipler benzer güven vaatlerini zaten kullanıyor: no ads, offline, no tracking, parent gate, simple interface.
+- İçerik hacmi önemli rekabet alanı: 100+ sayfa, 11 tema, 168/176 sayfa gibi güçlü iddialar var.
+- Küçük SLC'mizin ilk farkı içerik sayısı değil; gerçek 4-5 yaş saha doğrulaması, sade güven, hızlı çizim hissi ve renk karışımı gibi eğitim/heyecan döngüsü olmalı.
+- Tap-to-fill rakiplerde sık; mevcut serbest çizim küçük çocuk için zor gelebilir. Playtestte mutlaka "parmakla çizmek mi, dokunup doldurmak mı?" gözlenmeli.
+- Ücretli model için tek seferlik unlock ebeveyn güvenine daha uygun görünüyor; abonelik daha sonra ayrıca test edilmeli.
+
 ## Commercial Validation Gate
 
 ### Şu Anki Durum
-- Durum: Açık.
-- Varsayım: Ebeveyn güvenilir ve faydalı çocuk içeriğine düşük/orta fiyat ödeyebilir, ancak kanıtlanmadı.
+- Durum: İlk varsayım var; ödeme isteği kanıtlanmadı.
+- Varsayım: Ebeveyn güvenilir, reklamsız ve faydalı çocuk içeriğine düşük/orta fiyat veya tek seferlik unlock ödeyebilir, ancak bu saha/rakip fiyat verisiyle kanıtlanmalı.
 
 ### Cevaplanacak Sorular
 - Kim para öder: Türkiye ebeveyni mi, global/İngilizce pazar mı, anaokulu çevresi mi?
@@ -38,8 +59,8 @@
 ## AI Substitution Gate
 
 ### Şu Anki Durum
-- Durum: Açık.
-- İlk değerlendirme: Ebeveyn tek promptla boyama sayfası üretebilir, ancak 4-5 yaş çocuk için güvenli, reklamsız, dokunmatik, sürekli ve ebeveyn kontrollü oyun deneyimini tek promptla veremez.
+- Durum: İlk değerlendirme yapıldı.
+- İlk değerlendirme: Ebeveyn tek promptla boyama sayfası üretebilir veya bazı uygulamalarda fotoğraf/drawing import kullanabilir, ancak 4-5 yaş çocuk için güvenli, reklamsız, dokunmatik, sürekli ve ebeveyn kontrollü oyun deneyimini tek promptla veremez.
 
 ### Savunulabilir Değer Adayları
 - Çocuk için hazır ve güvenli etkileşim.
@@ -113,8 +134,10 @@
 - Karakter/isim yanlış seçilirse oyun iyi olsa bile ilk izlenimde kaybedebilir.
 - İçerik yenileme düzenli emek ister; sürdürülemezse vaat boşa düşer.
 - Genel AI araçları ebeveyne kişisel boyama sayfası üretebilir; ürün değeri sadece AI çizim olursa savunmasız kalır.
+- Büyük rakiplerin çok sayfa, çok tema, no ads/offline/no tracking vaatleri zaten var; sadece "güvenli boyama" tek başına güçlü farklılaşma olmayabilir.
+- Tap-to-fill deneyimi küçük çocuk için serbest çizimden daha tatmin edici olabilir; mevcut SLC bu açıdan playtestte zayıf çıkabilir.
 
 ### İlk Karar
 - Karar: Research More.
-- Neden: Ürün yönü güçlü ama rakip/fiyat/dağıtım ve çocuk çekiciliği henüz kanıtlanmadı.
-- Sıradaki güvenli adım: SLC kapsamını kilitle, ardından karakter/isim saha testi ve hızlı rakip taraması yap.
+- Neden: Ürün yönü güçlü; hızlı sprint rakip kalabalığını ve güven vaatlerinin yaygın olduğunu gösterdi. Çocuk çekiciliği, tap-to-fill ihtiyacı, ödeme isteği ve dağıtım hâlâ kanıtlanmadı.
+- Sıradaki güvenli adım: Phase 2A playtestte çizim hissi, renk değiştirme, sıkılma ve "heyecan" sinyalini topla; ardından Phase 2C renk karışımı mini oyunu veya tap-to-fill düzeltmesi arasında karar ver.

@@ -24,6 +24,8 @@
 - 2026-05-19 ikinci kullanıcı konuşması: karakter, isim ve tasarım saha doğrulaması olmadan iyi oyunun bile kaybedebileceği; AI/internet verisinin bu konuda zayıf kalabileceği; yakın çevre, anaokulu ve gerçek çocuk tercihleriyle karar verilmesi gerektiği.
 - 2026-05-19 Masaüstü Brain template güncellemesi: research, commercial validation, AI substitution, SLC ve devil's advocate / kill report kapıları standart hale geldi.
 - 2026-05-19 Masaüstü Brain template güncellemesi: Workstream Status Board, mod/uzman pozisyonları, next work handoff ve `SLC/V1/V2/Long-term -> Epic -> Micro Phase` mimarisi standart hale geldi.
+- 2026-05-20 Masaüstü Brain template güncellemesi: Action State, proactive advancement ve eksik research varsa hızlı sprint üretme kuralı standart hale geldi.
+- 2026-05-20 hızlı research sprint kaynakları: App Store ve Google Play sayfaları üzerinden Samu's Coloring Book, SmartyColors, Colorir, Happy Lines, Colorino, Colors & Shapes, Bimi Boo/Drawing for Kids, Pop Drawing ve EduPaint örnekleri tarandı.
 
 ## Template Metodoloji Kaynakları
 
