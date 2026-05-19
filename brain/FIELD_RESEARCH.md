@@ -85,6 +85,75 @@ Bu adaylar nihai karar değildir. Amaç, çocukların hangi yöne kendiliğinden
 - Ebeveynin "çocuğuma veririm/vermem" yorumu:
 - Not:
 
+## Phase 2A - Oynanabilir Boyama Playtest Planı
+
+Amaç, mevcut uygulamanın ilk oynanabilir akışını gerçek cihazda 2-5 çocuk veya ebeveyn/çocuk gözlemiyle denemektir. Test, yeni özellik kararı vermek için değil; çocuğun ana ekranda neye bastığını, çizim yapıp yapmadığını ve ebeveynin güven hissini ölçmek için yapılır.
+
+### Test Hazırlığı
+
+- Uygulama gerçek telefonda açılır; çocuk masa başı veya ebeveyn yanında rahat bir yerde dener.
+- Test süresi çocuk başına 5-8 dakika ile sınırlı tutulur.
+- Çocuğa uzun açıklama yapılmaz; sadece "İstersen bunu boyayabilirsin" denir.
+- Kişisel veri, fotoğraf, isim-soyisim veya kayıt alınmaz; notlar anonim tutulur.
+- Ebeveyn, reklam/ödeme/dış link/kamera-galeri olmadığını ayrıca gözler.
+
+### İzlenecek Akış
+
+1. Ana ekran açılır; çocuk hangi boyama kartına ilk basıyor not edilir: Kedi, Sekiller veya Oyuncak.
+2. Çocuk boyama ekranında çizime kendiliğinden başlıyor mu gözlenir.
+3. Renk paletindeki renkleri değiştirip değiştirmediği not edilir.
+4. Silgi, temizle ve geri dön kontrollerinde zorlanma olup olmadığı izlenir.
+5. Çocuk sıkılırsa ne kadar sürede bıraktığı ve hangi noktada bıraktığı yazılır.
+6. Ebeveyn kapısı ebeveyne gösterilir; çocuk alanından reklam, ödeme, dış link veya kamera-galeri yolu bulunmadığı teyit edilir.
+
+### Playtest Gözlem Formu
+
+- Gözlem no:
+- Çocuk yaşı:
+- Test cihazı:
+- İlk bastığı kart: Kedi / Sekiller / Oyuncak / Basamadı
+- İlk çizime başlama: Kendiliğinden / Yardımla / Başlamadı
+- İlk çizime başlama süresi:
+- Renk değiştirdi mi: Evet / Hayır / Yardımla
+- Silgiyi kullandı mı: Evet / Hayır / Yardımla / Bulamadı
+- Temizle butonunu kullandı mı: Evet / Hayır / Yardımla / Yanlışlıkla
+- Geri dönmeyi anladı mı: Evet / Hayır / Yardımla
+- En uzun kaldığı sayfa:
+- Sıkılma veya bırakma anı:
+- Gülme, tekrar deneme veya sahiplenme sinyali:
+- Kafa karışıklığı veya yanlış basma sinyali:
+- Ebeveyn güven yorumu:
+- Ebeveynin rahatsız olduğu unsur:
+- Ebeveynin "çocuğuma veririm/vermem" yorumu:
+- Hızlı düzeltme adayı:
+- Not:
+
+### Başarı Sinyalleri
+
+- En az 2 çocuk ana ekrandaki bir karta yardımsız basar.
+- En az 2 çocuk boyama ekranında kendiliğinden çizim yapar.
+- En az 1 çocuk renk değiştirir veya farklı renkleri dener.
+- Ebeveyn, çocuk alanında reklam, ödeme, dış link ve kamera-galeri yolu görmediği için güven yorumu verir.
+- Çocuk 3 dakika veya daha uzun süre sıkılmadan boyama ekranında kalır.
+
+### Başarısızlık Sinyalleri
+
+- Çocukların çoğu ana ekranda neye basacağını anlamaz.
+- Çocuk çizim alanına dokunmasına rağmen çizim yaptığını fark etmez.
+- Renk, silgi, temizle veya geri dön kontrolleri sık yanlış basmaya yol açar.
+- Çocuk 1 dakikadan kısa sürede ilgisini kaybeder.
+- Ebeveyn güvenlik, reklam/ödeme şüphesi veya çocuk için karmaşıklık nedeniyle uygulamayı çocuğuna vermeyeceğini söyler.
+
+### Hızlı Düzeltme Listesi Formatı
+
+- Sorun:
+- Kimde görüldü:
+- Kanıt:
+- Etki: Düşük / Orta / Yüksek
+- Düzeltme fikri:
+- Aktif faza alınsın mı: Evet / Hayır / Sonraki faz
+- Test sonrası tekrar kontrol:
+
 ## Karar Kapısı
 
 Ana karakter, uygulama adı ve ilk görsel dünya; aktif fazda sadece aday olarak hazırlanır. Nihai karar, saha gözlemi sonrası `DECISIONS.md` içine yazılır.

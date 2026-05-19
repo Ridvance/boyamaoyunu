@@ -5,7 +5,7 @@
 
 ## Aktif Gerçeklik
 
-Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul öncesi çocuklara yönelik reklamsız, güvenilir, faydalı ve düzenli yenilenebilir bir mobil oyun fikrini tarif etti. Ana ürün yönü: aileye güven veren, çocuğu korkutucu karakterlerle karşılaştırmayan, boyama/yaratıcılık odaklı ve zamanla fotoğrafı çizime çevirip boyatabilen bir uygulama.
+Flutter prototip içinde ilk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu mevcut. Kullanıcı, 4-5 yaş okul öncesi çocuklara yönelik reklamsız, güvenilir, faydalı ve düzenli yenilenebilir bir mobil oyun fikrini tarif etti. Ana ürün yönü: aileye güven veren, çocuğu korkutucu karakterlerle karşılaştırmayan, boyama/yaratıcılık odaklı ve zamanla fotoğrafı çizime çevirip boyatabilen bir uygulama.
 
 ## Aktif Odak
 
@@ -16,6 +16,7 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 - İlk boyama SLC çekirdeği çalışır: 3 sayfa, çizim kanvası, renk paleti, silgi, temizle ve geri dön.
 - Ebeveyn güvenlik kabuğu eklendi; ebeveyn alanı çocuk akışından ayrıldı.
 - Aktif faz gerçek cihaz/çocuk playtest geri bildirim döngüsüdür.
+- Phase 2A için güncel uygulama akışına göre playtest planı, gözlem formu, başarı/başarısızlık sinyalleri ve hızlı düzeltme listesi formatı `brain/FIELD_RESEARCH.md` içine eklendi.
 - Kullanıcının önemli yönlendirmesi: fazla plan yapmadan, doğrudan küçük bir uygulama çıkarıp çocuklarla test etmek.
 - İsim, karakter ve görsel tasarım AI tahminiyle kilitlenmeyecek; 4-5 yaş çocuklara ve yakın çevredeki ebeveyn/anaokulu gözlemine gösterilerek doğrulanacak.
 - `brain/FIELD_RESEARCH.md` içinde 5 karakter/tema yönü ve isim adayları hazırlandı; bunlar karar değil, saha testi adaylarıdır.
@@ -28,7 +29,7 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 - Platform: Mobil hedefli; Flutter seçildi.
 - Ürün: 4-5 yaş için reklamsız, sadece boyama odaklı SLC.
 - Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini SLC'ye fazla erken almak; çocukların çekileceği karakter/isim/tasarımı sahada doğrulamadan seçmek.
-- Doğrulama: Uygulama gerçek cihazda 2-5 çocukla denenmeli; karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle ayrıca doğrulanmalı.
+- Doğrulama: Uygulama gerçek cihazda `brain/FIELD_RESEARCH.md` içindeki Phase 2A formuyla 2-5 çocukla denenmeli; karakter/isim/tasarım adayları en az 3 çocuk veya ebeveyn/çocuk gözlemiyle ayrıca doğrulanmalı.
 
 ## Sonraki Prompt
 
