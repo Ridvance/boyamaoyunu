@@ -19,10 +19,16 @@
 - Durum: completed.
 
 ### Phase 0B - Discovery To MVP Lock
-- Amaç: Konuşmadaki ürün fikrini tek küçük MVP kapsamına indirmek.
-- Scope: Hedef kullanıcı, ilk oyun akışı, MVP dışı fikirler ve başarı kriterleri.
+- Amaç: Konuşmadaki ürün fikrini tek küçük MVP kapsamına indirmek ve karakter/isim/tasarım kararını saha doğrulamasına bağlamak.
+- Scope: Hedef kullanıcı, ilk oyun akışı, MVP dışı fikirler, karakter/isim seçenekleri için çocuk geri bildirim planı ve başarı kriterleri.
 - Test: `git diff --check`.
 - Durum: active.
+
+### Phase 0C - Character And Name Field Validation
+- Amaç: 4-5 yaş çocuklara ve ebeveynlere 4-5 karakter/isim seçeneği gösterip en çekici yönü doğrulamak.
+- Scope: Basit görsel seçenekler, isim seçenekleri, kısa gözlem formu.
+- Test: En az 3 çocuk veya ebeveyn/çocuk gözlemiyle not toplama.
+- Durum: pending.
 
 ## Phase 1 - First Playable App
 
@@ -34,7 +40,7 @@
 
 ### Phase 1B - Child Home And Coloring MVP
 - Amaç: Çocuk ana ekranı ve basit boyama ekranını oynanabilir yapmak.
-- Scope: 3-5 hazır boyama sayfası, renk paleti, silgi/temizle.
+- Scope: Saha doğrulamasından geçen karakter/tema yönü, 3-5 hazır boyama sayfası, renk paleti, silgi/temizle.
 - Test: Widget/unit test veya manuel smoke.
 - Durum: pending.
 

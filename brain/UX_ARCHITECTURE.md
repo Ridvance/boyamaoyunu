@@ -23,6 +23,7 @@ Ana kullanıcı 4-5 yaş okul öncesi çocuktur. Satın alma ve güven kararı e
 - Korkutucu, çirkin, agresif veya karanlık karakterler yok.
 - Tek renge boğulmuş, ucuz görünen UI yok.
 - Okul öncesi için sakin ve anlaşılır görsel yoğunluk.
+- Karakter ve isim seçimi AI'ın tek başına vereceği karar değildir; 4-5 yaş çocuklara 4-5 seçenek gösterilip hangisine yaklaştıkları, hangisini sempatik buldukları ve hangi ismi yakıştırdıkları gözlenmelidir.
 
 ## Ana Ekranlar
 
@@ -49,3 +50,4 @@ Ana kullanıcı 4-5 yaş okul öncesi çocuktur. Satın alma ve güven kararı e
 ## Stitch Prompt Kaynakları
 
 - Kullanılacak ürün/UX kararları: `brain/PROJECT.md`, `brain/VISION.md`, `brain/CURRENT_PHASE.md`.
+- Karakter/isim doğrulama kaynağı: `brain/FIELD_RESEARCH.md`.

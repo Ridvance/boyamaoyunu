@@ -12,6 +12,18 @@
 
 ## Yakın Gelecek Adayları
 
+### Karakter ve isim seçeneklerini çocuklarla doğrulama
+- Kaynak: 2026-05-19 ikinci kullanıcı konuşması.
+- Niyet: Oyunun adı, karakter profili ve tasarım dilini AI tahminiyle değil gerçek 4-5 yaş çocuk tepkisiyle seçmek.
+- Etki: İyi oyunun yanlış karakter/isim yüzünden kaybetme riskini azaltır.
+- Durum: aktif faz içinde doğrulama kapısı olarak ele alınıyor.
+
+### Yakın çevre saha görüşmeleri
+- Kaynak: 2026-05-19 ikinci kullanıcı konuşması.
+- Niyet: Anaokulu çevresi, konu komşu, aile ve çocuk bakan kişilerden güncel gözlem toplamak.
+- Etki: İnternette zayıf kalan okul öncesi tercih bilgisini sahadan tamamlar.
+- Durum: onay bekliyor.
+
 ### Reklamsız ücretsiz ilk market sürümü
 - Kaynak: 2026-05-19 kullanıcı konuşması.
 - Niyet: Önce ürünü hızlı çıkarıp geri bildirim toplamak.

@@ -18,6 +18,7 @@
 - MVP tek cümle tanımı.
 - İlk çocuk akışı.
 - İlk içerik seti.
+- Karakter, isim ve tasarım doğrulama yöntemi.
 - MVP dışı bırakılan fikirler.
 - İlk playtest başarı kriterleri.
 
@@ -27,6 +28,7 @@
 - Flutter projesi başlatmak.
 - Ödeme, reklam, abonelik veya mağaza entegrasyonu.
 - Fotoğrafı çizime çeviren AI entegrasyonu.
+- Karakter veya uygulama adını sadece AI önerisiyle kesinleştirmek.
 - Büyük roadmap'i kesinleştirmek.
 
 ## Beklenen Dosya Etki Alanı
@@ -34,6 +36,7 @@
 - `brain/STATE.md`
 - `brain/CURRENT_PHASE.md`
 - `brain/PHASES.md`
+- `brain/FIELD_RESEARCH.md`
 - Gerekirse `brain/ROADMAP.md`
 
 ## Çıkış Kriterleri

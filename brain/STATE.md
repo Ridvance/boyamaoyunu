@@ -13,6 +13,7 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 - Ürün fikri MVP'ye indirgenecek: hızlı markete çıkabilecek, reklamsız, güvenli ve oynanabilir ilk sürüm.
 - İlk aktif faz keşif ve MVP kilitleme fazıdır; henüz kod yazma fazı değildir.
 - Kullanıcının önemli yönlendirmesi: fazla plan yapmadan, doğrudan küçük bir uygulama çıkarıp çocuklarla test etmek.
+- İsim, karakter ve görsel tasarım AI tahminiyle kilitlenmeyecek; 4-5 yaş çocuklara ve yakın çevredeki ebeveyn/anaokulu gözlemine gösterilerek doğrulanacak.
 - Para kazanma ilk aşamada baskın hedef değil; güven, fayda ve geri bildirim toplama öncelikli.
 
 ## Kısa Durum
@@ -20,8 +21,8 @@ Proje klasörü yeni ve uygulama kodu henüz yok. Kullanıcı, 4-5 yaş okul ön
 - Kod: Henüz yok.
 - Platform: Mobil hedefli; Flutter değerlendirilecek.
 - Ürün: 4-5 yaş için reklamsız boyama/mini oyun MVP'si.
-- Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini MVP'ye fazla erken almak.
-- Doğrulama: İlk oynanabilir sürüm 2-5 çocukla denenmeli.
+- Risk: Fazla planlama nedeniyle ürünün çıkmaması; fotoğrafı çizime çevirme özelliğini MVP'ye fazla erken almak; çocukların çekileceği karakter/isim/tasarımı sahada doğrulamadan seçmek.
+- Doğrulama: İlk oynanabilir sürüm 2-5 çocukla denenmeli; karakter ve isim seçenekleri de çocuklara gösterilmeli.
 
 ## Sonraki Prompt
 
