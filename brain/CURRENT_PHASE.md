@@ -1,8 +1,8 @@
-# CURRENT_PHASE.md - Aktif Faz
+# CURRENT_PHASE.md - Aktif Micro Phase
 
 > Son güncelleme: 2026-05-19
 
-## Active Phase
+## Active Micro Phase
 
 Phase 2A - Child Playtest Feedback Loop
 
@@ -22,7 +22,7 @@ Phase 2A - Child Playtest Feedback Loop
 
 ## Planlama Kuralı
 
-Uygulamaya geçmeden önce aktif faz, scope dışı işler, dosya etki alanı, test komutu ve onay gerektiren riskleri içeren kısa plan çıkar.
+Uygulamaya geçmeden önce modunu, uzman pozisyonunu, aktif micro phase'i, scope dışı işleri, dosya etki alanını, test komutunu ve onay gerektiren riskleri içeren kısa plan çıkar.
 
 ## Scope Locked Prompt
 

@@ -11,6 +11,20 @@
 - Sonraki güvenli adım: GitHub Pages ayarında kaynak branch'in `gh-pages` ve klasörün `/root` olduğunu kontrol etmek; sonra masaüstündeki APK ile `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullanarak 2-5 gözlem sonucunu toplamak.
 - Kullanıcıdan beklenen karar: Playtest sonuçları geldikten sonra düzeltme fazına mı geçilecek, yoksa içerik yenileme fazına mı geçilecek?
 
+## Next Work Handoff
+
+- Tamamlanan iş: İlk boyama SLC, ebeveyn güvenlik kabuğu, çizim repaint fix'i, web build güncellemesi ve renk karışımı mini oyun planı.
+- Değişen dosyalar/kararlar: `lib/main.dart`, `test/widget_test.dart`, `brain/STATE.md`, `brain/VALIDATION.md`, `brain/PHASES.md`, `brain/IDEA_POOL.md`, `brain/PROMPTS/phase-02C-color-mix-learning-mini-game.md`.
+- Doğrulama/test sonucu: Son kod fix'i için `flutter test`, `flutter analyze`, `git diff --check` temiz; web build `gh-pages` branch'ine pushlandı.
+- Güncellenen Brain dosyaları: `STATE.md`, `PHASES.md`, `VALIDATION.md`, `IDEA_POOL.md`, `HANDOFF.md`.
+- Sıradaki mod: Review Mode.
+- Uzman pozisyonu: Review Engineer ve Handoff Coordinator.
+- Sıradaki micro phase / karar işi: Phase 2A playtest gözlem notlarını toplamak; sonra düzeltme micro phase'i mi yoksa Phase 2C renk karışımı mini oyunu mu seçilecek kararını vermek.
+- Okunacak dosyalar: `brain/STATE.md`, `brain/RULES.md`, `brain/CURRENT_PHASE.md`, `brain/FIELD_RESEARCH.md`, `brain/VALIDATION.md`.
+- Scope locked prompt: Mevcut boyama SLC'sini gerçek cihaz/çocuk testi için değerlendir; gözlem sonucu olmadan yeni özellik kodlama.
+- Scope dışı uyarısı: Renk karışımı mini oyunu, ödeme, reklam, fotoğraf AI ve içerik mağazası Phase 2A scope'u dışındadır.
+- Kullanıcıdan beklenen karar: Playtest yapılacak mı; yapılırsa bulgulara göre önce düzeltme mi, yoksa renk karışımı mini oyunu mu?
+
 ## Yeni Sohbet Devam Promptu
 
 ```text

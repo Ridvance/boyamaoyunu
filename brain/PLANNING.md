@@ -5,25 +5,39 @@
 
 ## Her Oturumda Planlama
 
-Agent uygulamaya geçmeden önce kısa bir faz planı çıkarır.
+Agent uygulamaya geçmeden önce modunu, uzman pozisyonunu ve kısa faz planını açıkça belirtir.
 
 ## Çalışma Modları
 
+Agent her işe başlamadan önce hangi modda çalıştığını belirler. Modlar ayrı iş birimleri gibi düşünülür; her mod kendi kanıtını bırakır ve sonraki moda devredilebilir çıktı üretir.
+
 - Discovery Mode: Kullanıcıyla tek tek sorular sorarak beyin fırtınası yap; son hedefi, kullanıcıları, ana akışları, başarı kriterlerini ve kısıtları netleştir. Kod değiştirme.
-- Planning Mode: Onaylanan hedefleri SLC, V1, V2 ve uzun vade fazlarına böl.
+- Planning Mode: Onaylanan hedefleri `SLC/V1/V2/Long-term -> Epic -> Micro Phase` mimarisine böl ve her micro phase için scope kilitli prompt yaz.
 - Design Mode: `UX_ARCHITECTURE.md` içinde ekranları, akışları ve tasarım brief/promptlarını hazırla. Kod yazma.
 - Execution Mode: Sadece `CURRENT_PHASE.md` içindeki aktif fazı uygula.
 - Review Mode: Scope, test, risk ve tamamlanma kriterlerini kontrol et.
 - Handoff Mode: Context şiştiğinde veya iş durak noktasına geldiğinde yeni sohbet devam promptu üret.
 
+## Mod Pozisyonları
+
+- Discovery Architect: problemi, kullanıcıyı, niyeti ve belirsizlikleri netleştirir.
+- Research/Validation Architect: pazar, rakip, ödeme isteği, AI substitution, SLC ve kill report kapılarını işletir.
+- Planning Architect: version architecture, epic breakdown ve micro phase planını kurar.
+- Design Architect: UX mimarisi, ekran akışları ve tasarım promptlarını hazırlar.
+- Execution Engineer: sadece aktif micro phase'i uygular.
+- Review Engineer: scope, test, risk ve tamamlanma kanıtını denetler.
+- Handoff Coordinator: sıradaki iş birimine devredilebilir devam promptu ve durum özeti üretir.
+
 ## Çıktı Standardı
 
 - Discovery Mode: soru başlıkları altında keşif sentezi, yakın/orta/uzak vade ufku ve onay bekleyen keşif özeti.
-- Planning Mode: SLC, V1, V2 ve uzun vade fazları; `PHASES.md`, `CURRENT_PHASE.md` ve gerekli `PROMPTS/phase-*.md` güncellemeleri.
+- Planning Mode: baştan kilitlenmiş version architecture, epic breakdown, micro phase planı, her micro phase için `Scope Locked Prompt`, `PHASES.md`, `CURRENT_PHASE.md` ve gerekli `PROMPTS/phase-*.md` güncellemeleri.
 - Design Mode: ana ekranlar, ana akışlar, UX ilkeleri ve tasarım prompt taslağı.
 - Execution Mode: aktif faz kapsamındaki değişiklikler, doğrulama/test sonucu ve faz sonu notu.
 - Review Mode: scope, risk, test ve eksik kalan noktalar kontrolü.
-- Handoff Mode: yeni sohbet devam promptu ve sıradaki güvenli adım.
+- Handoff Mode: yeni sohbet devam promptu, sıradaki güvenli adım ve next work handoff.
+
+Her mod, fix veya micro phase sonunda iş yeni pencereye taşınabilecek kadar temiz kapatılır. Aynı sohbet içinde devam etmek serbesttir; fakat çıktı her zaman yeni bir agent'ın devralabileceği seviyede olmalıdır.
 
 Plan şunları içerir:
 
@@ -37,13 +51,17 @@ Plan şunları içerir:
 ## Yeni Fikir Geldiğinde
 
 - Aktif işi hemen bırakma.
-- Fikri önce `IDEA_POOL.md`, `PHASES.md` veya uzak vade hedeflerinden hangisine koyacağını sor.
+- Fikri önce kaynaklı kısa not olarak yakala.
+- Fikri sınıflandır: aktif micro phase, sonraki micro phase, roadmap, research konusu, teknik iyileştirme, UX fikri, risk/test fikri veya uzak vade/rüya.
+- Brain filtrelerinden geçir: scope, vision fit, roadmap fit, duplicate check, risk, research/commercial/AI/SLC/kill ihtiyacı, version placement ve phaseability.
+- Sonucu şu kararlardan birine bağla: `Ignore`, `IDEA_POOL`, `Research More`, `Roadmap Candidate`, `Version Architecture Revision`, `Next Micro Phase`, `Current Phase Change`, `No-Go`, `Pivot`, `Go`.
 - Kullanıcı açıkça öncelik değişikliği onayı vermedikçe `CURRENT_PHASE.md` değişmez.
+- Aktif micro phase değişirse gerekçeyi `DECISIONS.md` içine yaz.
 
 Kullanılacak soru:
 
 ```text
-Bunu planlamanın neresine koyayım: mevcut faza mı, sonraki faza mı, IDEA_POOL'a mı, yoksa uzak vade hedeflerine mi?
+Bunu planlamanın neresine koyayım: mevcut micro phase'e mi, sonraki micro phase'e mi, IDEA_POOL'a mı, ROADMAP'e mi, yoksa research konusu mu yapalım?
 ```
 
 ## Discovery Kuralı
@@ -134,8 +152,47 @@ Sonuç `Go`, `No-Go`, `Pivot` veya `Research More` olarak yazılır. Kullanıcı
 - Scope dışı, geri dönüşü zor, canlı sistem etkili veya belirsiz işlerde dur ve onay iste.
 - Aynı hatada en fazla iki küçük düzeltme dene; çözülmezse blocker olarak yaz ve handoff üret.
 
+## Version Architecture
+
+- Onay çıktıktan sonra plan `SLC/V1/V2/Long-term -> Epic -> Micro Phase` olarak tutulur.
+- Epic'ler doğrudan uygulanmaz; sadece tek micro phase `CURRENT_PHASE.md` içine alınabilir.
+- Her micro phase altında amaç, scope, scope dışı, beklenen dosya etki alanı, çıkış kriterleri, test komutu ve `Scope Locked Prompt` olmalıdır.
+- Plan sonradan değişirse gerekçe `DECISIONS.md` içine yazılır.
+
+## Status / Handoff Report
+
+Kullanıcı "durum nedir?", "işler ne durumda?", "araştırma ne durumda?", "nerede kaldık?" gibi sorduğunda agent kısa sohbet cevabı yerine `Status / Handoff Report` üretir.
+
+Rapor şunları içerir:
+
+- Mod / uzman pozisyonu.
+- Güncel gerçeklik.
+- Aktif micro phase.
+- Scope ve scope dışı.
+- Research/validation durumu.
+- Kararlar ve bekleyen onaylar.
+- Test durumu.
+- Sıradaki iş.
+- Next work handoff.
+
+## Next Work Handoff
+
+Her mod, fix veya micro phase sonunda handoff şu bilgileri içerir:
+
+- Tamamlanan iş.
+- Değişen dosyalar/kararlar.
+- Doğrulama/test sonucu.
+- Güncellenen Brain dosyaları.
+- Sıradaki mod ve uzman pozisyonu.
+- Sıradaki micro phase veya karar işi.
+- Okunacak dosyalar.
+- Scope locked prompt.
+- Scope dışı uyarısı.
+- Kullanıcıdan beklenen karar.
+
 ## Faz Sonu
 
 - Yapılan işi `STATE.md` içine özetle.
 - Gerekirse `CURRENT_PHASE.md` dosyasını bir sonraki küçük faza hazırla.
 - Onaylanan yeni hedef varsa `PHASES.md` ve ilgili `PROMPTS/phase-*.md` dosyalarını güncelle.
+- `HANDOFF.md` veya `STATE.md` içindeki next work handoff güncel kalsın.

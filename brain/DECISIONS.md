@@ -34,6 +34,14 @@
 - Geri alma yolu: Sadece kapalı testlerde MVP kalitesinde prototip kullanılabilir.
 - Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_KAYNAK_NOTLARI.md`, SLC referansları ve 2026-05-19 template güncellemesi.
 
+### 2026-05-19 - Brain Workstream ve Micro Phase Standardına Geçiş
+- Karar: Proje Brain yapısı Workstream Status Board, mod/uzman pozisyonları, next work handoff ve `SLC/V1/V2/Long-term -> Epic -> Micro Phase` standardına yükseltildi.
+- Neden: Masaüstü Brain template güncellendi; yeni standardın amacı durum raporunu, devir teslimi ve scope kilidini daha net hale getirmek.
+- Alternatifler: Eski faz diliyle devam etmek.
+- Etki: `STATE.md` içinde iş birimi panosu tutulacak; `PLANNING.md` mod/pozisyon ve handoff kurallarını içerecek; `CURRENT_PHASE.md` aktif işi micro phase olarak ele alacak.
+- Geri alma yolu: Gerekirse terminoloji sadeleştirilir, ancak çalışma belleği ve karar kayıtları korunur.
+- Kaynak/kanıt: `/Users/ridvan/Desktop/Brain/BRAIN_TEMPLATE_KLASOR.md`, `/Users/ridvan/Desktop/Brain/BRAIN_KONTROL_LISTESI.md`, 2026-05-19 template güncellemesi.
+
 ### 2026-05-19 - İlk SLC Sadece Boyama Olacak
 - Karar: İlk SLC sadece reklamsız boyama çekirdeği olacak; mini oyun sonraki fazlara bırakılacak.
 - Neden: Kullanıcı hızlı ilerlemeyi ve küçük uygulama çıkarıp çocuklarla test etmeyi istiyor. Mini oyun ilk çıkışı genişletir ve boyama çekirdeğinin testini geciktirir.

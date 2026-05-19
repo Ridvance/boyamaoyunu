@@ -5,10 +5,19 @@
 ## Faz Kullanma Kuralı
 
 - Aynı anda sadece `brain/CURRENT_PHASE.md` içindeki faz çalışılır.
-- Her faz küçük ve test edilebilir tutulur.
+- Onaylı yön `SLC/V1/V2/Long-term -> Epic -> Micro Phase` olarak düşünülür.
+- Epic'ler doğrudan uygulanmaz; sadece küçük ve test edilebilir micro phase aktif olur.
 - Kod değişirse test çalışır.
 - Faz sonunda `STATE.md` ve gerekiyorsa `CURRENT_PHASE.md` güncellenir.
 - `IDEA_POOL.md` içindeki fikirler kullanıcı onayı olmadan aktif faza taşınmaz.
+- Her uygulanabilir micro phase için `PROMPTS/phase-*.md` içinde scope kilitli prompt bulunur.
+
+## Version Architecture
+
+- SLC Epic: Reklamsız boyama çekirdeği ve ebeveyn güvenliği.
+- V1 Epic: Playtest düzeltmeleri, karakter/ad doğrulama, renk karışımı mini oyun ve içerik yenileme.
+- V2 Epic: Ücretli paket, global/İngilizce hazırlığı ve gelişmiş içerik sistemi.
+- Long-term Epic: Fotoğrafı güvenli şekilde çizime/boyama sayfasına dönüştürme.
 
 ## Phase 0 - Brain And Product Framing
 
@@ -66,7 +75,11 @@
 ### Phase 2A - Child Playtest Feedback Loop
 - Amaç: İlk SLC/prototip akışını birkaç çocukla deneyip eksikleri listelemek.
 - Scope: Gözlem formu, geri bildirim notları, hızlı düzeltme listesi.
+- Scope dışı: Yeni oyun modu geliştirmek, renk karışımı mini oyununu kodlamak, ödeme/reklam/fotoğraf AI eklemek.
+- Beklenen dosya etki alanı: `brain/FIELD_RESEARCH.md`, `brain/STATE.md`, gerekirse `brain/HANDOFF.md`.
+- Çıkış kriterleri: 2-5 çocuk/ebeveyn gözlem notu veya gözlem yapılamadıysa net blocker; başarı/başarısızlık sinyalleri; sonraki micro phase kararı.
 - Test: Gerçek cihazda oynatma.
+- Scope Locked Prompt: Mevcut boyama SLC'sini gerçek cihaz/çocuk testi için değerlendir; kod değiştirme; gözlem sonucu olmadan yeni özellik uygulama.
 - Durum: active.
 
 ### Phase 2B - Content Refresh System
@@ -78,7 +91,11 @@
 ### Phase 2C - Color Mix Learning Mini Game
 - Amaç: Renk karışımıyla yeni renk oluşumunu öğreten, heyecan ve merak hissi veren, boyama akışına bağlı küçük eğitim mini oyunu eklemek.
 - Scope: 2 renk seç, karıştır, oluşan renkle doğru nesneyi boya; yıldız/rozet, sürpriz açılma veya kısa seviye ilerlemesiyle çocuğu motive et.
+- Scope dışı: Karmaşık seviye sistemi, reklam/ödeme/dış link, çok sayıda renk kombinasyonu, ana boyama çekirdeğini bozacak büyük refactor.
+- Beklenen dosya etki alanı: `lib/main.dart`, `test/widget_test.dart`, `brain/STATE.md`.
+- Çıkış kriterleri: 3 temel karışım çalışır; eğitim kazanımı görünür; kısa ödül/ilerleme vardır; boyama SLC akışı bozulmaz.
 - Test: Widget test, manuel çocuk akışı smoke, playtestte çocuğun karışımı anlayıp tekrar deneme isteği ve heyecan sinyali.
+- Scope Locked Prompt: Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme/reklam/fotoğraf AI ekleme.
 - Durum: pending.
 
 ## Phase 3 - Differentiator
