@@ -1,0 +1,249 @@
+{
+  "project": {
+    "name": "Çocuk Oyun",
+    "version": "0.1.0",
+    "description": "4-5 yaş okul öncesi çocuklar için reklamsız, güvenli ve sade bir mobil boyama/yaratıcılık uygulaması.",
+    "target_users": [
+      "Ana kullanıcı: 4-5 yaş okul öncesi çocuk",
+      "Karar verici: güvenli, reklamsız ve faydalı içerik isteyen ebeveyn"
+    ],
+    "primary_problem": "Ebeveynler küçük çocuklara reklam, dış link, uygunsuz karakter, karmaşık arayüz ve kalitesiz oyun döngüsü riski olmadan güvenli mobil içerik vermekte zorlanır."
+  },
+  "active_state": {
+    "current_mod": "MissionControl",
+    "current_role": "Mission Controller",
+    "active_phase": "Phase-00A",
+    "action_state": "WAITING_USER_APPROVAL",
+    "last_update": "2026-05-21T22:38:39.881436",
+    "description": "Mission Control PENDING verdi. CEO kararı gerekiyor."
+  },
+  "workstreams": {
+    "discovery": {
+      "status": "pending_review",
+      "last_output": "PROJECT.md ürün kimliği mevcut VISION/VALIDATION verileriyle onarıldı.",
+      "blockers": [
+        "Mission Control onayı bekleniyor."
+      ],
+      "next_step": "Mission Control denetimini tamamla."
+    },
+    "research_validation": {
+      "status": "blocked",
+      "last_output": "",
+      "blockers": [
+        "Discovery Mission Control onayı yok."
+      ],
+      "next_step": "APPROVED sonrası Research görevlerine geç."
+    },
+    "planning": {
+      "status": "pending",
+      "last_output": "",
+      "blockers": [],
+      "next_step": ""
+    },
+    "design": {
+      "status": "pending",
+      "last_output": "",
+      "blockers": [],
+      "next_step": ""
+    },
+    "execution": {
+      "status": "pending",
+      "last_output": "",
+      "blockers": [],
+      "next_step": ""
+    },
+    "review": {
+      "status": "pending",
+      "last_output": "",
+      "blockers": [],
+      "next_step": ""
+    },
+    "handoff": {
+      "status": "pending",
+      "last_output": "",
+      "blockers": [],
+      "next_step": ""
+    },
+    "mission_control": {
+      "status": "active",
+      "last_output": "PENDING: Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.",
+      "blockers": [],
+      "next_step": "Verdict sonucuna göre iş akışını yönlendir."
+    }
+  },
+  "decisions": [
+    {
+      "date": "2026-05-21",
+      "title": "CEO Manuel Departman Gecisi: Research",
+      "decision": "Durum manuel olarak Research moduna gecirildi.",
+      "reason": "CEO'nun yonlendirmesi veya risk tercihi (Override).",
+      "alternatives": [
+        "Mevcut Research modunda kalmak"
+      ],
+      "impact": "Projenin aktif calisma fazi ve odagi degisti.",
+      "revert_path": "python brain.py transition --to Research"
+    },
+    {
+      "date": "2026-05-21",
+      "title": "CEO Manuel Departman Gecisi: Discovery",
+      "decision": "Durum manuel olarak Discovery moduna gecirildi.",
+      "reason": "CEO'nun yonlendirmesi veya risk tercihi (Override).",
+      "alternatives": [
+        "Mevcut Research modunda kalmak"
+      ],
+      "impact": "Projenin aktif calisma fazi ve odagi degisti.",
+      "revert_path": "python brain.py transition --to Research"
+    },
+    {
+      "date": "2026-05-21",
+      "title": "CEO Manuel Departman Gecisi: Research",
+      "decision": "Durum manuel olarak Research moduna gecirildi.",
+      "reason": "CEO'nun yonlendirmesi veya risk tercihi (Override).",
+      "alternatives": [
+        "Mevcut Discovery modunda kalmak"
+      ],
+      "impact": "Projenin aktif calisma fazi ve odagi degisti.",
+      "revert_path": "python brain.py transition --to Discovery"
+    },
+    {
+      "date": "2026-05-21",
+      "title": "CEO Manuel Departman Gecisi: Discovery",
+      "decision": "Durum manuel olarak Discovery moduna gecirildi.",
+      "reason": "CEO'nun yonlendirmesi veya risk tercihi (Override).",
+      "alternatives": [
+        "Mevcut Review modunda kalmak"
+      ],
+      "impact": "Projenin aktif calisma fazi ve odagi degisti.",
+      "revert_path": "python brain.py transition --to Review"
+    }
+  ],
+  "ideas": [],
+  "phases": {
+    "active_index": 0,
+    "list": [
+      {
+        "id": "Phase-00A",
+        "name": "Ürün Keşfi (Discovery)",
+        "description": "Hedef, pazar ve vizyon tespiti.",
+        "scope": [
+          "Keşif dökümanlarının hazırlanması.",
+          "Temel vizyonun VISION.md içine işlenmesi."
+        ],
+        "out_of_scope": [
+          "Kod yazılması",
+          "Tasarım prototipleme"
+        ],
+        "exit_criteria": [
+          "Vizyon dökümanı onaylandı."
+        ],
+        "test_command": "git diff --check",
+        "scope_locked_prompt": "Sadece ürün keşif dökümanlarını (VISION.md, PROJECT.md) oluştur. Kod değiştirme."
+      }
+    ]
+  },
+  "settings": {
+    "active_provider": "ollama",
+    "active_model": "qwen2.5-coder:14b",
+    "ollama_url": "http://localhost:11434",
+    "temperature": 0.5
+  },
+  "mission_control_gate": {
+    "verdict": "PENDING",
+    "checked_at": "2026-05-21T22:38:39.881436",
+    "checked_by": "Mission Controller",
+    "summary": "Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.",
+    "requested_by": "Discovery Architect",
+    "requested_at": "2026-05-21T22:25:35.836281",
+    "target_phase": "Phase-00A",
+    "last_job_id": "20260521-222535-discovery"
+  },
+  "jobs": {
+    "last_job_id": "20260521-222535-discovery",
+    "history": [
+      {
+        "id": "20260521-221747-research_validation",
+        "created_at": "2026-05-21T22:17:47.492913",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Research",
+        "role": "Research/Validation Architect",
+        "success": true,
+        "files_written": []
+      },
+      {
+        "id": "20260521-221849-research_validation",
+        "created_at": "2026-05-21T22:18:49.130504",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Research",
+        "role": "Research/Validation Architect",
+        "success": true,
+        "files_written": []
+      },
+      {
+        "id": "20260521-222029-planning",
+        "created_at": "2026-05-21T22:20:29.877006",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Planning",
+        "role": "Planning Architect",
+        "success": true,
+        "files_written": []
+      },
+      {
+        "id": "20260521-222136-design",
+        "created_at": "2026-05-21T22:21:36.817885",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Design",
+        "role": "Design Architect",
+        "success": true,
+        "files_written": []
+      },
+      {
+        "id": "20260521-222349-execution",
+        "created_at": "2026-05-21T22:23:49.502798",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Execution",
+        "role": "Execution Engineer",
+        "success": true,
+        "files_written": []
+      },
+      {
+        "id": "20260521-222535-discovery",
+        "created_at": "2026-05-21T22:25:35.835647",
+        "project": "Çocuk Oyun",
+        "phase": "Phase-00A",
+        "mode": "Discovery",
+        "role": "Discovery Architect",
+        "success": true,
+        "files_written": []
+      }
+    ]
+  },
+  "policies": {
+    "commit_push": {
+      "commit_after_meaningful_step": true,
+      "push_after_commit": true,
+      "required_checks": [
+        "python3 -m py_compile brain.py",
+        "git status --short",
+        "git diff --check"
+      ],
+      "local_state": {
+        "registry_path": "/Users/ridvan/Library/Application Support/Brain Studio/central_registry.json",
+        "legacy_registry_path": "brain/central_registry.json"
+      },
+      "never_stage": [
+        "brain/central_registry.json"
+      ],
+      "requires_explicit_approval": [
+        "force push",
+        "destructive reset",
+        "live API write",
+        "data wipe"
+      ]
+    }
+  }
+}

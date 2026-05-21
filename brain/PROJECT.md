@@ -1,19 +1,20 @@
 # PROJECT.md - Ürün Kimliği
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-05-21 22:48
 > Rol: Projenin ne olduğunu ve karar verirken korunacak ana bağlamı tutar.
 
 ## Ürün
 
 - Ad: Çocuk Oyun çalışma adı; nihai isim saha doğrulamasından sonra seçilecek.
-- Kısa tanım: Okul öncesi 4-5 yaş çocuklar için reklamsız, güvenilir ve eğitici mobil boyama/yaratıcılık uygulaması.
-- Hedef kullanıcı: Ana kullanıcı çocuk; satın alma ve güven kararı ebeveyn.
-- Ana problem: Aileler küçük çocuklara reklam, uygunsuz karakter ve kalitesiz oyun döngüsü yüzünden güvenli mobil içerik vermekte zorlanır.
+- Versiyon: 0.1.0
+- Kısa tanım: 4-5 yaş okul öncesi çocuklar için reklamsız, güvenli ve sade bir mobil boyama/yaratıcılık uygulaması.
+- Hedef kullanıcı: Ana kullanıcı çocuk; güven, satın alma ve kurulum kararını ebeveyn verir.
+- Ana problem: Ebeveynler küçük çocuklara reklam, dış link, uygunsuz karakter, karmaşık arayüz ve kalitesiz oyun döngüsü riski olmadan güvenli mobil içerik vermekte zorlanır.
 - Değer önerisi: Çocuk için sade ve sevilebilir yaratıcı oyun; ebeveyn için güvenli, faydalı, reklamsız ve düzenli yenilenebilir içerik.
 
 ## Çözdüğü Problem
 
-Aileler küçük çocuklara reklam kapatma, uygunsuz karakterler, rahatsız edici görseller ve kalitesiz oyun döngüleri yüzünden güvenli mobil içerik vermekte zorlanır. Çocuklar ise sabit içerikleri hızlı tüketip sıkılır. Bu ürün, aileye güven veren sade bir deneyim ve çocuğa sürekli yenilenebilir boyama/oyun alanı sunmayı hedefler.
+Aileler küçük çocuklara reklam kapatma, uygunsuz karakterler, rahatsız edici görseller ve kalitesiz oyun döngüleri yüzünden güvenli mobil içerik vermekte zorlanır. Çocuklar ise sabit içerikleri hızlı tüketip sıkılabilir. Bu ürün, aileye güven veren sade bir deneyim ve çocuğa sürekli yenilenebilir boyama/oyun alanı sunmayı hedefler.
 
 ## Hedef Kitle
 
@@ -24,10 +25,10 @@ Aileler küçük çocuklara reklam kapatma, uygunsuz karakterler, rahatsız edic
 ## Çekirdek Değer Önerisi
 
 - Reklamsız ve çocuk güvenli.
-- Korkutucu veya çirkin karakter estetiğinden uzak, sıcak ve sade görsel dünya.
-- Çocuğun kendi hayatından fotoğraf yüklenip çizime/boyama sayfasına dönüşebilmesi.
-- Uygulama aynı kalmaz; yeni boyama alanları, görevler ve küçük içerik paketleriyle tazelenir.
-- İçeride hızlı prototip üretilebilir; dışarıya çıkacak ilk sürüm dar ama sevilebilir ve tamamlanmış SLC olmalıdır.
+- Korkutucu veya rahatsız edici karakter estetiğinden uzak, sıcak ve sade görsel dünya.
+- İlk SLC'de dar ama tamamlanmış boyama çekirdeği: birkaç güvenli görsel, renk seçimi, silgi, temizle ve geri dönüş.
+- Orta vadede düzenli içerik yenileme ve gizlilik kontrollü fotoğrafı boyama sayfasına dönüştürme.
+- Dışarıya çıkacak ilk sürüm dar ama sevilebilir ve tamamlanmış SLC olmalıdır.
 
 ## Pazar ve Segment Varsayımı
 
@@ -52,10 +53,6 @@ Aileler küçük çocuklara reklam kapatma, uygunsuz karakterler, rahatsız edic
 - İlk sürümde büyük fotoğraf-AI sistemi değil.
 - Her yaşa hitap etmeye çalışan genel çocuk portalı değil.
 
-## Teknik Omurga
+## Discovery Onarım Notu
 
-Henüz uygulama kodu kurulmadı. Teknik seçim yapılmadı. Mobil hedef için Flutter ilk güçlü adaydır; kesin karar aktif fazda verilecektir.
-
-## Ürün Hedefi
-
-Kısa vadede reklamsız, güvenli, basit boyama prototipini çıkarıp birkaç çocukla denemek; dışarıya çıkacak ilk ürünü ise dar ama sevilebilir ve tamamlanmış SLC seviyesine getirmek. Orta vadede fotoğrafı çizime çevirme ve düzenli içerik yenileme akışı eklemek. Uzun vadede Türkçe/İngilizce pazarda küçük ücretli veya freemium, ailelerin güveneceği bir okul öncesi yaratıcılık uygulamasına dönüşmek.
+2026-05-21 Brain web akışında Discovery tamamlandı görünmesine rağmen ajan raporu boş kaldı ve `PROJECT.md` placeholder'a düştü. Bu dosya, mevcut `VISION.md` ve `VALIDATION.md` içeriğine göre yeniden ürün kimliği seviyesine getirildi. Research'a geçiş için Mission Control onayı beklenir.

@@ -1,15 +1,15 @@
 # MISSION_CONTROL.md - Hedef Koruma Kapısı
 
-> Son güncelleme: 2026-05-21 22:34
+> Son güncelleme: 2026-05-21 22:38
 > Rol: Her iş birimi çıktısından sonra ürünün asıl hedefe doğru ilerleyip ilerlemediğini denetler.
 
 ## Güncel Verdict
 
-- Verdict: NEEDS_REVISION
-- Summary: Discovery çıktısı devredilebilir değil: ajan raporu yok, düşünce yok, PROJECT.md placeholder alanları duruyor. Research ilerleyişi durdurulup Discovery onarım planı uygulanmalı.
+- Verdict: PENDING
+- Summary: Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.
 - Requested By: Discovery Architect
 - Requested At: 2026-05-21T22:25:35.836281
-- Checked At: 2026-05-21T22:34:57.126800
+- Checked At: 2026-05-21T22:38:39.881436
 - Target Phase: Phase-00A
 - Last Job: 20260521-222535-discovery
 
