@@ -1,0 +1,17 @@
+{
+  "message": "Görevlerinizi gerçekleştirmek için belirli bir kod değişikliği veya diğer işlemler gerekmiyor. Ürün keşfi dökümanlarını (VISION.md ve PROJECT.md) oluşturmanız gerekmektedir.",
+  "next_steps": [
+    "brain/STATE.md dosyasını inceleyin ve aktif fazın detaylarını gözden geçirin.",
+    "brain/RULES.md dosyasını okuyarak çalışacağınız kuralları unutmayın.",
+    "brain/CURRENT_PHASE.md dosyasında aktif fazı kontrol edin.",
+    "brain/CONTEXT_CAPSULE.md dosyasını gözden geçirerek projenizin bağlamını anlayın.",
+    "brain/MISSION_CONTROL.md dosyasında Mission Control'un verdict'ini ve kontrol kurallarını gözden geçirin."
+  ],
+  "documents_to_read": [
+    "brain/STATE.md",
+    "brain/RULES.md",
+    "brain/CURRENT_PHASE.md",
+    "brain/CONTEXT_CAPSULE.md",
+    "brain/MISSION_CONTROL.md"
+  ]
+}

@@ -179,8 +179,7 @@
     "active_provider": "gemini",
     "active_model": "gemini-3.5-flash",
     "ollama_url": "http://localhost:11434",
-    "temperature": 0.5,
-    "auto_run_after_transition": false
+    "temperature": 0.5
   },
   "mission_control_gate": {
     "verdict": "BLOCKED",

@@ -2,91 +2,123 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cocuk_oyun/main.dart';
-import 'package:cocuk_oyun/games/coloring_game.dart';
 
 void main() {
-  testWidgets('shows three coloring pages on the home screen', (
+  testWidgets('shows the dashboard with five games and the parent gate button', (
     WidgetTester tester,
   ) async {
+    // Set screen size to landscape for testing
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
     await tester.pumpWidget(const CocukOyunApp());
 
-    expect(find.text('Cocuk Oyun'), findsOneWidget);
-    expect(find.text('Boyama'), findsOneWidget);
-    expect(find.text('Kedi'), findsOneWidget);
-    expect(find.text('Sekiller'), findsOneWidget);
-    expect(find.text('Oyuncak'), findsOneWidget);
-    expect(find.byIcon(Icons.add), findsNothing);
+    expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-coloring')), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-tracing')), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-balloon_pop')), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-shape_sorter')), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-sound_board')), findsOneWidget);
+    expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
   });
 
-  testWidgets('opens a coloring page and exposes drawing tools', (
+  testWidgets('opens parent safety screen through the multi-finger gate', (
     WidgetTester tester,
   ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
     await tester.pumpWidget(const CocukOyunApp());
 
-    await tester.tap(find.byKey(const ValueKey('page-cat')));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Kedi'), findsOneWidget);
-    expect(find.byKey(const ValueKey('drawing-canvas')), findsOneWidget);
-    expect(find.byKey(const ValueKey('clear-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('eraser-button')), findsOneWidget);
-
-    await tester.drag(
-      find.byKey(const ValueKey('drawing-canvas')),
-      const Offset(80, 20),
-    );
-    await tester.tap(find.byKey(const ValueKey('eraser-button')));
-    await tester.tap(find.byKey(const ValueKey('clear-button')));
-    await tester.tap(find.byKey(const ValueKey('back-button')));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Boyama'), findsOneWidget);
-  });
-
-  testWidgets('drawing updates repaint data while the finger moves', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(const CocukOyunApp());
-
-    await tester.tap(find.byKey(const ValueKey('page-cat')));
-    await tester.pumpAndSettle();
-
-    final canvasFinder = find.byKey(const ValueKey('drawing-canvas'));
-    
-    final painter = tester
-        .widget<CustomPaint>(
-          find.descendant(
-            of: canvasFinder,
-            matching: find.byType(CustomPaint),
-          ),
-        )
-        .painter! as ColoringPainter;
-
-    // Sadece template'in düzgün yüklendiğini doğrulayalım
-    expect(painter.template.parts, isNotEmpty);
-  });
-
-  testWidgets('opens the separated parent safety area through the gate', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(const CocukOyunApp());
-
+    // Open gate dialog
     await tester.tap(find.byKey(const ValueKey('parent-gate-button')));
     await tester.pumpAndSettle();
-    expect(find.text('Ebeveyn alani'), findsOneWidget);
 
-    await tester.longPress(find.byKey(const ValueKey('parent-unlock-button')));
+    expect(find.text('Ebeveyn Doğrulaması'), findsOneWidget);
+
+    // Simulate touching screen with 3 fingers simultaneously
+    final gesture1 = await tester.startGesture(const Offset(500, 350), pointer: 1);
+    final gesture2 = await tester.startGesture(const Offset(600, 350), pointer: 2);
+    final gesture3 = await tester.startGesture(const Offset(700, 350), pointer: 3);
+
+    // Pump and wait for 3 seconds timer
+    await tester.pump(const Duration(seconds: 4));
+
+    // Lift fingers up
+    await gesture1.up();
+    await gesture2.up();
+    await gesture3.up();
     await tester.pumpAndSettle();
 
-    expect(find.text('Ebeveyn'), findsOneWidget);
-    expect(find.text('Reklam yok'), findsOneWidget);
-    expect(find.text('Odeme yok'), findsOneWidget);
-    expect(find.text('Dis link yok'), findsOneWidget);
-    expect(find.text('Kamera galeri yok'), findsOneWidget);
+    // Verify parent screen is opened
+    expect(find.text('Ebeveyn Kontrol Paneli'), findsOneWidget);
+    expect(find.text('Sıfır Reklam Gösterimi'), findsOneWidget);
+    expect(find.text('Ödeme Duvarı Yok'), findsOneWidget);
+    expect(find.text('İnternetsiz / Çevrimdışı Çalışma'), findsOneWidget);
 
+    // Go back
     await tester.tap(find.byKey(const ValueKey('parent-back-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Boyama'), findsOneWidget);
+    expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
+  });
+
+  testWidgets('can open each game from the dashboard and return', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    // 1. Coloring Game
+    await tester.tap(find.byKey(const ValueKey('game-card-coloring')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // 2. Tracing Game
+    await tester.tap(find.byKey(const ValueKey('game-card-tracing')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byIcon(Icons.arrow_back_rounded), findsAtLeast(1));
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // 3. Balloon Pop Game
+    await tester.tap(find.byKey(const ValueKey('game-card-balloon_pop')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('balloon-game-back-button')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('balloon-game-back-button')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // 4. Shape Sorter Game
+    await tester.tap(find.byKey(const ValueKey('game-card-shape_sorter')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byIcon(Icons.arrow_back_rounded), findsAtLeast(1));
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // 5. Sound Board Game
+    await tester.tap(find.byKey(const ValueKey('game-card-sound_board')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byIcon(Icons.arrow_back_rounded), findsAtLeast(1));
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
   });
 }

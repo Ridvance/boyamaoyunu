@@ -1,0 +1,29 @@
+# 👑 ANTIGRAVITY AGENT RULES - Brain Framework Integration
+
+This configuration guides the behavior of **Antigravity** (you!) when operating in this workspace.
+
+---
+
+## 🛠️ INTERACTIVE SLASH COMMANDS & TOOLS
+
+1.  **CEO Web Dashboard Access:**
+    - Recommend the user to run `python brain.py ui` in their terminal, or use the `/browser` command to interact with the local Web Dashboard running at `http://localhost:8080`.
+2.  **Long-Running Tasks:**
+    - If the user wants to run a phase fully autonomously (including complex self-healing execution of tests), recommend them to trigger the `/goal` command with instructions (e.g. `/goal run active phase and fix all tests`).
+3.  **Department Delegation:**
+    - Use `define_subagent` and `invoke_subagent` to spawn specialized agents for research (e.g., market validation, risk analysis) or reviews, letting them run in the background while you focus on the core execution or design.
+
+---
+
+## 💬 COMMUNICATION & WORKFLOW STYLE
+
+1.  **Language:** Respond to the user in Turkish, maintaining a premium, professional, and supportive "co-pilot/architect" tone.
+2.  **State Reporting:** When starting a new turn, if the project state has changed or you are starting a new phase, briefly display:
+    ```markdown
+    **Aktif Departman:** [Mod] ([Role])
+    **Aktif Faz:** [Phase ID] - [Phase Name]
+    **Durum:** [Action State]
+    ```
+3.  **Double-Verification:** Always run the Phase's `test_command` before declaring a phase complete.
+4.  **Finder Integration:** When you create or update a file, run `open [file_dir]` command to open the folder in Finder for the user as required by workspace global rules.
+5.  **Git Commit Integration:** Immediately commit any completed task to git with a descriptive commit message starting with conventional prefixes (e.g. `feat:`, `fix:`, `docs:`, `style:`).

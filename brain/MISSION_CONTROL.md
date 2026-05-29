@@ -1,17 +1,17 @@
 # MISSION_CONTROL.md - Hedef Koruma Kapısı
 
-> Son güncelleme: 2026-05-21 22:38
+> Son güncelleme: 2026-05-22 00:18
 > Rol: Her iş birimi çıktısından sonra ürünün asıl hedefe doğru ilerleyip ilerlemediğini denetler.
 
 ## Güncel Verdict
 
-- Verdict: PENDING
-- Summary: Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.
-- Requested By: Discovery Architect
-- Requested At: 2026-05-21T22:25:35.836281
-- Checked At: 2026-05-21T22:38:39.881436
+- Verdict: BLOCKED
+- Summary: UI cockpit üzerinden BLOCKED verdict verildi.
+- Requested By: Handoff Coordinator
+- Requested At: 2026-05-22T00:18:11.568423
+- Checked At: 2026-05-22T00:18:19.542586
 - Target Phase: Phase-00A
-- Last Job: 20260521-222535-discovery
+- Last Job: same-day-20260522-001811
 
 ## Kapı Kuralı
 

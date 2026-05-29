@@ -1,0 +1,6 @@
+{
+  "function_name": "generate_document",
+  "function_arg": {
+    "document_type": "VISION.md"
+  }
+}

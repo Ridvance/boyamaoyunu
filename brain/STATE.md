@@ -1,41 +1,55 @@
 # STATE.md - Güncel Durum
 
-> Son güncelleme: 2026-05-21 22:38
+> Son güncelleme: 2026-05-22 00:18
 > Rol: Yeni pencere açıldığında hızlı bağlam yükleme.
 
 ## Aktif Gerçeklik
 
-Discovery onarımı tamamlandı ve Mission Control PENDING durumda. Research'a geçiş için CEO/Mission Control onayı gerekiyor.
-
-Flutter prototip içinde daha önce ilk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu hazırlanmıştı. Güncel web akışı bu bağlamı Phase-00A Discovery seviyesine geri çektiği için, şimdiki güvenli odak önce Brain durumunu ve ürün kimliğini tekrar tutarlı hale getirmektir.
+Mission Control blocker tespit etti.
 
 ## Aktif Odak
 
-- Mevcut Rol: Mission Controller (Mod: MissionControl)
-- Durum: WAITING_USER_APPROVAL
+- Mevcut Rol: Handoff Coordinator (Mod: Handoff)
+- Durum: BLOCKED_EXTERNAL
 - Aktif Faz: Phase-00A
-- Mission Control: PENDING - Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.
-
-## Kısa Ürün Bağlamı
-
-- Ürün: 4-5 yaş için reklamsız, güvenli, sade boyama/yaratıcılık uygulaması.
-- Ana kullanıcı: Çocuk; karar verici ebeveyn.
-- Ana problem: Ebeveynin küçük çocuğa reklamsız, güvenli ve faydalı mobil içerik bulmakta zorlanması.
-- İlk SLC yönü: Boyama çekirdeği; birkaç güvenli görsel, renk paleti, silgi, temizle ve geri dönüş.
-- Açık risk: Brain web akışı boş ajan raporunu başarı saydı; bu nedenle Mission Control onayı olmadan Research'a devam edilmemeli.
+- Mission Control: BLOCKED - UI cockpit üzerinden BLOCKED verdict verildi.
 
 ## Workstream Status Board
 
 | İş Birimi | Mod / Pozisyon | Durum | Son Çıktı | Eksik / Blocker | Sıradaki İş |
 |---|---|---|---|---|---|
-| Discovery | Discovery Architect | pending_review | PROJECT.md ürün kimliği mevcut VISION/VALIDATION verileriyle onarıldı. | Mission Control onayı bekleniyor. | Mission Control denetimini tamamla. |
-| Research / Validation | Research/Validation Architect | blocked | - | Discovery Mission Control onayı yok. | APPROVED sonrası Research görevlerine geç. |
-| Planning | Planning Architect | pending | - | - | - |
-| Design | Design Architect | pending | - | - | - |
-| Execution | Execution Engineer | pending | - | - | - |
-| Review | Review Engineer | pending | - | - | - |
-| Handoff | Handoff Coordinator | pending | - | - | - |
-| Mission Control | Mission Controller | active | PENDING: Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor. | - | Verdict sonucuna göre iş akışını yönlendir. |
+| Discovery | Discovery Architect | completed | CEO'ya Sunulacak Özet Rapor:
+- Phase-00A kapsamında ürün vizyonunu tanımlayan `VISION.md` ve proje çerçevesini çizen `PROJECT.md` dökümanları başarıyla oluşturulmuştur.
+- `brain/STATE.md` güncellenerek projenin onay bekleyen (WAITING_FOR_APPROVAL) aşamasına geçişi sağlanmıştır.
+- Kod veya tasarım üzerinde herhangi bir değişiklik yapılmamış, tamamen faz kapsamına sadık kalınmıştır. | Mission Control onayı bekleniyor. | Arşivlendi. |
+| Research / Validation | Research/Validation Architect | completed | CEO'ya Sunulacak Özet Rapor:
+- Research/Validation Architect rolüyle Phase-00A kapsamında pedagojik, UX, güvenlik (COPPA/GDPR-K) ve teknik altyapı doğrulamaları yapılmıştır.
+- 4-5 yaş grubu çocukların motor becerilerine uygun olarak 'Dokun ve Boya' (Tap-to-fill) mekanizması ve düşük bilişsel yük için 6-8 renkli palet tercihi doğrulanmıştır.
+- Uygulamanın sıfır veri toplama ve sıfır dış bağlantı yapısıyla COPPA ve GDPR-K mevzuatlarına %100 uyumlu olduğu tescillenmiştir.
+- Teknik çerçevede yerel SVG/Vector kullanımı, CustomPainter ile yüksek performans ve ValueNotifier ile minimal durum yönetimi kararları alınmıştır.
+- Elde edilen tüm doğrulama çıktıları VISION.md ve PROJECT.md dosyalarına işlenmiş, brain/STATE.md güncellenerek süreç Planning departmanına devredilmiştir. | Discovery Mission Control onayı yok. | Arşivlendi. |
+| Planning | Planning Architect | completed | CEO'ya Sunulacak Özet Rapor:
+- Phase-00A kapsamında Planning Architect rolüyle projenin gelecek fazlarına (Phase-01, Phase-02, Phase-03) ait detaylı görev dağılımlarını, teknik mimari kararlarını (CustomPainter, ValueNotifier), risk analizlerini ve onay kapısı kriterlerini içeren `brain/PLANNING.md` dökümanı başarıyla oluşturulmuştur.
+- `brain/STATE.md` ve `brain/CONTEXT_CAPSULE.md` dosyaları güncellenerek Planning aşamasının tamamlandığı (COMPLETED) belirtilmiştir.
+- Proje sınırlarına ve faza tam olarak sadık kalınmış, kod veya tasarım üzerinde hiçbir değişiklik yapılmamıştır. | - | Arşivlendi. |
+| Design | Design Architect | completed | CEO'ya Sunulacak Özet Rapor:
+- Phase-00A kapsamında Design Architect rolüyle, 4-5 yaş grubu okul öncesi çocukların motor ve bilişsel gelişimlerine uygun UI/UX standartlarını belirleyen `docs/DESIGN_DISCOVERY.md` dökümanı oluşturulmuştur.
+- Dökümanda; çocuk dostu 8 renkli palet, 64x64 dp minimum dokunma alanları, Zero-Text UI (Yazısız Arayüz) felsefesi, Tap-to-fill etkileşim mekaniği ve çocukların yanlışlıkla ayarlara girmesini engelleyen Parental Gate (Ebeveyn Kilidi) detaylandırılmıştır.
+- `brain/STATE.md` ve `brain/CONTEXT_CAPSULE.md` dökümanları güncellenerek süreç Mission Control onayına hazır hale getirilmiştir.
+- Kapsam dışı hiçbir kodlama veya prototipleme yapılmamış, faz sınırlarına %100 sadık kalınmıştır. | - | Arşivlendi. |
+| Execution | Execution Engineer | completed | Same-Day plan üretildi: same-day-20260522-001811 (RESEARCH_MORE, fit=1/5). | - | Fikri revize et veya Research/Validation kapısına gönder. |
+| Review | Review Engineer | completed | CEO'ya Sunulacak Özet Rapor:
+- Phase-00A kapsamında hazırlanan tüm keşif dökümanları (VISION.md, PROJECT.md, docs/DESIGN_DISCOVERY.md) detaylı şekilde incelenmiştir.
+- Pedagojik uygunluk (4-5 yaş), teknik fizibilite (CustomPainter, ValueNotifier, offline-first) ve yasal uyumluluk (COPPA/GDPR-K) kriterleri doğrulanmıştır.
+- Dökümanlar arasında hiçbir tutarsızlık bulunmamaktadır. Vizyon dökümanı onaylanmıştır.
+- `brain/STATE.md` ve `brain/CONTEXT_CAPSULE.md` dökümanları güncellenerek Review aşaması başarıyla tamamlanmış ve süreç sonraki adıma hazır hale getirilmiştir. | - | Arşivlendi. |
+| Handoff | Handoff Coordinator | active | CEO'ya Sunulacak Özet Rapor:
+
+1. Phase-00A (Ürün Keşfi) sürecinin tüm departman çıktıları (Discovery, Research, Planning, Design, Execution, Review) denetlenmiş ve vizyon dökümanının onaylandığı (Exit Criteria) tescil edilmiştir.
+2. `brain/STATE.md` dökümanı güncellenerek Handoff aşaması 'completed' olarak işaretlenmiş ve Phase-01 (Temel Boyama Motoru ve Arayüz Tasarımı) için sonraki prompt şablonu hazırlanmıştır.
+3. `brain/CONTEXT_CAPSULE.md` dökümanı güncellenerek son kararlar ve güncel faza geçiş hazırlığı belgelenmiştir.
+4. Projede hiçbir kod veya tasarım prototipleme değişikliği yapılmamış, faz kapsamına %100 sadık kalınmıştır. Proje bir sonraki faza geçiş için tamamen hazırdır. | - | Mission Control verdict sonrası sıradaki adıma devret. |
+| Mission Control | Mission Controller | active | BLOCKED: UI cockpit üzerinden BLOCKED verdict verildi. | - | Verdict sonucuna göre iş akışını yönlendir. |
 
 ## Sonraki Prompt
 
@@ -50,9 +64,9 @@ Repo: /Users/ridvan/Documents/Çocuk Oyun
 5. brain/MISSION_CONTROL.md
 
 Aktif Faz: Phase-00A - Ürün Keşfi (Discovery)
-Rol/Departman: Mission Controller (Mod: MissionControl)
-Durum: WAITING_USER_APPROVAL
-Mission Control: PENDING - Discovery onarımı tamamlandı; ürün açıklaması, hedef kullanıcı ve ana problem alanları VISION/VALIDATION ile uyumlu hale getirildi. Research’a geçmeden önce CEO/Mission Control onayı gerekiyor.
+Rol/Departman: Handoff Coordinator (Mod: Handoff)
+Durum: BLOCKED_EXTERNAL
+Mission Control: BLOCKED - UI cockpit üzerinden BLOCKED verdict verildi.
 
 Scope Locked Prompt:
 """
