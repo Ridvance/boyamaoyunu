@@ -9,4 +9,12 @@ class AudioSynth {
   static void playAnimalSound(String animalEmoji) {
     impl.playAnimalSound(animalEmoji);
   }
+
+  static void playSparkleSound() {
+    impl.playSparkleSound();
+  }
+
+  static void playRaindropSound() {
+    impl.playRaindropSound();
+  }
 }

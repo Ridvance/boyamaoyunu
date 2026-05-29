@@ -93,6 +93,45 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
     }
   }
 
+  final List<GlobalKey<_XylophoneKeyWidgetState>> _keyKeys = List.generate(8, (_) => GlobalKey<_XylophoneKeyWidgetState>());
+  int? _lastDraggedIndex;
+
+  void _handleXylophoneDrag(PointerEvent event, double keyWidth) {
+    final localX = event.localPosition.dx;
+    final index = (localX / keyWidth).floor().clamp(0, 7);
+
+    if (index != _lastDraggedIndex) {
+      _lastDraggedIndex = index;
+      
+      // Calculate global position
+      final box = context.findRenderObject() as RenderBox?;
+      final globalPos = box != null ? box.localToGlobal(event.localPosition) : event.position;
+      
+      final color = [
+        const Color(0xFFFF4B4B),
+        const Color(0xFFFF8E2B),
+        const Color(0xFFFFD000),
+        const Color(0xFF2ECC71),
+        const Color(0xFF1ABC9C),
+        const Color(0xFF2B86FF),
+        const Color(0xFF9B59B6),
+        const Color(0xFFFF69B4),
+      ][index];
+
+      _playFeedback(index);
+      _spawnParticles(
+        globalPos,
+        color,
+        ['🎵', '🎶', '✨', '⭐'],
+      );
+      _keyKeys[index].currentState?.animatePress();
+    }
+  }
+
+  void _resetLastDragged() {
+    _lastDraggedIndex = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final animalData = [
@@ -127,19 +166,25 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
       body: SafeArea(
         child: Stack(
           children: [
-            // Clouds in the background (slower depth element)
+             // Clouds in the background (slower depth element)
             Positioned(
               left: _cloud1X,
               top: 30,
               child: CloudWidget(
-                onTap: (pos) => _spawnParticles(pos, Colors.lightBlueAccent, ['☁️', '💧', '✨']),
+                onTap: (pos) {
+                  AudioSynth.playRaindropSound();
+                  _spawnParticles(pos, Colors.lightBlueAccent, ['☁️', '💧', '✨']);
+                },
               ),
             ),
             Positioned(
               left: _cloud2X,
               top: 60,
               child: CloudWidget(
-                onTap: (pos) => _spawnParticles(pos, Colors.cyanAccent, ['☁️', '💧', '🎵']),
+                onTap: (pos) {
+                  AudioSynth.playRaindropSound();
+                  _spawnParticles(pos, Colors.cyanAccent, ['☁️', '💧', '🎵']);
+                },
               ),
             ),
 
@@ -148,7 +193,10 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
               right: 40,
               top: 20,
               child: SunWidget(
-                onTap: (pos) => _spawnParticles(pos, Colors.orangeAccent, ['☀️', '✨', '⭐', '💛']),
+                onTap: (pos) {
+                  AudioSynth.playSparkleSound();
+                  _spawnParticles(pos, Colors.orangeAccent, ['☀️', '✨', '⭐', '💛']);
+                },
               ),
             ),
 
@@ -224,34 +272,40 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
                           ),
                         ),
                         // Keys
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: List.generate(8, (index) {
-                            final color = [
-                              const Color(0xFFFF4B4B), // Do (Red)
-                              const Color(0xFFFF8E2B), // Re (Orange)
-                              const Color(0xFFFFD000), // Mi (Yellow)
-                              const Color(0xFF2ECC71), // Fa (Green)
-                              const Color(0xFF1ABC9C), // Sol (Teal)
-                              const Color(0xFF2B86FF), // La (Blue)
-                              const Color(0xFF9B59B6), // Si (Purple)
-                              const Color(0xFFFF69B4), // Do (Pink)
-                            ][index];
-                            final heightFactor = 1.0 - (index * 0.04);
-                            return XylophoneKeyWidget(
-                              color: color,
-                              heightFactor: heightFactor,
-                              onTap: (globalPos) {
-                                _playFeedback(index);
-                                _spawnParticles(
-                                  globalPos,
-                                  color,
-                                  ['🎵', '🎶', '✨', '⭐'],
-                                );
-                              },
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final totalWidth = constraints.maxWidth;
+                            final keyWidth = totalWidth / 8;
+                            return Listener(
+                              behavior: HitTestBehavior.opaque,
+                              onPointerDown: (event) => _handleXylophoneDrag(event, keyWidth),
+                              onPointerMove: (event) => _handleXylophoneDrag(event, keyWidth),
+                              onPointerUp: (_) => _resetLastDragged(),
+                              onPointerCancel: (_) => _resetLastDragged(),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: List.generate(8, (index) {
+                                  final color = [
+                                    const Color(0xFFFF4B4B), // Do (Red)
+                                    const Color(0xFFFF8E2B), // Re (Orange)
+                                    const Color(0xFFFFD000), // Mi (Yellow)
+                                    const Color(0xFF2ECC71), // Fa (Green)
+                                    const Color(0xFF1ABC9C), // Sol (Teal)
+                                    const Color(0xFF2B86FF), // La (Blue)
+                                    const Color(0xFF9B59B6), // Si (Purple)
+                                    const Color(0xFFFF69B4), // Do (Pink)
+                                  ][index];
+                                  final heightFactor = 1.0 - (index * 0.04);
+                                  return XylophoneKeyWidget(
+                                    key: _keyKeys[index],
+                                    color: color,
+                                    heightFactor: heightFactor,
+                                  );
+                                }),
+                              ),
                             );
-                          }),
+                          },
                         ),
                       ],
                     ),
@@ -489,12 +543,10 @@ class _AnimalCardWidgetState extends State<AnimalCardWidget> with SingleTickerPr
 class XylophoneKeyWidget extends StatefulWidget {
   final Color color;
   final double heightFactor;
-  final Function(Offset globalPos) onTap;
 
   const XylophoneKeyWidget({
     required this.color,
     required this.heightFactor,
-    required this.onTap,
     super.key,
   });
 
@@ -524,9 +576,12 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
     super.dispose();
   }
 
-  void _handleTap(PointerDownEvent event) {
-    _controller.forward().then((_) => _controller.reverse());
-    widget.onTap(event.position);
+  void animatePress() {
+    if (mounted) {
+      _controller.forward().then((_) {
+        if (mounted) _controller.reverse();
+      });
+    }
   }
 
   @override
@@ -539,90 +594,87 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
             final keyHeight = constraints.maxHeight * widget.heightFactor;
             return Align(
               alignment: Alignment.center,
-              child: Listener(
-                onPointerDown: _handleTap,
-                child: AnimatedBuilder(
-                  animation: _pressAnimation,
-                  builder: (context, child) {
-                    final isPressed = _controller.value > 0;
-                    return Transform.translate(
-                      offset: Offset(0, _pressAnimation.value),
-                      child: Container(
-                        height: keyHeight - _pressAnimation.value,
-                        decoration: BoxDecoration(
-                          color: widget.color,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: isPressed
-                              ? []
-                              : [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    offset: Offset(0, 10 - _pressAnimation.value),
-                                    blurRadius: 5,
-                                  ),
-                                  BoxShadow(
-                                    color: widget.color.withOpacity(0.4),
-                                    offset: const Offset(0, 2),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              widget.color.withOpacity(0.85),
-                              widget.color,
-                              widget.color.withOpacity(0.95),
-                            ],
-                          ),
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Top screw pin
-                            Positioned(
-                              top: 24,
-                              child: Container(
-                                width: 14,
-                                height: 14,
-                                decoration: const BoxDecoration(
-                                  color: Colors.grey,
-                                  shape: BoxShape.circle,
-                                  gradient: RadialGradient(
-                                    colors: [Colors.white, Colors.grey, Colors.black45],
-                                  ),
+              child: AnimatedBuilder(
+                animation: _pressAnimation,
+                builder: (context, child) {
+                  final isPressed = _controller.value > 0;
+                  return Transform.translate(
+                    offset: Offset(0, _pressAnimation.value),
+                    child: Container(
+                      height: keyHeight - _pressAnimation.value,
+                      decoration: BoxDecoration(
+                        color: widget.color,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: isPressed
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(0, 10 - _pressAnimation.value),
+                                  blurRadius: 5,
                                 ),
-                              ),
-                            ),
-                            // Bottom screw pin
-                            Positioned(
-                              bottom: 24,
-                              child: Container(
-                                width: 14,
-                                height: 14,
-                                decoration: const BoxDecoration(
-                                  color: Colors.grey,
-                                  shape: BoxShape.circle,
-                                  gradient: RadialGradient(
-                                    colors: [Colors.white, Colors.grey, Colors.black45],
-                                  ),
+                                BoxShadow(
+                                  color: widget.color.withOpacity(0.4),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 8,
                                 ),
-                              ),
-                            ),
-                            // Pressed Glow overlay
-                            if (isPressed)
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.25),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                              ],
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            widget.color.withOpacity(0.85),
+                            widget.color,
+                            widget.color.withOpacity(0.95),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Top screw pin
+                          Positioned(
+                            top: 24,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [Colors.white, Colors.grey, Colors.black45],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Bottom screw pin
+                          Positioned(
+                            bottom: 24,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [Colors.white, Colors.grey, Colors.black45],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Pressed Glow overlay
+                          if (isPressed)
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.25),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             );
           },

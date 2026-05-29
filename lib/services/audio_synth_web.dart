@@ -166,3 +166,68 @@ void playAnimalSound(String animalEmoji) {
     // Fail silently in case of unsupported platforms/states
   }
 }
+
+void playSparkleSound() {
+  try {
+    final ctx = audioContext;
+    if (ctx.state == 'suspended') {
+      ctx.resume();
+    }
+    final now = ctx.currentTime;
+
+    // Magical 3-note arpeggio (Sparkle)
+    void playChime(double startTime, double freq) {
+      final osc = ctx.createOscillator();
+      final gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.25, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.15);
+    }
+
+    playChime(now, 880);
+    playChime(now + 0.05, 1109.73); // C#6
+    playChime(now + 0.10, 1318.51); // E6
+  } catch (e) {
+    // Fail silently
+  }
+}
+
+void playRaindropSound() {
+  try {
+    final ctx = audioContext;
+    if (ctx.state == 'suspended') {
+      ctx.resume();
+    }
+    final now = ctx.currentTime;
+
+    final osc = ctx.createOscillator();
+    final gain = ctx.createGain();
+
+    osc.type = 'sine';
+    // Quick sweep upwards for a cute pop/water drop sound
+    osc.frequency.setValueAtTime(500, now);
+    osc.frequency.exponentialRampToValueAtTime(950, now + 0.08);
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.3, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  } catch (e) {
+    // Fail silently
+  }
+}

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/audio_synth.dart';
 
 class BalloonPopGame extends StatefulWidget {
   const BalloonPopGame({super.key});
@@ -219,8 +220,8 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     // Dokunsal Geri Bildirim (Haptic Feedback) - Çocuklar için çok tatmin edicidir
     HapticFeedback.mediumImpact();
     
-    // Sistem Tıklama Sesi (Erişilebilir, harici kütüphanesiz ses efekti)
-    SystemSound.play(SystemSoundType.click);
+    // Balon patlama ses efekti
+    AudioSynth.playRaindropSound();
 
     final random = Random();
     
