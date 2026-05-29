@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import '../services/audio_synth.dart';
 
 class SoundBoardGame extends StatefulWidget {
   const SoundBoardGame({super.key});
@@ -81,6 +82,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
 
   void _playFeedback(int noteIndex) {
     SystemSound.play(SystemSoundType.click);
+    AudioSynth.playXylophoneNote(noteIndex);
     // Mimic musical pitch scale using haptics
     if (noteIndex < 3) {
       HapticFeedback.lightImpact();
@@ -167,6 +169,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
                         color: a.color,
                         onTap: (globalPos) {
                           _playFeedback(2); // Mid-high feedback
+                          AudioSynth.playAnimalSound(a.emoji);
                           _spawnParticles(globalPos, a.color, a.spawnEmojis);
                         },
                       ),
