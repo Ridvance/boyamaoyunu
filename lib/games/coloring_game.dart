@@ -110,6 +110,9 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
   }
 
   void _spawnParticles(Offset position, Color color) {
+    if (_particles.length > 80) {
+      _particles.removeRange(0, _particles.length - 80);
+    }
     final random = Random();
     for (int i = 0; i < 20; i++) {
       final angle = random.nextDouble() * 2 * pi;

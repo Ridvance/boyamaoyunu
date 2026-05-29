@@ -32,6 +32,51 @@ class CocukOyunApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFFFBF2),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        final isPortrait = mediaQuery.size.height > mediaQuery.size.width;
+        if (isPortrait) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFFFFBF2),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.screen_rotation_rounded,
+                      size: 80,
+                      color: Color(0xFF2FA7A0),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Lütfen Cihazını Yan Çevir! 🔄',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF233238),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Oyunları en iyi şekilde oynamak için ekranı yatay (yan) konuma getirmelisin.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF53666C),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+        return child!;
+      },
       home: const DashboardScreen(),
     );
   }

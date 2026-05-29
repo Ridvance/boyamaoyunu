@@ -18,6 +18,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
   // Cloud position tracking
   double _cloud1X = 100.0;
   double _cloud2X = 400.0;
+  double _screenWidth = 800.0;
 
   @override
   void initState() {
@@ -28,11 +29,11 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
         setState(() {
           // Update clouds drift
           _cloud1X += 0.4;
-          if (_cloud1X > MediaQuery.of(context).size.width) {
+          if (_cloud1X > _screenWidth) {
             _cloud1X = -100;
           }
           _cloud2X += 0.25;
-          if (_cloud2X > MediaQuery.of(context).size.width) {
+          if (_cloud2X > _screenWidth) {
             _cloud2X = -100;
           }
 
@@ -57,6 +58,9 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
   }
 
   void _spawnParticles(Offset globalPosition, Color color, List<String> symbols) {
+    if (_particles.length > 60) {
+      _particles.removeRange(0, _particles.length - 60);
+    }
     final random = math.Random();
     final count = 6 + random.nextInt(5); // Spawn 6-10 particles
     for (int i = 0; i < count; i++) {
@@ -134,6 +138,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    _screenWidth = MediaQuery.sizeOf(context).width;
     final animalData = [
       const AnimalData(
         emoji: '🐱',
