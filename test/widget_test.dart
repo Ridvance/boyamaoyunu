@@ -20,6 +20,7 @@ void main() {
     expect(find.byKey(const ValueKey('game-card-balloon_pop')), findsOneWidget);
     expect(find.byKey(const ValueKey('game-card-shape_sorter')), findsOneWidget);
     expect(find.byKey(const ValueKey('game-card-sound_board')), findsOneWidget);
+    expect(find.byKey(const ValueKey('game-card-magic_colors')), findsOneWidget);
     expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
   });
 
@@ -116,6 +117,15 @@ void main() {
     await tester.pump();
     expect(find.byIcon(Icons.arrow_back_rounded), findsAtLeast(1));
     await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // 6. Magic Colors Game
+    await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('magic-colors-back-button')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('magic-colors-back-button')));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
 

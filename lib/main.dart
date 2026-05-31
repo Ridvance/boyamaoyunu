@@ -6,6 +6,7 @@ import 'games/tracing_game.dart';
 import 'games/balloon_pop_game.dart';
 import 'games/shape_sorter_game.dart';
 import 'games/sound_board_game.dart';
+import 'games/magic_colors_game.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -207,6 +208,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: const Color(0xFFFF8E2B),
                           title: 'Müzik Kutusu',
                           gameWidget: const SoundBoardGame(),
+                        ),
+                        _buildGameCard(
+                          context: context,
+                          key: 'magic_colors',
+                          icon: Icons.science_rounded,
+                          color: const Color(0xFFFF9500),
+                          title: 'Renk Laboratuvarı',
+                          gameWidget: const MagicColorsGame(),
                         ),
                       ],
                     );
