@@ -620,7 +620,178 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           canvas.drawPath(mouthPath, paint..strokeWidth = 3);
         },
       ),
+
+      // 4. BUTTERFLY TEMPLATE
+      ColoringTemplate(
+        name: 'Butterfly',
+        icon: Icons.emoji_nature_rounded,
+        parts: [
+          ColoringPart(id: 'left_wing', path: _getButterflyLeftWingPath()),
+          ColoringPart(id: 'right_wing', path: _getButterflyRightWingPath()),
+          ColoringPart(id: 'left_spot', path: _getButterflyLeftWingSpotPath()),
+          ColoringPart(id: 'right_spot', path: _getButterflyRightWingSpotPath()),
+          ColoringPart(id: 'body', path: _getButterflyBodyPath()),
+          ColoringPart(id: 'head', path: _getButterflyHeadPath()),
+        ],
+        drawDetails: (canvas, size, basePaint) {
+          final antennaPaint = Paint()
+            ..color = basePaint.color
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3
+            ..strokeCap = StrokeCap.round;
+          final fillPaint = Paint()..color = basePaint.color..style = PaintingStyle.fill;
+          
+          // Left antenna
+          final leftAntenna = Path()
+            ..moveTo(195, 85)
+            ..quadraticBezierTo(170, 50, 160, 55);
+          canvas.drawPath(leftAntenna, antennaPaint);
+          canvas.drawCircle(const Offset(160, 55), 4, fillPaint);
+          
+          // Right antenna
+          final rightAntenna = Path()
+            ..moveTo(205, 85)
+            ..quadraticBezierTo(230, 50, 240, 55);
+          canvas.drawPath(rightAntenna, antennaPaint);
+          canvas.drawCircle(const Offset(240, 55), 4, fillPaint);
+
+          // Face details (Eyes & Smile)
+          canvas.drawCircle(const Offset(194, 98), 2.5, fillPaint);
+          canvas.drawCircle(const Offset(206, 98), 2.5, fillPaint);
+          canvas.drawArc(
+            Rect.fromLTRB(195, 102, 205, 112),
+            0,
+            pi,
+            false,
+            antennaPaint..strokeWidth = 2,
+          );
+        },
+      ),
+
+      // 5. CAR TEMPLATE
+      ColoringTemplate(
+        name: 'Car',
+        icon: Icons.directions_car_rounded,
+        parts: [
+          ColoringPart(id: 'roof', path: _getCarRoofPath()),
+          ColoringPart(id: 'window', path: _getCarWindowPath()),
+          ColoringPart(id: 'body', path: _getCarBodyPath()),
+          ColoringPart(id: 'front_wheel', path: _getCarFrontWheelPath()),
+          ColoringPart(id: 'rear_wheel', path: _getCarRearWheelPath()),
+        ],
+        drawDetails: (canvas, size, basePaint) {
+          final fillPaint = Paint()..color = basePaint.color..style = PaintingStyle.fill;
+          final lightPaint = Paint()
+            ..color = basePaint.color
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3;
+
+          // Wheel Hubcaps
+          canvas.drawCircle(const Offset(125, 310), 8, fillPaint);
+          canvas.drawCircle(const Offset(275, 310), 8, fillPaint);
+
+          // Front Headlight (Facing Right)
+          canvas.drawArc(
+            Rect.fromLTRB(330, 235, 345, 260),
+            -pi/2,
+            pi,
+            false,
+            lightPaint,
+          );
+
+          // Rear Stoplight
+          canvas.drawRect(
+            Rect.fromLTRB(55, 235, 62, 255),
+            fillPaint,
+          );
+        },
+      ),
     ];
+  }
+
+  // --- BUTTERFLY TEMPLATE PATHS ---
+  Path _getButterflyLeftWingPath() {
+    final path = Path();
+    path.moveTo(200, 200);
+    path.cubicTo(100, 50, 40, 100, 80, 200);
+    path.cubicTo(40, 280, 120, 320, 200, 250);
+    path.close();
+    return path;
+  }
+
+  Path _getButterflyRightWingPath() {
+    final path = Path();
+    path.moveTo(200, 200);
+    path.cubicTo(300, 50, 360, 100, 320, 200);
+    path.cubicTo(360, 280, 280, 320, 200, 250);
+    path.close();
+    return path;
+  }
+
+  Path _getButterflyBodyPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(185, 120, 215, 280));
+    return path;
+  }
+
+  Path _getButterflyHeadPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(180, 80, 220, 120));
+    return path;
+  }
+
+  Path _getButterflyLeftWingSpotPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(100, 120, 135, 155));
+    return path;
+  }
+
+  Path _getButterflyRightWingSpotPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(265, 120, 300, 155));
+    return path;
+  }
+
+  // --- CAR TEMPLATE PATHS ---
+  Path _getCarBodyPath() {
+    final path = Path();
+    path.addRRect(RRect.fromRectAndRadius(
+      const Rect.fromLTRB(60, 220, 340, 310),
+      const Radius.circular(20),
+    ));
+    return path;
+  }
+
+  Path _getCarRoofPath() {
+    final path = Path();
+    path.moveTo(110, 220);
+    path.lineTo(150, 140);
+    path.lineTo(250, 140);
+    path.lineTo(290, 220);
+    path.close();
+    return path;
+  }
+
+  Path _getCarFrontWheelPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(95, 280, 155, 340));
+    return path;
+  }
+
+  Path _getCarRearWheelPath() {
+    final path = Path();
+    path.addOval(Rect.fromLTRB(245, 280, 305, 340));
+    return path;
+  }
+
+  Path _getCarWindowPath() {
+    final path = Path();
+    path.moveTo(155, 155);
+    path.lineTo(245, 155);
+    path.lineTo(270, 210);
+    path.lineTo(130, 210);
+    path.close();
+    return path;
   }
 
   // --- CAT TEMPLATE PATHS ---
