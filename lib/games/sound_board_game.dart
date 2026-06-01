@@ -167,6 +167,11 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
       ),
     ];
 
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
+    final woodBarTop = isShortHeight ? 20.0 : 40.0;
+    final woodBarBottom = isShortHeight ? 20.0 : 40.0;
+    final woodBarHeight = isShortHeight ? 8.0 : 16.0;
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -174,7 +179,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
              // Clouds in the background (slower depth element)
             Positioned(
               left: _cloud1X,
-              top: 30,
+              top: isShortHeight ? 10 : 30,
               child: CloudWidget(
                 onTap: (pos) {
                   AudioSynth.playRaindropSound();
@@ -184,7 +189,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
             ),
             Positioned(
               left: _cloud2X,
-              top: 60,
+              top: isShortHeight ? 24 : 60,
               child: CloudWidget(
                 onTap: (pos) {
                   AudioSynth.playRaindropSound();
@@ -195,8 +200,8 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
 
             // Top Sun Widget (decorative & interactive)
             Positioned(
-              right: 40,
-              top: 20,
+              right: isShortHeight ? 20 : 40,
+              top: isShortHeight ? 10 : 20,
               child: SunWidget(
                 onTap: (pos) {
                   AudioSynth.playSparkleSound();
@@ -208,42 +213,48 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
             // Main UI Column
             Column(
               children: [
-                const SizedBox(height: 12),
+                SizedBox(height: isShortHeight ? 4 : 12),
                 // Top Bar (just empty space to push animals down, back button placed absolutely)
-                const SizedBox(height: 64),
+                SizedBox(height: isShortHeight ? 16 : 64),
                 // Animals Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: animalData.map((a) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                      child: AnimalCardWidget(
-                        emoji: a.emoji,
-                        color: a.color,
-                        onTap: (globalPos) {
-                          _playFeedback(2); // Mid-high feedback
-                          AudioSynth.playAnimalSound(a.emoji);
-                          _spawnParticles(globalPos, a.color, a.spawnEmojis);
-                        },
-                      ),
-                    );
-                  }).toList(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isShortHeight ? 16.0 : 32.0),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: animalData.map((a) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: isShortHeight ? 6.0 : 14.0),
+                          child: AnimalCardWidget(
+                            emoji: a.emoji,
+                            color: a.color,
+                            onTap: (globalPos) {
+                              _playFeedback(2); // Mid-high feedback
+                              AudioSynth.playAnimalSound(a.emoji);
+                              _spawnParticles(globalPos, a.color, a.spawnEmojis);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: isShortHeight ? 8 : 24),
                 // Xylophone Section
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(32, 0, 32, 20),
+                    padding: EdgeInsets.fromLTRB(32, 0, 32, isShortHeight ? 8 : 20),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
                         // Wood support bars
                         Positioned(
-                          top: 40,
+                          top: woodBarTop,
                           left: 16,
                           right: 16,
                           child: Container(
-                            height: 16,
+                            height: woodBarHeight,
                             decoration: BoxDecoration(
                               color: const Color(0xFF8B5A2B),
                               borderRadius: BorderRadius.circular(8),
@@ -258,11 +269,11 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
                           ),
                         ),
                         Positioned(
-                          bottom: 40,
+                          bottom: woodBarBottom,
                           left: 16,
                           right: 16,
                           child: Container(
-                            height: 16,
+                            height: woodBarHeight,
                             decoration: BoxDecoration(
                               color: const Color(0xFF8B5A2B),
                               borderRadius: BorderRadius.circular(8),
@@ -321,8 +332,8 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
 
             // Back Button at Top Left (absolute layout)
             Positioned(
-              left: 20,
-              top: 20,
+              left: isShortHeight ? 12 : 20,
+              top: isShortHeight ? 10 : 20,
               child: CircularBackButton(
                 onTap: () {
                   Navigator.pop(context);
@@ -506,34 +517,39 @@ class _AnimalCardWidgetState extends State<AnimalCardWidget> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
+    final cardSize = isShortHeight ? 60.0 : 90.0;
+    final borderWidth = isShortHeight ? 3.0 : 5.0;
+    final emojiSize = isShortHeight ? 32.0 : 48.0;
+
     return Listener(
       onPointerDown: _handleTap,
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
           return Transform.translate(
-            offset: Offset(0, _jumpAnimation.value),
+            offset: Offset(0, _jumpAnimation.value * (isShortHeight ? 0.5 : 1.0)),
             child: Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                width: 90,
-                height: 90,
+                width: cardSize,
+                height: cardSize,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: widget.color.withOpacity(0.8), width: 5),
+                  border: Border.all(color: widget.color.withOpacity(0.8), width: borderWidth),
                   boxShadow: [
                     BoxShadow(
                       color: widget.color.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 6),
+                      blurRadius: isShortHeight ? 6 : 10,
+                      offset: Offset(0, isShortHeight ? 3 : 6),
                     ),
                   ],
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   widget.emoji,
-                  style: const TextStyle(fontSize: 48, height: 1.1),
+                  style: TextStyle(fontSize: emojiSize, height: 1.1),
                 ),
               ),
             ),
@@ -591,6 +607,10 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
+    final pinOffset = isShortHeight ? 12.0 : 24.0;
+    final pinSize = isShortHeight ? 8.0 : 14.0;
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -609,19 +629,19 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                       height: keyHeight - _pressAnimation.value,
                       decoration: BoxDecoration(
                         color: widget.color,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(isShortHeight ? 10 : 20),
                         boxShadow: isPressed
                             ? []
                             : [
                                 BoxShadow(
                                   color: Colors.black26,
-                                  offset: Offset(0, 10 - _pressAnimation.value),
-                                  blurRadius: 5,
+                                  offset: Offset(0, (isShortHeight ? 5 : 10) - _pressAnimation.value),
+                                  blurRadius: isShortHeight ? 3 : 5,
                                 ),
                                 BoxShadow(
                                   color: widget.color.withOpacity(0.4),
                                   offset: const Offset(0, 2),
-                                  blurRadius: 8,
+                                  blurRadius: isShortHeight ? 4 : 8,
                                 ),
                               ],
                         gradient: LinearGradient(
@@ -639,10 +659,10 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                         children: [
                           // Top screw pin
                           Positioned(
-                            top: 24,
+                            top: pinOffset,
                             child: Container(
-                              width: 14,
-                              height: 14,
+                              width: pinSize,
+                              height: pinSize,
                               decoration: const BoxDecoration(
                                 color: Colors.grey,
                                 shape: BoxShape.circle,
@@ -654,10 +674,10 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                           ),
                           // Bottom screw pin
                           Positioned(
-                            bottom: 24,
+                            bottom: pinOffset,
                             child: Container(
-                              width: 14,
-                              height: 14,
+                              width: pinSize,
+                              height: pinSize,
                               decoration: const BoxDecoration(
                                 color: Colors.grey,
                                 shape: BoxShape.circle,
@@ -672,7 +692,7 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.25),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(isShortHeight ? 10 : 20),
                               ),
                             ),
                         ],
@@ -726,6 +746,7 @@ class _CloudWidgetState extends State<CloudWidget> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
     return Listener(
       onPointerDown: _handleTap,
       child: AnimatedBuilder(
@@ -734,9 +755,9 @@ class _CloudWidgetState extends State<CloudWidget> with SingleTickerProviderStat
           final wobble = math.sin(_controller.value * math.pi * 3) * 12;
           return Transform.translate(
             offset: Offset(wobble, 0),
-            child: const Text(
+            child: Text(
               '☁️',
-              style: TextStyle(fontSize: 54),
+              style: TextStyle(fontSize: isShortHeight ? 36 : 54),
             ),
           );
         },
@@ -789,13 +810,14 @@ class _SunWidgetState extends State<SunWidget> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
     return Listener(
       onPointerDown: _handleTap,
       child: RotationTransition(
         turns: _controller,
-        child: const Text(
+        child: Text(
           '☀️',
-          style: TextStyle(fontSize: 56),
+          style: TextStyle(fontSize: isShortHeight ? 36 : 56),
         ),
       ),
     );
@@ -836,6 +858,11 @@ class _CircularBackButtonState extends State<CircularBackButton> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final isShortHeight = MediaQuery.sizeOf(context).height < 500;
+    final size = isShortHeight ? 44.0 : 64.0;
+    final borderWidth = isShortHeight ? 3.0 : 5.0;
+    final iconSize = isShortHeight ? 24.0 : 38.0;
+
     return Listener(
       onPointerDown: (_) {
         _controller.forward();
@@ -852,14 +879,14 @@ class _CircularBackButtonState extends State<CircularBackButton> with SingleTick
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          width: 64,
-          height: 64,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
             border: Border.all(
               color: const Color(0xFFFF8E2B),
-              width: 5,
+              width: borderWidth,
             ),
             boxShadow: const [
               BoxShadow(
@@ -869,10 +896,10 @@ class _CircularBackButtonState extends State<CircularBackButton> with SingleTick
               ),
             ],
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_rounded,
-            color: Color(0xFFFF8E2B),
-            size: 38,
+            color: const Color(0xFFFF8E2B),
+            size: iconSize,
           ),
         ),
       ),

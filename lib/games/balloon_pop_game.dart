@@ -21,6 +21,7 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
   bool _isInitialized = false;
   double _balloonSpawnTimer = 0.0;
   int _popCount = 0;
+  bool _showExitHint = false;
   
   // Son güncelleme zamanı
   int _lastTimestamp = 0;
@@ -309,8 +310,29 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     HapticFeedback.lightImpact();
   }
 
+  void _showExitTooltip() {
+    if (_showExitHint) return;
+    setState(() {
+      _showExitHint = true;
+    });
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showExitHint = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final bool isShortScreen = size.height < 450;
+    final double buttonSize = isShortScreen ? 48.0 : 64.0;
+    final double iconSize = isShortScreen ? 26.0 : 36.0;
+    final double borderWidth = isShortScreen ? 3.0 : 4.0;
+    final double buttonPadding = isShortScreen ? 12.0 : 20.0;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2), // Açık, krem arka plan
       body: Stack(
@@ -361,40 +383,86 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
 
           // 3. Çocuk Dostu Büyük Geri Dönüş Butonu (Sol Üst)
           Positioned(
-            top: 20,
-            left: 20,
+            top: 0,
+            left: 0,
             child: SafeArea(
-              child: GestureDetector(
-                key: const ValueKey('balloon-game-back-button'),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF2FA7A0).withOpacity(0.2),
-                        blurRadius: 12,
-                        offset: const Offset(0, 5),
+              child: Padding(
+                padding: EdgeInsets.only(top: buttonPadding, left: buttonPadding),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      key: const ValueKey('balloon-game-back-button'),
+                      onTap: _showExitTooltip,
+                      onDoubleTap: () {
+                        HapticFeedback.mediumImpact();
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: buttonSize,
+                        height: buttonSize,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF2FA7A0).withOpacity(0.2),
+                              blurRadius: 12,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                          border: Border.all(
+                            color: const Color(0xFF2FA7A0).withOpacity(0.4),
+                            width: borderWidth,
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.arrow_back_rounded,
+                            size: iconSize,
+                            color: const Color(0xFF2FA7A0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (_showExitHint) ...[
+                      const SizedBox(width: 12),
+                      AnimatedOpacity(
+                        opacity: _showExitHint ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2FA7A0),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF2FA7A0).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.touch_app_rounded, color: Colors.amber.shade300, size: 20),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Çıkmak için çift dokun! 🌟',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
-                    border: Border.all(
-                      color: const Color(0xFF2FA7A0).withOpacity(0.4),
-                      width: 4,
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_back_rounded,
-                      size: 36,
-                      color: Color(0xFF2FA7A0),
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),

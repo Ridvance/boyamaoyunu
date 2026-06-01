@@ -93,6 +93,9 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
   bool _showHint = false;
   Offset _hintPosition = Offset.zero;
   
+  // Canvas Key
+  final GlobalKey _canvasKey = GlobalKey();
+  
   @override
   void initState() {
     super.initState();
@@ -265,7 +268,8 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     if (_isCompleted) return;
     _resetHintTimer();
 
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
     final localPosition = renderBox.globalToLocal(details.globalPosition);
 
     bool updated = false;
@@ -387,6 +391,29 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final currentTemplate = _templates[_currentTemplateIndex];
+    final mediaQuery = MediaQuery.of(context);
+    final isShortHeight = mediaQuery.size.height < 500;
+
+    // Icon button sizes (Back, Reset)
+    final double iconButtonSize = isShortHeight ? 48 : 68;
+    final double iconSize = isShortHeight ? 24 : 36;
+    final double iconButtonPadding = isShortHeight ? 8 : 16;
+
+    // Progress bar sizes
+    final double progressBarTop = isShortHeight ? 8 : 20;
+    final double progressBarWidth = isShortHeight ? 180 : 260;
+    final double progressBarHeight = isShortHeight ? 18 : 24;
+
+    // Template selection bar
+    final double templateBarLeft = isShortHeight ? 8 : 16;
+    final double templateBarPaddingVertical = isShortHeight ? 6 : 12;
+    final double templateBarPaddingHorizontal = isShortHeight ? 4 : 8;
+
+    // Next/Success button
+    final double successButtonRight = isShortHeight ? 16 : 32;
+    final double successButtonBottom = isShortHeight ? 16 : 32;
+    final double successButtonSize = isShortHeight ? 60 : 80;
+    final double successIconSize = isShortHeight ? 32 : 46;
 
     return Scaffold(
       body: Container(
@@ -403,51 +430,106 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
         child: SafeArea(
           child: Stack(
             children: [
-              // 1. Çizim Alanı (Merkez)
+              // 1. Çizim Alanı (Merkez) - FittedBox inside Center with Padding
               Positioned.fill(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final size = Size(constraints.maxWidth, constraints.maxHeight);
-                    if (_canvasSize != size) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (mounted) _buildDots(size);
-                      });
-                    }
-                    return GestureDetector(
-                      onPanStart: (details) => _resetHintTimer(),
-                      onPanUpdate: _onPanUpdate,
-                      onPanEnd: _onPanEnd,
-                      child: CustomPaint(
-                        size: size,
-                        painter: TracingPainter(
-                          dots: _dots,
-                          particles: _particles,
-                          themeColor: currentTemplate.themeColor,
-                          isCompleted: _isCompleted,
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: isShortHeight ? 40.0 : 80.0,
+                      bottom: isShortHeight ? 12.0 : 32.0,
+                      left: isShortHeight ? 80.0 : 32.0,
+                      right: isShortHeight ? 80.0 : 32.0,
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: SizedBox(
+                        width: 500,
+                        height: 500,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final size = Size(constraints.maxWidth, constraints.maxHeight);
+                            if (_canvasSize != size) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted) _buildDots(size);
+                              });
+                            }
+                            return GestureDetector(
+                              key: _canvasKey,
+                              onPanStart: (details) => _resetHintTimer(),
+                              onPanUpdate: _onPanUpdate,
+                              onPanEnd: _onPanEnd,
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: CustomPaint(
+                                      size: size,
+                                      painter: TracingPainter(
+                                        dots: _dots,
+                                        particles: _particles,
+                                        themeColor: currentTemplate.themeColor,
+                                        isCompleted: _isCompleted,
+                                      ),
+                                    ),
+                                  ),
+                                  // 7. İpucu Eli (Tutorial Hand)
+                                  if (_showHint && !_isCompleted)
+                                    Positioned(
+                                      left: _hintPosition.dx - 24,
+                                      top: _hintPosition.dy - 24,
+                                      child: IgnorePointer(
+                                        child: AnimatedBuilder(
+                                          animation: _pulseController,
+                                          builder: (context, child) {
+                                            return Transform.scale(
+                                              scale: 1.0 + (_pulseController.value * 0.15),
+                                              child: child,
+                                            );
+                                          },
+                                          child: Icon(
+                                            Icons.touch_app_rounded,
+                                            size: 48,
+                                            color: currentTemplate.themeColor.withOpacity(0.8),
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black.withOpacity(0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(2, 2),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
 
               // 2. İlerleme Çubuğu (Gökkuşağı / Şeker Barı) - Üst Orta
               Positioned(
-                top: 20,
+                top: progressBarTop,
                 left: 120,
                 right: 120,
                 child: Center(
-                  child: _buildProgressBar(currentTemplate.themeColor),
+                  child: _buildProgressBar(currentTemplate.themeColor, progressBarWidth, progressBarHeight),
                 ),
               ),
 
-              // 3. Sol Üst Geri Butonu (En az 64x64 dp)
+              // 3. Sol Üst Geri Butonu (En az 48x48 veya 68x68 dp)
               Positioned(
-                top: 16,
-                left: 16,
+                top: iconButtonPadding,
+                left: iconButtonPadding,
                 child: _buildIconButton(
                   icon: Icons.arrow_back_rounded,
                   color: Colors.redAccent,
+                  size: iconButtonSize,
+                  iconSize: iconSize,
                   onTap: () {
                     HapticFeedback.mediumImpact();
                     Navigator.pop(context);
@@ -457,11 +539,13 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
 
               // 4. Sağ Üst Yenileme (Reset) Butonu
               Positioned(
-                top: 16,
-                right: 16,
+                top: iconButtonPadding,
+                right: iconButtonPadding,
                 child: _buildIconButton(
                   icon: Icons.refresh_rounded,
                   color: Colors.orangeAccent,
+                  size: iconButtonSize,
+                  iconSize: iconSize,
                   onTap: () {
                     HapticFeedback.mediumImpact();
                     _resetCurrent();
@@ -469,14 +553,17 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                 ),
               ),
 
-              // 5. Sol Orta - Şablon Seçim Barı (Dikey Panel)
+              // 5. Sol Orta - Şablon Seçim Barı (Dikey Panel) - Centered vertically
               Positioned(
-                left: 16,
-                top: 100,
-                bottom: 100,
+                left: templateBarLeft,
+                top: 0,
+                bottom: 0,
                 child: Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: EdgeInsets.symmetric(
+                      vertical: templateBarPaddingVertical,
+                      horizontal: templateBarPaddingHorizontal,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.85),
                       borderRadius: BorderRadius.circular(30),
@@ -494,8 +581,8 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                         final temp = _templates[index];
                         final isSelected = index == _currentTemplateIndex;
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: _buildTemplateSelector(temp, index, isSelected),
+                          padding: EdgeInsets.symmetric(vertical: isShortHeight ? 4.0 : 8.0),
+                          child: _buildTemplateSelector(temp, index, isSelected, isShortHeight),
                         );
                       }),
                     ),
@@ -506,8 +593,8 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
               // 6. Başarı Durumunda Sağda Beliren Zıplayan "Sonraki" Butonu
               if (_isCompleted)
                 Positioned(
-                  right: 32,
-                  bottom: 32,
+                  right: successButtonRight,
+                  bottom: successButtonBottom,
                   child: ScaleTransition(
                     scale: Tween<double>(begin: 0.9, end: 1.1).animate(
                       CurvedAnimation(
@@ -515,37 +602,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                         curve: Curves.easeInOut,
                       ),
                     ),
-                    child: _buildSuccessNextButton(),
-                  ),
-                ),
-
-              // 7. İpucu Eli (Tutorial Hand)
-              if (_showHint && !_isCompleted)
-                Positioned(
-                  left: _hintPosition.dx - 24,
-                  top: _hintPosition.dy - 24,
-                  child: IgnorePointer(
-                    child: AnimatedBuilder(
-                      animation: _pulseController,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: 1.0 + (_pulseController.value * 0.15),
-                          child: child,
-                        );
-                      },
-                      child: Icon(
-                        Icons.touch_app_rounded,
-                        size: 48,
-                        color: currentTemplate.themeColor.withOpacity(0.8),
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: _buildSuccessNextButton(successButtonSize, successIconSize),
                   ),
                 ),
             ],
@@ -560,12 +617,14 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     required IconData icon,
     required Color color,
     required VoidCallback onTap,
+    required double size,
+    required double iconSize,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 68,
-        height: 68,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -578,15 +637,20 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
           ],
         ),
         child: Center(
-          child: Icon(icon, color: Colors.white, size: 36),
+          child: Icon(icon, color: Colors.white, size: iconSize),
         ),
       ),
     );
   }
 
   // Sol taraftaki şablon seçim butonları
-  Widget _buildTemplateSelector(TracingTemplate template, int index, bool isSelected) {
-    final double size = isSelected ? 72.0 : 60.0;
+  Widget _buildTemplateSelector(TracingTemplate template, int index, bool isSelected, bool isShortHeight) {
+    final double size = isSelected
+        ? (isShortHeight ? 52.0 : 72.0)
+        : (isShortHeight ? 42.0 : 60.0);
+    final double iconSize = isSelected
+        ? (isShortHeight ? 26.0 : 36.0)
+        : (isShortHeight ? 20.0 : 28.0);
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
@@ -612,7 +676,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
           child: Icon(
             template.icon,
             color: isSelected ? Colors.white : Colors.grey[600],
-            size: isSelected ? 36 : 28,
+            size: iconSize,
           ),
         ),
       ),
@@ -620,17 +684,17 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
   }
 
   // İlerleme Çubuğu tasarımı
-  Widget _buildProgressBar(Color themeColor) {
+  Widget _buildProgressBar(Color themeColor, double width, double height) {
     if (_dots.isEmpty) return const SizedBox.shrink();
     final int tracedCount = _dots.where((d) => d.isTraced).length;
     final double ratio = tracedCount / _dots.length;
 
     return Container(
-      width: 260,
-      height: 24,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(height / 2),
         border: Border.all(color: Colors.white, width: 2),
       ),
       child: Stack(
@@ -643,7 +707,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                 gradient: LinearGradient(
                   colors: [themeColor.withOpacity(0.7), themeColor],
                 ),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(height / 2 - 2),
               ),
             ),
           ),
@@ -655,7 +719,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
             child: Icon(
               Icons.star_rounded,
               color: ratio >= 0.85 ? Colors.amber : Colors.grey[400],
-              size: 16,
+              size: height - 8,
             ),
           ),
         ],
@@ -664,15 +728,15 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
   }
 
   // Başarıyla tamamlandığında gösterilecek sevimli "Sonraki" butonu
-  Widget _buildSuccessNextButton() {
+  Widget _buildSuccessNextButton(double size, double iconSize) {
     return GestureDetector(
       onTap: () {
         HapticFeedback.mediumImpact();
         _nextTemplate();
       },
       child: Container(
-        width: 80,
-        height: 80,
+        width: size,
+        height: size,
         decoration: const BoxDecoration(
           color: Colors.amber,
           shape: BoxShape.circle,
@@ -684,11 +748,11 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
             ),
           ],
         ),
-        child: const Center(
+        child: Center(
           child: Icon(
             Icons.arrow_forward_rounded,
             color: Colors.white,
-            size: 46,
+            size: iconSize,
           ),
         ),
       ),

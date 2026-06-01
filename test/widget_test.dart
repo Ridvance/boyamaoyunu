@@ -97,8 +97,10 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('game-card-balloon_pop')));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
-    expect(find.byKey(const ValueKey('balloon-game-back-button')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('balloon-game-back-button')));
+    final backBtn = find.byKey(const ValueKey('balloon-game-back-button'));
+    await tester.tap(backBtn);
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.tap(backBtn);
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
 

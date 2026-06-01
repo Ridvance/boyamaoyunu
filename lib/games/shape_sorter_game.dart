@@ -511,6 +511,14 @@ class ShapeSorterGame extends StatefulWidget {
 }
 
 class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderStateMixin {
+  static const double _itemContainerSize = 100.0;
+  static const double _shapeSize = 72.0;
+  static const double _itemPadding = 4.0;
+  static const double _gridSpacingHorizontal = 8.0;
+  static const double _gridSpacingVertical = 4.0;
+
+  final GlobalKey _playAreaKey = GlobalKey();
+
   List<ShapeItem> _leftItems = [];
   List<ShapeItem> _rightItems = [];
 
@@ -589,8 +597,9 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
   }
 
   void _handleDragCancel(ShapeItem item, Offset cancelOffset) {
-    final RenderBox? renderBox = item.key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) {
+    final RenderBox? playAreaBox = _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? itemBox = item.key.currentContext?.findRenderObject() as RenderBox?;
+    if (playAreaBox == null || itemBox == null) {
       setState(() {
         item.isDragging = false;
         item.isReturning = false;
@@ -598,8 +607,13 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
       return;
     }
 
-    // 110x110 yuvanın içinde 80x80 şekil tam ortadadır (padding = (110-80)/2 = 15px)
-    final targetOffset = renderBox.localToGlobal(Offset.zero) + const Offset(15, 15);
+    // Global cancelOffset'i oyun alanı lokal koordinatlarına çevir
+    final localStartOffset = playAreaBox.globalToLocal(cancelOffset);
+
+    // Hedef kutunun oyun alanı üzerindeki lokal pozisyonunu bul
+    // Ortalamak için paddingOffset ekliyoruz
+    const double paddingOffset = (_itemContainerSize - _shapeSize) / 2;
+    final localTargetOffset = playAreaBox.globalToLocal(itemBox.localToGlobal(const Offset(paddingOffset, paddingOffset)));
 
     setState(() {
       item.isDragging = false;
@@ -610,8 +624,8 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
     anim = ActiveReturnAnimation(
       type: item.type,
       color: item.color,
-      startOffset: cancelOffset,
-      endOffset: targetOffset,
+      startOffset: localStartOffset,
+      endOffset: localTargetOffset,
       vsync: this,
       onUpdate: () {
         setState(() {});
@@ -735,14 +749,14 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
     final bool shouldShowShape = !item.isPlaced && !item.isReturning && !item.isDragging;
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(_itemPadding),
       child: Container(
         key: item.key,
-        width: 110,
-        height: 110,
+        width: _itemContainerSize,
+        height: _itemContainerSize,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: Colors.white.withOpacity(0.6),
             width: 2,
@@ -759,7 +773,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                       child: ShapeWidget(
                         type: item.type,
                         color: item.color,
-                        size: 80,
+                        size: _shapeSize,
                       ),
                     ),
                   ),
@@ -768,7 +782,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                     child: ShapeWidget(
                       type: item.type,
                       color: item.color,
-                      size: 80,
+                      size: _shapeSize,
                     ),
                   ),
                   onDragStarted: () {
@@ -787,7 +801,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                   child: ShapeWidget(
                     type: item.type,
                     color: item.color,
-                    size: 80,
+                    size: _shapeSize,
                   ),
                 )
               : Container(),
@@ -798,7 +812,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   Widget _buildRightItem(ShapeItem item) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(_itemPadding),
       child: DragTarget<ShapeType>(
         onWillAcceptWithDetails: (details) {
           return details.data == item.type && !item.isPlaced;
@@ -812,12 +826,13 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
           });
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            final RenderBox? renderBox = item.key.currentContext?.findRenderObject() as RenderBox?;
-            if (renderBox != null) {
-              final targetOffset = renderBox.localToGlobal(Offset.zero);
-              final size = renderBox.size;
-              final centerOffset = targetOffset + Offset(size.width / 2, size.height / 2);
-              _startSparkle(centerOffset, item.color);
+            final RenderBox? playAreaBox = _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
+            final RenderBox? itemBox = item.key.currentContext?.findRenderObject() as RenderBox?;
+            if (playAreaBox != null && itemBox != null) {
+              final localCenter = playAreaBox.globalToLocal(
+                itemBox.localToGlobal(Offset(itemBox.size.width / 2, itemBox.size.height / 2)),
+              );
+              _startSparkle(localCenter, item.color);
             }
             _checkLevelCompletion();
           });
@@ -827,13 +842,13 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
           return Container(
             key: item.key,
-            width: 110,
-            height: 110,
+            width: _itemContainerSize,
+            height: _itemContainerSize,
             decoration: BoxDecoration(
               color: isHovered 
                   ? item.color.withOpacity(0.2) 
                   : Colors.white.withOpacity(0.25),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isHovered 
                     ? item.color.withOpacity(0.65) 
@@ -845,7 +860,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
               child: ShapeWidget(
                 type: item.type,
                 color: item.color,
-                size: 80,
+                size: _shapeSize,
                 isShadow: !item.isPlaced,
               ),
             ),
@@ -857,22 +872,25 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   Widget _buildLeftGrid() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildLeftItem(_leftItems[0]),
-            const SizedBox(width: 12),
+            const SizedBox(width: _gridSpacingHorizontal),
             _buildLeftItem(_leftItems[1]),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: _gridSpacingVertical),
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildLeftItem(_leftItems[2]),
-            const SizedBox(width: 12),
+            const SizedBox(width: _gridSpacingHorizontal),
             _buildLeftItem(_leftItems[3]),
           ],
         ),
@@ -882,22 +900,25 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   Widget _buildRightGrid() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildRightItem(_rightItems[0]),
-            const SizedBox(width: 12),
+            const SizedBox(width: _gridSpacingHorizontal),
             _buildRightItem(_rightItems[1]),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: _gridSpacingVertical),
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildRightItem(_rightItems[2]),
-            const SizedBox(width: 12),
+            const SizedBox(width: _gridSpacingHorizontal),
             _buildRightItem(_rightItems[3]),
           ],
         ),
@@ -927,29 +948,74 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
           children: [
             // Oyun Alanı (Yatay yerleşim)
             SafeArea(
-              child: Row(
-                children: [
-                  // Sol Bölüm (2x2 Renkli Şekiller)
-                  Expanded(
-                    child: Center(child: _buildLeftGrid()),
-                  ),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Container(
+                    key: _playAreaKey,
+                    width: 600,
+                    height: 260,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Row(
+                          children: [
+                            // Sol Bölüm (2x2 Renkli Şekiller)
+                            Expanded(
+                              child: Center(child: _buildLeftGrid()),
+                            ),
 
-                  // Orta İkon / Süreç Belirteci (Sevimli bir yıldız)
-                  Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    child: const Icon(
-                      Icons.star_rounded,
-                      size: 40,
-                      color: Colors.white54,
+                            // Orta İkon / Süreç Belirteci (Sevimli bir yıldız)
+                            Container(
+                              width: 80,
+                              alignment: Alignment.center,
+                              child: const Icon(
+                                Icons.star_rounded,
+                                size: 40,
+                                color: Colors.white54,
+                              ),
+                            ),
+
+                            // Sağ Bölüm (2x2 Gölgeler)
+                            Expanded(
+                              child: Center(child: _buildRightGrid()),
+                            ),
+                          ],
+                        ),
+
+                        // Yumuşak Geri Dönüş Animasyonu Katmanı
+                        ..._returningShapes.map((anim) {
+                          return AnimatedBuilder(
+                            animation: anim.animation,
+                            builder: (context, child) {
+                              return Positioned(
+                                left: anim.animation.value.dx,
+                                top: anim.animation.value.dy,
+                                child: IgnorePointer(
+                                  child: ShapeWidget(
+                                    type: anim.type,
+                                    color: anim.color,
+                                    size: _shapeSize,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }),
+
+                        // Parıldama (Sparkle) Efekti Katmanı
+                        if (_sparkles.isNotEmpty)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: CustomPaint(
+                                painter: SparklePainter(_sparkles),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-
-                  // Sağ Bölüm (2x2 Gölgeler)
-                  Expanded(
-                    child: Center(child: _buildRightGrid()),
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -963,36 +1029,6 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                 ),
               ),
             ),
-
-            // Yumuşak Geri Dönüş Animasyonu Katmanı
-            ..._returningShapes.map((anim) {
-              return AnimatedBuilder(
-                animation: anim.animation,
-                builder: (context, child) {
-                  return Positioned(
-                    left: anim.animation.value.dx,
-                    top: anim.animation.value.dy,
-                    child: IgnorePointer(
-                      child: ShapeWidget(
-                        type: anim.type,
-                        color: anim.color,
-                        size: 80,
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
-
-            // Parıldama (Sparkle) Efekti Katmanı
-            if (_sparkles.isNotEmpty)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: CustomPaint(
-                    painter: SparklePainter(_sparkles),
-                  ),
-                ),
-              ),
 
             // Kutlama Konfeti Katmanı
             if (_isCelebrationActive)

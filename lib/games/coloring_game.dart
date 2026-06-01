@@ -218,27 +218,27 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 72,
-        height: 72,
+        width: 64,
+        height: 64,
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFFFFE082) : Colors.white,
           shape: BoxShape.circle,
           border: Border.all(
             color: isSelected ? const Color(0xFFFFB300) : const Color(0xFFE0E0E0),
-            width: isSelected ? 4 : 2,
+            width: isSelected ? 3 : 2,
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Center(
           child: SizedBox(
-            width: 44,
-            height: 44,
+            width: 36,
+            height: 36,
             child: CustomPaint(
               painter: TemplateMiniPainter(template),
             ),
@@ -257,46 +257,44 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           children: [
             // Left Column: Navigation & Templates Selection
             Container(
-              width: 100,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                children: [
-                  const SizedBox(height: 8),
-                  BouncyButton(
-                    size: 54,
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(
-                      Icons.arrow_back_rounded,
-                      size: 32,
-                      color: Color(0xFF5C5C5C),
-                    ),
-                  ),
-                  const Spacer(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(_templates.length, (index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: _buildTemplateButton(index, _templates[index]),
-                          );
-                        }),
+              width: 80,
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 4),
+                    BouncyButton(
+                      size: 48,
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 28,
+                        color: Color(0xFF5C5C5C),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                ],
+                    const SizedBox(height: 12),
+                    ...List.generate(_templates.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: _buildTemplateButton(index, _templates[index]),
+                      );
+                    }),
+                    const SizedBox(height: 4),
+                  ],
+                ),
               ),
             ),
 
             // Middle Column: Drawing Board
             Expanded(
               child: Center(
-                child: AspectRatio(
-                  aspectRatio: 1.0,
+                child: FittedBox(
+                  fit: BoxFit.contain,
                   child: Container(
-                    margin: const EdgeInsets.all(12),
+                    width: 400,
+                    height: 400,
+                    margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(32),
@@ -345,76 +343,72 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
 
             // Right Column: Palette & Trash
             Container(
-              width: 120,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 12),
-                  // Reset Button
-                  BouncyButton(
-                    size: 54,
-                    onTap: _resetCurrentTemplate,
-                    child: const Icon(
-                      Icons.refresh_rounded,
-                      size: 28,
-                      color: Color(0xFF5C5C5C),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Colors Grid (2 columns Wrap)
-                  Expanded(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          alignment: WrapAlignment.center,
-                          children: List.generate(_paletteColors.length, (index) {
-                            final color = _paletteColors[index];
-                            final isSelected = _selectedColor == color;
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _selectedColor = color;
-                                });
-                                HapticFeedback.selectionClick();
-                              },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
-                                width: isSelected ? 48 : 42,
-                                height: isSelected ? 48 : 42,
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isSelected ? Colors.black : Colors.white,
-                                    width: isSelected ? 3 : 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.12),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: color == Colors.white
-                                    ? Icon(
-                                        Icons.auto_fix_high_rounded,
-                                        size: isSelected ? 24 : 18,
-                                        color: Colors.grey.shade700,
-                                      )
-                                    : null,
-                              ),
-                            );
-                          }),
-                        ),
+              width: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 4),
+                    // Reset Button
+                    BouncyButton(
+                      size: 48,
+                      onTap: _resetCurrentTemplate,
+                      child: const Icon(
+                        Icons.refresh_rounded,
+                        size: 24,
+                        color: Color(0xFF5C5C5C),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
+                    const SizedBox(height: 12),
+                    // Colors Grid (2 columns Wrap)
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      alignment: WrapAlignment.center,
+                      children: List.generate(_paletteColors.length, (index) {
+                        final color = _paletteColors[index];
+                        final isSelected = _selectedColor == color;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedColor = color;
+                            });
+                            HapticFeedback.selectionClick();
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            width: isSelected ? 40 : 36,
+                            height: isSelected ? 40 : 36,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected ? Colors.black : Colors.white,
+                                width: isSelected ? 2.5 : 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.12),
+                                  blurRadius: 3,
+                                  offset: const Offset(0, 1.5),
+                                ),
+                              ],
+                            ),
+                            child: color == Colors.white
+                                ? Icon(
+                                    Icons.auto_fix_high_rounded,
+                                    size: isSelected ? 20 : 16,
+                                    color: Colors.grey.shade700,
+                                  )
+                                : null,
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                ),
               ),
             ),
           ],
