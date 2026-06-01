@@ -27,6 +27,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   double _tongueProgress = 0.0;
   Offset? _tongueTarget;
   bool _isEating = false;
+  bool _isRetracting = false;
   ChameleonFly? _targetEatingFly;
   bool _isCamouflaged = false;
 
@@ -143,11 +144,13 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       double closestDist = 9999.0;
       Offset targetEyePos = const Offset(400, 200);
 
-      // Kamo'nun ağız konumu (ChameleonPainter'daki mouthPos'a denk)
-      final Offset mouthPos = const Offset(150 + 82, 180 + 20);
+      final double width = MediaQuery.sizeOf(context).width;
+      final double height = MediaQuery.sizeOf(context).height;
+      final Offset chameleonPos = Offset(width * 0.22, height * 0.5);
+      final Offset mouthPos = Offset(chameleonPos.dx + 82, chameleonPos.dy + 20);
 
       for (var fly in _flies) {
-        fly.update(dt, _time, MediaQuery.sizeOf(context).width, MediaQuery.sizeOf(context).height);
+        fly.update(dt, _time, width, height);
         
         final double dist = (fly.position - mouthPos).distance;
         if (dist < closestDist) {
@@ -166,11 +169,17 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
     // 2. Dil fırlatma ve Sinek yakalama animasyonu
     if (_isEating && _tongueTarget != null) {
-      if (_tongueProgress < 1.0 && _targetEatingFly != null) {
+      final double width = MediaQuery.sizeOf(context).width;
+      final double height = MediaQuery.sizeOf(context).height;
+      final Offset chameleonPos = Offset(width * 0.22, height * 0.5);
+      final Offset mouthPos = Offset(chameleonPos.dx + 82, chameleonPos.dy + 20);
+
+      if (!_isRetracting && _targetEatingFly != null) {
         // Dil hedefe doğru gider
         _tongueProgress += 5.0 * dt;
         if (_tongueProgress >= 1.0) {
           _tongueProgress = 1.0;
+          _isRetracting = true;
           // Sineği dille yakala, listeden çıkar
           _flies.remove(_targetEatingFly);
           _targetEatingFly!.position = _tongueTarget!; // Dille hizala
@@ -180,13 +189,13 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
         _tongueProgress -= 4.0 * dt;
         if (_targetEatingFly != null) {
           // Sineğin pozisyonu dil ucuna bağlı geri çekilir
-          final Offset mouthPos = const Offset(150 + 82, 180 + 20);
           _targetEatingFly!.position = mouthPos + (_tongueTarget! - mouthPos) * _tongueProgress;
         }
 
         if (_tongueProgress <= 0.0) {
           _tongueProgress = 0.0;
           _isEating = false;
+          _isRetracting = false;
           _tongueTarget = null;
           
           if (_targetEatingFly != null) {
@@ -407,6 +416,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   void _setupFlyHuntLevel() {
     _flyHuntEatenColors.clear();
     _flies.clear();
+    _isEating = false;
+    _isRetracting = false;
+    _tongueProgress = 0.0;
+    _tongueTarget = null;
+    _targetEatingFly = null;
 
     final levels = [
       {'name': 'Turuncu', 'color': mixedColors['Turuncu']!, 'needs': ['Kırmızı', 'Sarı']},
@@ -455,6 +469,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     // Kamo'nun dili hedefe kilitlenir
     setState(() {
       _isEating = true;
+      _isRetracting = false;
       _tongueProgress = 0.0;
       _tongueTarget = fly.position;
       _targetEatingFly = fly;
@@ -728,6 +743,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                       if (_currentMode != 'menu') {
                         setState(() {
                           _currentMode = 'menu';
+                          _isEating = false;
+                          _isRetracting = false;
+                          _tongueProgress = 0.0;
+                          _tongueTarget = null;
+                          _targetEatingFly = null;
                         });
                       } else {
                         Navigator.pop(context);
