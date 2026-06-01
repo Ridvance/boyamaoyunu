@@ -308,6 +308,7 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     
     // Konfeti patlamasında daha güçlü bir titreşim verelim
     HapticFeedback.lightImpact();
+    AudioSynth.playSparkleSound();
   }
 
   void _showExitTooltip() {

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../services/audio_synth.dart';
 
 // Şekil tipleri
 enum ShapeType {
@@ -684,6 +685,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
     setState(() {
       _isCelebrationActive = true;
     });
+    AudioSynth.playSparkleSound();
 
     final random = Random();
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -824,6 +826,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
             final leftItem = _leftItems.firstWhere((left) => left.type == item.type);
             leftItem.isPlaced = true;
           });
+          AudioSynth.playRaindropSound();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final RenderBox? playAreaBox = _playAreaKey.currentContext?.findRenderObject() as RenderBox?;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/audio_synth.dart';
 
 /// Şablon Tipleri
 enum ShapeType { circle, star, house }
@@ -323,6 +324,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
 
   void _triggerSuccess() {
     HapticFeedback.heavyImpact();
+    AudioSynth.playSparkleSound();
     // Yıldız patlaması oluşturma
     final random = Random();
     final template = _templates[_currentTemplateIndex];

@@ -7,6 +7,7 @@ import 'games/balloon_pop_game.dart';
 import 'games/shape_sorter_game.dart';
 import 'games/sound_board_game.dart';
 import 'games/magic_colors_game.dart';
+import 'services/audio_synth.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -149,6 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         builder: (context) => MultiFingerParentGate(
                           onUnlocked: () {
                             Navigator.of(context).pop();
+                            AudioSynth.playSparkleSound();
                             _openParentArea();
                           },
                         ),
@@ -248,6 +250,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: InkWell(
         key: ValueKey('game-card-$key'),
         onTap: () {
+          AudioSynth.playSparkleSound();
           Navigator.push<void>(
             context,
             MaterialPageRoute(

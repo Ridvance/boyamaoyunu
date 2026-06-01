@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/audio_synth.dart';
 
 class ColoringPart {
   final String id;
@@ -76,6 +77,7 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
   final List<Particle> _particles = [];
   late AnimationController _particleController;
   final GlobalKey _canvasKey = GlobalKey();
+  final Set<int> _celebratedTemplates = {};
 
   @override
   void initState() {
@@ -155,11 +157,13 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
 
   void _resetCurrentTemplate() {
     setState(() {
+      _celebratedTemplates.remove(_selectedTemplateIndex);
       for (var part in _templates[_selectedTemplateIndex].parts) {
         part.color = part.defaultColor;
       }
     });
     HapticFeedback.vibrate();
+    AudioSynth.playSparkleSound();
 
     // Trigger cleanup fireworks
     final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
@@ -182,11 +186,32 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
             part.color = _selectedColor;
           });
           HapticFeedback.mediumImpact();
+          AudioSynth.playRaindropSound();
           // Use bright colors for particle explosion even if eraser (white) is used
           final explosionColor = _selectedColor == Colors.white
               ? const Color(0xFFFFD13B)
               : _selectedColor;
           _spawnParticles(localPosition, explosionColor);
+
+          // Check if template is fully colored
+          final allColored = template.parts.every((p) => p.color != Colors.white);
+          if (allColored && !_celebratedTemplates.contains(_selectedTemplateIndex)) {
+            _celebratedTemplates.add(_selectedTemplateIndex);
+            HapticFeedback.heavyImpact();
+            AudioSynth.playSparkleSound();
+
+            Future.delayed(const Duration(milliseconds: 150), () {
+              if (mounted) {
+                final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+                if (renderBox != null) {
+                  final size = renderBox.size;
+                  _spawnParticles(Offset(size.width * 0.3, size.height * 0.45), const Color(0xFFFF4B4B));
+                  _spawnParticles(Offset(size.width * 0.5, size.height * 0.5), const Color(0xFFFFD13B));
+                  _spawnParticles(Offset(size.width * 0.7, size.height * 0.45), const Color(0xFF3B82F6));
+                }
+              }
+            });
+          }
         }
         break;
       }
