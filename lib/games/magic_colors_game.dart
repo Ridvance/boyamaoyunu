@@ -1095,7 +1095,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
   Widget _buildInteractivePanel() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -1113,10 +1113,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 24),
+          const SizedBox(height: 6),
           // Yönerge Kutusu
           _buildInstructionBox(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
           // Seçili Moda Göre İlgili Arayüz
           Expanded(
@@ -1151,11 +1151,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: boxColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: boxColor.withOpacity(0.4), width: 3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: boxColor.withOpacity(0.4), width: 2.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1163,16 +1163,16 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
           Text(
             title,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: FontWeight.w900,
               color: boxColor,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             sub,
             style: const TextStyle(
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: FontWeight.bold,
               color: Color(0xFF53666C),
             ),
@@ -1189,13 +1189,13 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
         if (_currentMode == 'camouflage') ...[
           Row(
             children: [
-              const Text('⏰ ', style: TextStyle(fontSize: 16)),
+              const Text('⏰ ', style: TextStyle(fontSize: 14)),
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
                     value: _starTimer,
-                    minHeight: 12,
+                    minHeight: 8,
                     backgroundColor: const Color(0xFFE6ECE8),
                     color: _starTimer > 0.6
                         ? const Color(0xFF4CAF50)
@@ -1205,7 +1205,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
         ],
 
         // Laboratuvar Kabı ve Karışan Renkler
@@ -1215,21 +1215,21 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
             children: [
               // Laboratuvar Kabı Görseli (Beaker)
               Container(
-                width: 140,
-                height: 160,
+                width: 90,
+                height: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(50),
-                    bottomRight: Radius.circular(50),
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
                   ),
-                  border: Border.all(color: const Color(0xFF2FA7A0), width: 5),
+                  border: Border.all(color: const Color(0xFF2FA7A0), width: 4),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFF2FA7A0).withOpacity(0.15),
-                      blurRadius: 12,
+                      blurRadius: 8,
                     ),
                   ],
                 ),
@@ -1240,11 +1240,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                     if (_beakerSlots.isNotEmpty)
                       ClipRRect(
                         borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(42),
-                          bottomRight: Radius.circular(42),
+                          bottomLeft: Radius.circular(28),
+                          bottomRight: Radius.circular(28),
                         ),
                         child: Container(
-                          height: 50.0 * _beakerSlots.length,
+                          height: 30.0 * _beakerSlots.length,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: _beakerSlots.length == 1
@@ -1257,18 +1257,18 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                     // Köpürme baloncukları
                     if (_beakerSlots.isNotEmpty)
                       const Positioned(
-                        top: 60,
-                        child: Text('🫧', style: TextStyle(fontSize: 24)),
+                        top: 35,
+                        child: Text('🫧', style: TextStyle(fontSize: 16)),
                       ),
 
                     const Positioned(
-                      top: 15,
+                      top: 8,
                       child: Text(
                         'LAB',
                         style: TextStyle(
                           color: Color(0xFF2FA7A0),
                           fontWeight: FontWeight.w900,
-                          fontSize: 14,
+                          fontSize: 11,
                         ),
                       ),
                     ),
@@ -1276,7 +1276,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 ),
               ),
 
-              const SizedBox(width: 24),
+              const SizedBox(width: 16),
 
               // Slot Yuvaları ve Kontroller
               Column(
@@ -1285,40 +1285,46 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 children: [
                   const Text(
                     'Karışım Slotları:',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF53666C)),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF53666C)),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      _buildSlotTile(0),
+                      const SizedBox(width: 8),
+                      const Text('+', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 8),
+                      _buildSlotTile(1),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildSlotTile(0),
-                      const SizedBox(width: 12),
-                      const Text('+', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 12),
-                      _buildSlotTile(1),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
                       ElevatedButton.icon(
                         onPressed: _beakerSlots.isEmpty ? null : _clearBeaker,
-                        icon: const Icon(Icons.delete_outline),
-                        label: const Text('Temizle'),
+                        icon: const Icon(Icons.delete_outline, size: 14),
+                        label: const Text('Temizle', style: TextStyle(fontSize: 11)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF2D55),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       ElevatedButton.icon(
                         onPressed: _beakerSlots.isEmpty ? null : _mixBeaker,
-                        icon: const Icon(Icons.science),
-                        label: const Text('Karıştır!'),
+                        icon: const Icon(Icons.science, size: 14),
+                        label: const Text('Karıştır!', style: TextStyle(fontSize: 11)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF4CAF50),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
                     ],
@@ -1338,21 +1344,21 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   Widget _buildSlotTile(int index) {
     final bool filled = _beakerSlots.length > index;
     return Container(
-      width: 54,
-      height: 54,
+      width: 42,
+      height: 42,
       decoration: BoxDecoration(
         color: filled ? _beakerSlots[index]['color'] : Colors.grey[100],
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: filled ? Colors.white : const Color(0xFF2FA7A0).withOpacity(0.3),
-          width: 3,
+          width: 2.5,
         ),
         boxShadow: [
           if (filled)
             BoxShadow(
               color: _beakerSlots[index]['color'].withOpacity(0.4),
-              blurRadius: 5,
-              offset: const Offset(0, 2),
+              blurRadius: 4,
+              offset: const Offset(0, 1.5),
             ),
         ],
       ),
@@ -1360,7 +1366,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
         child: Text(
           filled ? '' : '?',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.grey[400],
           ),
@@ -1371,11 +1377,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
   Widget _buildPaletteRow() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFBF2),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFFFCC00).withOpacity(0.3), width: 3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFFFCC00).withOpacity(0.3), width: 2),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1385,29 +1391,29 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
             child: Column(
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: e.value,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: e.key == 'Beyaz' ? Colors.grey[300]! : Colors.white,
-                      width: 3.5,
+                      width: 2.5,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 3),
+                        blurRadius: 3,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   e.key,
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF233238),
                   ),
@@ -1426,30 +1432,33 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       children: [
         Expanded(
           child: Center(
-            child: Container(
-              width: 320,
-              height: 240,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: const Color(0xFFFF2D55).withOpacity(0.3), width: 4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: _coloringParts.map((part) {
-                  return GestureDetector(
-                    onTap: () => _onColoringPartTapped(part),
-                    child: CustomPaint(
-                      painter: PartPainter(part: part),
-                      size: const Size(320, 240),
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Container(
+                width: 320,
+                height: 240,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: const Color(0xFFFF2D55).withOpacity(0.3), width: 4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 8,
                     ),
-                  );
-                }).toList(),
+                  ],
+                ),
+                child: Stack(
+                  children: _coloringParts.map((part) {
+                    return GestureDetector(
+                      onTap: () => _onColoringPartTapped(part),
+                      child: CustomPaint(
+                        painter: PartPainter(part: part),
+                        size: const Size(320, 240),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
@@ -1457,30 +1466,32 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
         // Alt tarafa laboratuvar karıştırma paletini küçük şekilde gömüyoruz
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton.icon(
                 onPressed: _clearBeaker,
-                icon: const Icon(Icons.delete_outline, size: 16),
-                label: const Text('Sil', style: TextStyle(fontSize: 12)),
+                icon: const Icon(Icons.delete_outline, size: 12),
+                label: const Text('Sil', style: TextStyle(fontSize: 10)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF2D55),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
               ...baseColors.entries.map((e) {
                 return InkWell(
                   onTap: () => _addPaintToBeaker(e.key, e.value),
                   child: Container(
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: e.value,
                       shape: BoxShape.circle,
@@ -1491,10 +1502,13 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
               }),
               IconButton.filledTonal(
                 onPressed: _mixBeaker,
-                icon: const Icon(Icons.science, size: 16),
+                icon: const Icon(Icons.science, size: 14),
                 style: IconButton.styleFrom(
                   backgroundColor: const Color(0xFF4CAF50),
                   foregroundColor: Colors.white,
+                  padding: const EdgeInsets.all(6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
             ],
