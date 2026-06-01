@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:web/web.dart' as web;
 
 web.AudioContext? _audioContext;
@@ -161,6 +162,56 @@ void playAnimalSound(String animalEmoji) {
       
       osc.start(now);
       osc.stop(now + 0.85);
+    }
+    else if (animalEmoji == '🐑') {
+      // Sheep "Baa": Trembling medium pitch tone
+      final osc = ctx.createOscillator();
+      final gain = ctx.createGain();
+      
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(240, now);
+      osc.frequency.linearRampToValueAtTime(180, now + 0.65);
+      
+      // Simulating LFO vibrato with rapid scheduled frequency updates
+      for (double t = 0; t <= 0.65; t += 0.05) {
+        final lfoVal = 15.0 * sin(2 * pi * 14 * t);
+        final freqAtT = (240.0 - (240.0 - 180.0) * (t / 0.65)) + lfoVal;
+        osc.frequency.setValueAtTime(freqAtT, now + t);
+      }
+      
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.45);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start(now);
+      osc.stop(now + 0.65);
+    }
+    else if (animalEmoji == '🐥') {
+      // Chick "Cheep": Two quick high-pitched sweeps
+      void cheep(double startTime) {
+        final osc = ctx.createOscillator();
+        final gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1500, startTime);
+        osc.frequency.exponentialRampToValueAtTime(3200, startTime + 0.08);
+        
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.2, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.08);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(startTime);
+        osc.stop(startTime + 0.08);
+      }
+      cheep(now);
+      cheep(now + 0.15);
     }
   } catch (e) {
     // Fail silently in case of unsupported platforms/states

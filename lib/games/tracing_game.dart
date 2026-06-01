@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 
 /// Şablon Tipleri
-enum ShapeType { circle, star, house }
+enum ShapeType { circle, star, house, square, heart }
 
 /// Parçacık Sınıfı (Başarı Animasyonu Yıldızları)
 class TracingParticle {
@@ -195,6 +195,40 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       points: housePoints,
       themeColor: const Color(0xFF4CAF50), // Yeşil
       icon: Icons.home_outlined,
+    ));
+
+    // 4. Kare Şablonu
+    final squarePoints = const [
+      Offset(0.25, 0.25), // Sol üst
+      Offset(0.75, 0.25), // Sağ üst
+      Offset(0.75, 0.75), // Sağ alt
+      Offset(0.25, 0.75), // Sol alt
+      Offset(0.25, 0.25), // Sol üst (kapandı)
+    ];
+    _templates.add(TracingTemplate(
+      type: ShapeType.square,
+      points: squarePoints,
+      themeColor: const Color(0xFF2B86FF), // Mavi
+      icon: Icons.square_outlined,
+    ));
+
+    // 5. Kalp Şablonu
+    final heartPoints = <Offset>[];
+    const int heartSegments = 40;
+    for (int i = 0; i <= heartSegments; i++) {
+      final double t = (i * 2 * pi) / heartSegments;
+      final double x = 16 * sin(t) * sin(t) * sin(t);
+      final double y = 13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t);
+      heartPoints.add(Offset(
+        0.5 + (x / 17.5) * 0.32,
+        0.46 - (y / 17.5) * 0.32,
+      ));
+    }
+    _templates.add(TracingTemplate(
+      type: ShapeType.heart,
+      points: heartPoints,
+      themeColor: const Color(0xFFEC4899), // Pembe
+      icon: Icons.favorite_border_rounded,
     ));
   }
 

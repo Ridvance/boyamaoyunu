@@ -165,6 +165,16 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
         color: Color(0xFF9B59B6),
         spawnEmojis: ['🐮', '🥛', '🌱', '🌸', '🎵', '🎶'],
       ),
+      const AnimalData(
+        emoji: '🐑',
+        color: Color(0xFF1ABC9C),
+        spawnEmojis: ['🐑', '🍀', '🌾', '☁️', '🎵', '🎶'],
+      ),
+      const AnimalData(
+        emoji: '🐥',
+        color: Color(0xFFFF9F43),
+        spawnEmojis: ['🐥', '🌾', '🌻', '✨', '🎵', '🎶'],
+      ),
     ];
 
     final isShortHeight = MediaQuery.sizeOf(context).height < 500;

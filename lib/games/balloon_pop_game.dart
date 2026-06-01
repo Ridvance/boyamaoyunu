@@ -147,21 +147,29 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
       const Color(0xFFB983FF), // Pastel Mor
       const Color(0xFFFF8AAE), // Pamuk Şeker Pembesi
     ];
-    final color = colors[random.nextInt(colors.length)];
 
-    // %45 ihtimalle içinde sevimli bir sembol gösterilsin
+    final isSpecial = random.nextDouble() < 0.15;
+    Color color;
     IconData? icon;
-    if (random.nextDouble() < 0.45) {
-      final icons = [
-        Icons.favorite_rounded, // Kalp
-        Icons.star_rounded, // Yıldız
-        Icons.sentiment_very_satisfied_rounded, // Gülen Yüz
-        Icons.wb_sunny_rounded, // Güneş
-        Icons.music_note_rounded, // Müzik Notası
-        Icons.pets_rounded, // Pati
-        Icons.cloud_rounded, // Bulutçuk
-      ];
-      icon = icons[random.nextInt(icons.length)];
+
+    if (isSpecial) {
+      color = const Color(0xFFFFD700); // Parlak Altın Rengi
+      icon = random.nextBool() ? Icons.star_rounded : Icons.redeem_rounded; // Yıldız veya Hediye ikonu
+    } else {
+      color = colors[random.nextInt(colors.length)];
+      // %45 ihtimalle içinde sevimli bir sembol gösterilsin
+      if (random.nextDouble() < 0.45) {
+        final icons = [
+          Icons.favorite_rounded, // Kalp
+          Icons.star_rounded, // Yıldız
+          Icons.sentiment_very_satisfied_rounded, // Gülen Yüz
+          Icons.wb_sunny_rounded, // Güneş
+          Icons.music_note_rounded, // Müzik Notası
+          Icons.pets_rounded, // Pati
+          Icons.cloud_rounded, // Bulutçuk
+        ];
+        icon = icons[random.nextInt(icons.length)];
+      }
     }
 
     // Dalgalanma (Salınım) Hareket Parametreleri
@@ -180,6 +188,7 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
       waveAmplitude: waveAmplitude,
       waveFrequency: waveFrequency,
       wavePhase: wavePhase,
+      isSpecial: isSpecial,
     ));
   }
 
@@ -219,28 +228,52 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     _popCount++;
 
     // Dokunsal Geri Bildirim (Haptic Feedback) - Çocuklar için çok tatmin edicidir
-    HapticFeedback.mediumImpact();
-    
-    // Balon patlama ses efekti
-    AudioSynth.playRaindropSound();
+    if (balloon.isSpecial) {
+      HapticFeedback.heavyImpact();
+      AudioSynth.playSparkleSound();
+    } else {
+      HapticFeedback.mediumImpact();
+      AudioSynth.playRaindropSound();
+    }
 
     final random = Random();
     
     // Patlama anında yayılacak parçacıklar (Particles)
-    final int particleCount = 12 + random.nextInt(6); // 12-17 adet parçacık
+    // Sihirli balon patladığında double parçacık saçılması (24-35 parçacık)
+    final int particleCount = balloon.isSpecial ? (24 + random.nextInt(12)) : (12 + random.nextInt(6));
+    
+    final rainbowColors = [
+      const Color(0xFFFF5252), // Kırmızı
+      const Color(0xFFFF4081), // Pembe
+      const Color(0xFFE040FB), // Mor
+      const Color(0xFF7C4DFF), // Derin Mor
+      const Color(0xFF536DFE), // Mavi
+      const Color(0xFF448AFF), // Açık Mavi
+      const Color(0xFF00B0FF), // Turkuaz
+      const Color(0xFF00E676), // Yeşil
+      const Color(0xFFFFD600), // Sarı
+      const Color(0xFFFFAB40), // Turuncu
+    ];
+
     for (int i = 0; i < particleCount; i++) {
       final double angle = random.nextDouble() * 2 * pi;
-      final double speed = 100.0 + random.nextDouble() * 200.0; // piksel/sn cinsinden hız
+      // Özel balon parçacıkları biraz daha hızlı saçılabilir
+      final double speed = (balloon.isSpecial ? 150.0 : 100.0) + random.nextDouble() * (balloon.isSpecial ? 300.0 : 200.0);
       final double vx = cos(angle) * speed;
       final double vy = sin(angle) * speed - 50.0; // Yukarı doğru hafif bir itme verelim
       
+      final Color particleColor = balloon.isSpecial 
+          ? rainbowColors[random.nextInt(rainbowColors.length)]
+          : balloon.color;
+
       _particles.add(Particle(
         x: balloon.x,
         y: balloon.y,
         vx: vx,
         vy: vy,
-        color: balloon.color,
-        radius: 4.0 + random.nextDouble() * 6.0,
+        color: particleColor,
+        // Özel parçacıklar biraz daha büyük olabilir
+        radius: (balloon.isSpecial ? 5.0 : 4.0) + random.nextDouble() * (balloon.isSpecial ? 8.0 : 6.0),
       ));
     }
 
@@ -503,6 +536,7 @@ class Balloon {
   final double waveAmplitude;
   final double waveFrequency;
   final double wavePhase;
+  final bool isSpecial;
 
   Balloon({
     required this.x,
@@ -515,6 +549,7 @@ class Balloon {
     required this.waveAmplitude,
     required this.waveFrequency,
     required this.wavePhase,
+    this.isSpecial = false,
   });
 }
 
@@ -619,6 +654,22 @@ class BalloonPainter extends CustomPainter {
         width: balloon.radius * 2.0,
         height: balloon.radius * 2.3,
       );
+
+      // Özel balonlar için parıltılı ve parlak dış kontur (outline) eklenmesi
+      if (balloon.isSpecial) {
+        final glowPaint = Paint()
+          ..color = const Color(0xFFFFE082).withOpacity(0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 8.0;
+        canvas.drawOval(rect, glowPaint);
+
+        final strokePaint = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5;
+        canvas.drawOval(rect, strokePaint);
+      }
+
       canvas.drawOval(rect, bodyPaint);
 
       // Balon Düğümü (Alt kısımdaki üçgen)

@@ -220,6 +220,54 @@ void playAnimalSound(String animalEmoji) {
       }
     }).then(_playFile).catchError((_) {});
   }
+  else if (animalEmoji == '🐑') {
+    // Sheep Baa
+    _getOrCreateWavFile('sheep_baa', 0.65, (data, sampleRate) {
+      for (int i = 0; i < data.length; i++) {
+        final t = i / sampleRate;
+        final decay = math.exp(-t * 3.0) * (t < 0.05 ? t / 0.05 : 1.0);
+        
+        final lfo = math.sin(2 * math.pi * 14 * t);
+        final freq = (240.0 - (240.0 - 180.0) * (t / 0.65)) + lfo * 15.0;
+        
+        final period = 1.0 / freq;
+        final phase = (t % period) / period;
+        double sampleValue = 0.0;
+        if (phase < 0.25) {
+          sampleValue = phase * 4.0;
+        } else if (phase < 0.75) {
+          sampleValue = 2.0 - phase * 4.0;
+        } else {
+          sampleValue = phase * 4.0 - 4.0;
+        }
+        
+        data[i] = (sampleValue * 0.25 * decay * 32767).toInt();
+      }
+    }).then(_playFile).catchError((_) {});
+  }
+  else if (animalEmoji == '🐥') {
+    // Chick Cheep-Cheep
+    _getOrCreateWavFile('chick_cheep', 0.23, (data, sampleRate) {
+      for (int i = 0; i < data.length; i++) {
+        final t = i / sampleRate;
+        double sampleValue = 0.0;
+        double decay = 0.0;
+        
+        if (t < 0.08) {
+          decay = math.exp(-t * 20.0);
+          final freq = 1500.0 + (3200.0 - 1500.0) * (t / 0.08);
+          sampleValue = math.sin(2 * math.pi * freq * t);
+        } else if (t >= 0.15 && t < 0.23) {
+          final t2 = t - 0.15;
+          decay = math.exp(-t2 * 20.0);
+          final freq = 1500.0 + (3200.0 - 1500.0) * (t2 / 0.08);
+          sampleValue = math.sin(2 * math.pi * freq * t2);
+        }
+        
+        data[i] = (sampleValue * 0.2 * decay * 32767).toInt();
+      }
+    }).then(_playFile).catchError((_) {});
+  }
 }
 
 void playSparkleSound() {

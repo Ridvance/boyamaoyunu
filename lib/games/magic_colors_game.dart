@@ -426,6 +426,8 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       {'name': 'Turuncu', 'color': mixedColors['Turuncu']!, 'needs': ['Kırmızı', 'Sarı']},
       {'name': 'Yeşil', 'color': mixedColors['Yeşil']!, 'needs': ['Mavi', 'Sarı']},
       {'name': 'Mor', 'color': mixedColors['Mor']!, 'needs': ['Kırmızı', 'Mavi']},
+      {'name': 'Pembe', 'color': mixedColors['Pembe']!, 'needs': ['Kırmızı', 'Beyaz']},
+      {'name': 'Açık Mavi', 'color': mixedColors['Açık Mavi']!, 'needs': ['Mavi', 'Beyaz']},
     ];
 
     final lvl = levels[(_flyHuntLevel - 1) % levels.length];

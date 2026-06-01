@@ -10,6 +10,8 @@ enum ShapeType {
   star,
   heart,
   diamond,
+  crescent,
+  oval,
 }
 
 // Şekil yollarını çizen sınıf
@@ -103,6 +105,25 @@ class ShapePaths {
     path.close();
     return path;
   }
+
+  static Path getCrescentPath(Size size) {
+    final path = Path();
+    final w = size.width;
+    final h = size.height;
+    path.moveTo(w * 0.8, h * 0.1);
+    path.quadraticBezierTo(w * 0.15, h * 0.15, w * 0.25, h * 0.5);
+    path.quadraticBezierTo(w * 0.15, h * 0.85, w * 0.8, h * 0.9);
+    path.quadraticBezierTo(w * 0.45, h * 0.75, w * 0.45, h * 0.5);
+    path.quadraticBezierTo(w * 0.45, h * 0.25, w * 0.8, h * 0.1);
+    path.close();
+    return path;
+  }
+
+  static Path getOvalPath(Size size) {
+    final path = Path();
+    path.addOval(Rect.fromLTWH(size.width * 0.15, 0, size.width * 0.7, size.height));
+    return path;
+  }
 }
 
 // Şekil çizici CustomPainter
@@ -147,6 +168,12 @@ class ShapeCustomPainter extends CustomPainter {
         break;
       case ShapeType.diamond:
         path = ShapePaths.getDiamondPath(size);
+        break;
+      case ShapeType.crescent:
+        path = ShapePaths.getCrescentPath(size);
+        break;
+      case ShapeType.oval:
+        path = ShapePaths.getOvalPath(size);
         break;
     }
 
