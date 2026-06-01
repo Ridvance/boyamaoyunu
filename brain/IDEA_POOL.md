@@ -1,6 +1,6 @@
 # IDEA_POOL.md - Keşfedilmiş Fikirler
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-01
 > Rol: Unutulmuş, onay bekleyen veya ileride değerlendirilecek hedefleri kaynaklarıyla korur.
 
 ## Kullanma Kuralı
@@ -17,6 +17,42 @@
 - Niyet: Çocuğa iki rengin karışınca yeni renk oluşturduğunu öğretmek; eğitim kazanımı sağlamak ve oyunu heyecanlandırıcı hale getirmek.
 - Etki: Boyama çekirdeğine doğrudan bağlı kalır, ebeveynin "faydalı oyun" algısını güçlendirir, çocuğa merak/ödül/ilerleme motivasyonu verir.
 - Durum: Phase 2C adayı; ilk playtest sonrası scope'a alınmalı.
+
+### Hikayeli Boyama Akışı
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: Boyama ekranını tekil bir aktivite olmaktan çıkarıp "kaybolan renkleri geri getir", "bahçeyi canlandır", "karakterin evini tamamla" gibi basit hikaye görevleriyle ilerletmek.
+- Etki: Çocuğun tekrar oynama motivasyonunu artırır; ebeveyne uygulamanın sadece ekran oyalaması değil, düzenli ve anlamlı bir deneyim sunduğunu hissettirir.
+- Durum: Phase-01 boyama çekirdeği tamamlandıktan sonra playtest adayı; ilk sürümde kısa, yazısız ve sesli/ikonlu görevlerle denenmeli.
+
+### Okul Öncesi Kazanım Paketleri
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: 4-5 yaş okul öncesi çocuklara renkler, şekiller, büyük-küçük, eşleştirme, sıralama, temizlik alışkanlığı ve duygular gibi temel kazanımları mini oyun paketleriyle sunmak.
+- Etki: Ebeveyn ve öğretmen için "faydalı oyun" algısını güçlendirir; Milli Eğitim / okul öncesi uyumlu ürün konumlandırmasına zemin hazırlar.
+- Durum: Research/Validation ve saha görüşmesi gerektirir; AI veya internet varsayımıyla kesin müfredat iddiasına dönüştürülmemeli.
+
+### Değer ve Alışkanlık Mini Görevleri
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: Oyuncakları yerine koyma, diş fırçalama, çöpü kutuya atma, arkadaşına yardım etme ve hayvanlara nazik davranma gibi değerleri kısa etkileşimlerle oyunlaştırmak.
+- Etki: Uygulamanın ahlaki ve günlük yaşam faydasını artırır; ebeveynin ödeme veya tavsiye motivasyonunu güçlendirir.
+- Durum: İlk SLC sonrası aday; vaaz veren metinlerden kaçınıp görsel, kısa ve tekrar oynanabilir görevlerle doğrulanmalı.
+
+### Reklamsız Güven Konumlandırması
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: Ürünün ana satış vaadini "çocuğa gönül rahatlığıyla verilecek reklamsız, dış linksiz, güvenli oyun" olarak netleştirmek.
+- Etki: Reklamlı çocuk uygulamalarına karşı güçlü fark yaratır; ebeveynin ilk indirme ve ödeme kararını kolaylaştırır.
+- Durum: Ürün metni, market açıklaması ve ebeveyn ekranı için konumlandırma adayı; aktif faza taşınmadan önce kısa kullanıcı testi yapılmalı.
+
+### Tek Seferlik Ücretli İçerik Paketi
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: Abonelik yerine ilk ticari denemede düşük fiyatlı, tek seferlik "Okul Öncesi Renkler Paketi" veya benzeri güvenli içerik paketi sunmak.
+- Etki: Ebeveynin "buna para veririm" eşiğini ölçer; reklam modeline girmeden gelir doğrulaması sağlar.
+- Durum: Ticari hızlı tarama, fiyat testi ve mağaza politikası incelemesi sonrası değerlendirilmeli.
+
+### Kısa YouTube Tanıtım Videosu
+- Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
+- Niyet: Uygulamayı 30-45 saniyelik net bir demo ile "4-5 yaş çocuklar için reklamsız, güvenli, faydalı oyun" vaadi üzerinden tanıtmak.
+- Etki: İlk kullanıcı ve geri bildirim toplama hızını artırır; kulaktan kulağa yayılım için anlaşılır bir vitrin oluşturur.
+- Durum: İlk oynanabilir SLC çıktıktan sonra hazırlanmalı; ürün yokken pazarlama videosuna öncelik verilmemeli.
 
 ### Karakter ve isim seçeneklerini çocuklarla doğrulama
 - Kaynak: 2026-05-19 ikinci kullanıcı konuşması.
