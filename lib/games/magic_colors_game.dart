@@ -1162,7 +1162,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       boxColor = const Color(0xFF4CAF50);
     } else if (_currentMode == 'flyhunt') {
       title = '🦟 Sinek Avı (Seviye $_flyHuntLevel)';
-      sub = 'Kamo\'yu $_flyHuntTargetColor yapmak için doğru sinekleri ye!';
+      sub = 'Kamo\'yu $_flyHuntTargetName yapmak için doğru sinekleri ye!';
       boxColor = const Color(0xFF007AFF);
     } else if (_currentMode == 'coloring') {
       title = '🖍️ Kamo\'nun Defteri (Seviye $_coloringLevel)';
