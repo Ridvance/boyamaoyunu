@@ -30,3 +30,9 @@
 
 ### 5.3. Durum Yönetimi (State Management)
 - Uygulama içi durum sadece aktif renk seçimi ve boyama adımlarından (Undo/Redo) ibaret olduğu için karmaşık paketler (Bloc, Riverpod vb.) yerine yerel `ValueNotifier` veya basit `ChangeNotifier` kullanılacaktır.
+
+## 6. Uygulama İkonu ve Markalama (App Icon & Branding)
+- **Mevcut Karar:** Bukalemun Kamo (Kamo the Chameleon) temalı uygulama ikonu tasarımı seçilmiştir.
+- **Tasarım Özellikleri:** Ressam beresi takan sevimli yeşil bukalemun Kamo, elinde fırça tutmakta, yanında renkli çocuk balonu ve altın yıldız detayları yer almaktadır. Arka plan pastel gökkuşağı geçişli 3D tasarımdır.
+- **Gerekçe:** Kamo maskotu çocukların dikkatini çekmede oldukça etkilidir.
+- **Esneklik Notu:** Bu seçim ilk yayınlama için kararlaştırılmış olup, ileride kullanıcı geri bildirimlerine göre değiştirilebilir veya güncellenebilir.
