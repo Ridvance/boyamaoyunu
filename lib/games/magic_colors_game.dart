@@ -11,7 +11,8 @@ class MagicColorsGame extends StatefulWidget {
   State<MagicColorsGame> createState() => _MagicColorsGameState();
 }
 
-class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProviderStateMixin {
+class _MagicColorsGameState extends State<MagicColorsGame>
+    with SingleTickerProviderStateMixin {
   // Oyun güncelleyici döngüsü
   late final AnimationController _tickerController;
   int _lastTimestamp = 0;
@@ -32,7 +33,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   bool _isCamouflaged = false;
 
   // Laboratuvar kapları / Karışım slotları (En fazla 2 renk karıştırılır)
-  final List<Map<String, dynamic>> _beakerSlots = []; 
+  final List<Map<String, dynamic>> _beakerSlots = [];
   Color _mixedColor = Colors.transparent;
   String _mixedColorName = '';
 
@@ -49,7 +50,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   Color _camouTargetColor = Colors.transparent;
   String _camouBgEmoji = '';
   double _starTimer = 1.0; // 1.0 -> 0.0
-  double _camouStarTimerDuration = 12.0; // 12 saniye süre
+  final double _camouStarTimerDuration = 12.0; // 12 saniye süre
   bool _showBird = false;
   double _birdProgress = 0.0; // 0.0 -> 1.0
   String _birdText = '';
@@ -57,7 +58,6 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   // 2. Sinek Avı Modu Durumları
   int _flyHuntLevel = 0;
   String _flyHuntTargetName = '';
-  Color _flyHuntTargetColor = Colors.transparent;
   final List<String> _flyHuntEatenColors = [];
 
   // 3. Resim Defteri Modu Durumları
@@ -106,7 +106,9 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     'Kahverengi': Color(0xFFA25A38),
     'Koyu Kırmızı': Color(0xFF8B0000),
     'Lacivert': Color(0xFF000080),
-    'Gökkuşağı ✨': Color(0xFFFFD700), // Beklenmeyen karışımlar için sihirli altın renk
+    'Gökkuşağı ✨': Color(
+      0xFFFFD700,
+    ), // Beklenmeyen karışımlar için sihirli altın renk
   };
 
   @override
@@ -147,11 +149,14 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       final double width = MediaQuery.sizeOf(context).width;
       final double height = MediaQuery.sizeOf(context).height;
       final Offset chameleonPos = Offset(width * 0.22, height * 0.5);
-      final Offset mouthPos = Offset(chameleonPos.dx + 82, chameleonPos.dy + 20);
+      final Offset mouthPos = Offset(
+        chameleonPos.dx + 82,
+        chameleonPos.dy + 20,
+      );
 
       for (var fly in _flies) {
         fly.update(dt, _time, width, height);
-        
+
         final double dist = (fly.position - mouthPos).distance;
         if (dist < closestDist) {
           closestDist = dist;
@@ -172,7 +177,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       final double width = MediaQuery.sizeOf(context).width;
       final double height = MediaQuery.sizeOf(context).height;
       final Offset chameleonPos = Offset(width * 0.22, height * 0.5);
-      final Offset mouthPos = Offset(chameleonPos.dx + 82, chameleonPos.dy + 20);
+      final Offset mouthPos = Offset(
+        chameleonPos.dx + 82,
+        chameleonPos.dy + 20,
+      );
 
       if (!_isRetracting && _targetEatingFly != null) {
         // Dil hedefe doğru gider
@@ -189,7 +197,8 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
         _tongueProgress -= 4.0 * dt;
         if (_targetEatingFly != null) {
           // Sineğin pozisyonu dil ucuna bağlı geri çekilir
-          _targetEatingFly!.position = mouthPos + (_tongueTarget! - mouthPos) * _tongueProgress;
+          _targetEatingFly!.position =
+              mouthPos + (_tongueTarget! - mouthPos) * _tongueProgress;
         }
 
         if (_tongueProgress <= 0.0) {
@@ -197,7 +206,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
           _isEating = false;
           _isRetracting = false;
           _tongueTarget = null;
-          
+
           if (_targetEatingFly != null) {
             _onFlyEaten(_targetEatingFly!.color, _targetEatingFly!.colorName);
             _targetEatingFly = null;
@@ -239,7 +248,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       HapticFeedback.lightImpact();
       return;
     }
-    
+
     HapticFeedback.mediumImpact();
     AudioSynth.playRaindropSound();
 
@@ -299,7 +308,8 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       _beakerSlots.clear();
 
       // Kamufle ol kontrolü
-      if (_currentMode == 'camouflage' && _chameleonColorName == _camouTargetName) {
+      if (_currentMode == 'camouflage' &&
+          _chameleonColorName == _camouTargetName) {
         _isCamouflaged = true;
         _showBird = true;
         _birdProgress = 0.0;
@@ -337,10 +347,22 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     _starTimer = 1.0;
 
     final levels = [
-      {'name': 'Turuncu', 'emoji': '🍁', 'color': mixedColors['Turuncu']!}, // Sonbahar Yaprağı
-      {'name': 'Mor', 'emoji': '🍇', 'color': mixedColors['Mor']!},     // Üzüm Bağı
-      {'name': 'Pembe', 'emoji': '🌸', 'color': mixedColors['Pembe']!},   // Çiçek Bahçesi
-      {'name': 'Açık Mavi', 'emoji': '☁️', 'color': mixedColors['Açık Mavi']!}, // Gökyüzü bulutu
+      {
+        'name': 'Turuncu',
+        'emoji': '🍁',
+        'color': mixedColors['Turuncu']!,
+      }, // Sonbahar Yaprağı
+      {'name': 'Mor', 'emoji': '🍇', 'color': mixedColors['Mor']!}, // Üzüm Bağı
+      {
+        'name': 'Pembe',
+        'emoji': '🌸',
+        'color': mixedColors['Pembe']!,
+      }, // Çiçek Bahçesi
+      {
+        'name': 'Açık Mavi',
+        'emoji': '☁️',
+        'color': mixedColors['Açık Mavi']!,
+      }, // Gökyüzü bulutu
     ];
 
     final lvl = levels[(_camouLevel - 1) % levels.length];
@@ -370,35 +392,38 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       showDialog<void>(
         context: context,
         barrierDismissible: false,
-        builder: (context) => SuccessModal(
-          emoji: '🎉',
-          title: 'Harika Gizlendin!',
-          message: 'Kuş seni göremedi! Kamo artık güvende. +$earnedStars ⭐',
-          onContinue: () {
-            Navigator.pop(context);
-            setState(() {
-              _camouLevel++;
-              _setupCamouflageLevel();
-            });
-          },
-        ),
+        builder:
+            (context) => SuccessModal(
+              emoji: '🎉',
+              title: 'Harika Gizlendin!',
+              message: 'Kuş seni göremedi! Kamo artık güvende. +$earnedStars ⭐',
+              onContinue: () {
+                Navigator.pop(context);
+                setState(() {
+                  _camouLevel++;
+                  _setupCamouflageLevel();
+                });
+              },
+            ),
       );
     } else {
       // Kamufle olamadı ama yanma yok! Bobi şefkatle yardım eder
       showDialog<void>(
         context: context,
         barrierDismissible: false,
-        builder: (context) => SuccessModal(
-          emoji: '💡',
-          title: 'Neredeyse Oluyordu!',
-          message: 'Kamo tam gizlenemedi. Hadi tekrar deneyelim, rengi ${_camouTargetName} yapalım!',
-          onContinue: () {
-            Navigator.pop(context);
-            setState(() {
-              _setupCamouflageLevel();
-            });
-          },
-        ),
+        builder:
+            (context) => SuccessModal(
+              emoji: '💡',
+              title: 'Neredeyse Oluyordu!',
+              message:
+                  'Kamo tam gizlenemedi. Hadi tekrar deneyelim, rengi $_camouTargetName yapalım!',
+              onContinue: () {
+                Navigator.pop(context);
+                setState(() {
+                  _setupCamouflageLevel();
+                });
+              },
+            ),
       );
     }
   }
@@ -423,16 +448,35 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     _targetEatingFly = null;
 
     final levels = [
-      {'name': 'Turuncu', 'color': mixedColors['Turuncu']!, 'needs': ['Kırmızı', 'Sarı']},
-      {'name': 'Yeşil', 'color': mixedColors['Yeşil']!, 'needs': ['Mavi', 'Sarı']},
-      {'name': 'Mor', 'color': mixedColors['Mor']!, 'needs': ['Kırmızı', 'Mavi']},
-      {'name': 'Pembe', 'color': mixedColors['Pembe']!, 'needs': ['Kırmızı', 'Beyaz']},
-      {'name': 'Açık Mavi', 'color': mixedColors['Açık Mavi']!, 'needs': ['Mavi', 'Beyaz']},
+      {
+        'name': 'Turuncu',
+        'color': mixedColors['Turuncu']!,
+        'needs': ['Kırmızı', 'Sarı'],
+      },
+      {
+        'name': 'Yeşil',
+        'color': mixedColors['Yeşil']!,
+        'needs': ['Mavi', 'Sarı'],
+      },
+      {
+        'name': 'Mor',
+        'color': mixedColors['Mor']!,
+        'needs': ['Kırmızı', 'Mavi'],
+      },
+      {
+        'name': 'Pembe',
+        'color': mixedColors['Pembe']!,
+        'needs': ['Kırmızı', 'Beyaz'],
+      },
+      {
+        'name': 'Açık Mavi',
+        'color': mixedColors['Açık Mavi']!,
+        'needs': ['Mavi', 'Beyaz'],
+      },
     ];
 
     final lvl = levels[(_flyHuntLevel - 1) % levels.length];
     _flyHuntTargetName = lvl['name'] as String;
-    _flyHuntTargetColor = lvl['color'] as Color;
 
     // Sinekleri üret
     final random = Random();
@@ -440,24 +484,37 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
     // Gerekli sinekleri koy
     for (var colorName in needed) {
-      _flies.add(ChameleonFly(
-        position: Offset(200.0 + random.nextDouble() * 300.0, 100.0 + random.nextDouble() * 150.0),
-        color: baseColors[colorName]!,
-        colorName: colorName,
-        speed: 60.0 + random.nextDouble() * 40.0,
-      ));
+      _flies.add(
+        ChameleonFly(
+          position: Offset(
+            200.0 + random.nextDouble() * 300.0,
+            100.0 + random.nextDouble() * 150.0,
+          ),
+          color: baseColors[colorName]!,
+          colorName: colorName,
+          speed: 60.0 + random.nextDouble() * 40.0,
+        ),
+      );
     }
 
     // Fazladan kafa karıştırıcı sinek ekle
-    final otherColors = baseColors.keys.where((k) => !needed.contains(k) && k != 'Beyaz' && k != 'Siyah').toList();
+    final otherColors =
+        baseColors.keys
+            .where((k) => !needed.contains(k) && k != 'Beyaz' && k != 'Siyah')
+            .toList();
     if (otherColors.isNotEmpty) {
       final extraColor = otherColors[random.nextInt(otherColors.length)];
-      _flies.add(ChameleonFly(
-        position: Offset(200.0 + random.nextDouble() * 300.0, 100.0 + random.nextDouble() * 150.0),
-        color: baseColors[extraColor]!,
-        colorName: extraColor,
-        speed: 70.0 + random.nextDouble() * 30.0,
-      ));
+      _flies.add(
+        ChameleonFly(
+          position: Offset(
+            200.0 + random.nextDouble() * 300.0,
+            100.0 + random.nextDouble() * 150.0,
+          ),
+          color: baseColors[extraColor]!,
+          colorName: extraColor,
+          speed: 70.0 + random.nextDouble() * 30.0,
+        ),
+      );
     }
 
     _chameleonColor = const Color(0xFF8E8E93); // Başlangıçta nötr gri
@@ -483,7 +540,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     AudioSynth.playAnimalSound('🦎'); // Bukalemun yutkunma sesi
     setState(() {
       _flyHuntEatenColors.add(colorName);
-      
+
       if (_flyHuntEatenColors.length == 1) {
         _chameleonColor = flyColor;
         _chameleonColorName = colorName;
@@ -512,35 +569,38 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
           showDialog<void>(
             context: context,
             barrierDismissible: false,
-            builder: (context) => SuccessModal(
-              emoji: '😋',
-              title: 'Harika Avcı!',
-              message: 'Renkleri Kamo\'nun midesinde karıştırdın! +3 ⭐',
-              onContinue: () {
-                Navigator.pop(context);
-                setState(() {
-                  _flyHuntLevel++;
-                  _setupFlyHuntLevel();
-                });
-              },
-            ),
+            builder:
+                (context) => SuccessModal(
+                  emoji: '😋',
+                  title: 'Harika Avcı!',
+                  message: 'Renkleri Kamo\'nun midesinde karıştırdın! +3 ⭐',
+                  onContinue: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _flyHuntLevel++;
+                      _setupFlyHuntLevel();
+                    });
+                  },
+                ),
           );
         } else {
           // Yanlış karışım, baştan dene
           showDialog<void>(
             context: context,
             barrierDismissible: false,
-            builder: (context) => SuccessModal(
-              emoji: '🧐',
-              title: 'Tadı Biraz Farklı!',
-              message: 'Karışım ${_chameleonColorName} oldu. Hadi hedefimiz olan ${_flyHuntTargetName} için tekrar deneyelim!',
-              onContinue: () {
-                Navigator.pop(context);
-                setState(() {
-                  _setupFlyHuntLevel();
-                });
-              },
-            ),
+            builder:
+                (context) => SuccessModal(
+                  emoji: '🧐',
+                  title: 'Tadı Biraz Farklı!',
+                  message:
+                      'Karışım $_chameleonColorName oldu. Hadi hedefimiz olan $_flyHuntTargetName için tekrar deneyelim!',
+                  onContinue: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _setupFlyHuntLevel();
+                    });
+                  },
+                ),
           );
         }
       }
@@ -565,60 +625,78 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
     if (_coloringLevel == 1) {
       // Havuç Çizimi
-      _coloringParts.add(ColoringPart(
-        path: Path()
-          ..moveTo(180, 80)
-          ..quadraticBezierTo(210, 160, 240, 240)
-          ..quadraticBezierTo(190, 210, 140, 160)
-          ..close(),
-        targetColorName: 'Turuncu',
-        label: 'Havuç Gövdesi',
-      ));
-      _coloringParts.add(ColoringPart(
-        path: Path()
-          ..moveTo(140, 160)
-          ..quadraticBezierTo(100, 150, 80, 120)
-          ..quadraticBezierTo(110, 120, 140, 160)
-          ..close(),
-        targetColorName: 'Yeşil',
-        label: 'Havuç Yaprağı 1',
-      ));
-      _coloringParts.add(ColoringPart(
-        path: Path()
-          ..moveTo(140, 160)
-          ..quadraticBezierTo(130, 100, 110, 80)
-          ..quadraticBezierTo(150, 110, 140, 160)
-          ..close(),
-        targetColorName: 'Yeşil',
-        label: 'Havuç Yaprağı 2',
-      ));
+      _coloringParts.add(
+        ColoringPart(
+          path:
+              Path()
+                ..moveTo(180, 80)
+                ..quadraticBezierTo(210, 160, 240, 240)
+                ..quadraticBezierTo(190, 210, 140, 160)
+                ..close(),
+          targetColorName: 'Turuncu',
+          label: 'Havuç Gövdesi',
+        ),
+      );
+      _coloringParts.add(
+        ColoringPart(
+          path:
+              Path()
+                ..moveTo(140, 160)
+                ..quadraticBezierTo(100, 150, 80, 120)
+                ..quadraticBezierTo(110, 120, 140, 160)
+                ..close(),
+          targetColorName: 'Yeşil',
+          label: 'Havuç Yaprağı 1',
+        ),
+      );
+      _coloringParts.add(
+        ColoringPart(
+          path:
+              Path()
+                ..moveTo(140, 160)
+                ..quadraticBezierTo(130, 100, 110, 80)
+                ..quadraticBezierTo(150, 110, 140, 160)
+                ..close(),
+          targetColorName: 'Yeşil',
+          label: 'Havuç Yaprağı 2',
+        ),
+      );
     } else {
       // Üzüm Çizimi
-      _coloringParts.add(ColoringPart(
-        path: Path()..addOval(const Rect.fromLTWH(100, 120, 48, 48)),
-        targetColorName: 'Mor',
-        label: 'Üzüm 1',
-      ));
-      _coloringParts.add(ColoringPart(
-        path: Path()..addOval(const Rect.fromLTWH(140, 120, 48, 48)),
-        targetColorName: 'Mor',
-        label: 'Üzüm 2',
-      ));
-      _coloringParts.add(ColoringPart(
-        path: Path()..addOval(const Rect.fromLTWH(120, 155, 48, 48)),
-        targetColorName: 'Mor',
-        label: 'Üzüm 3',
-      ));
-      _coloringParts.add(ColoringPart(
-        path: Path()
-          ..moveTo(140, 120)
-          ..lineTo(140, 80)
-          ..quadraticBezierTo(110, 80, 90, 100)
-          ..lineTo(140, 120)
-          ..close(),
-        targetColorName: 'Yeşil',
-        label: 'Asma Yaprağı',
-      ));
+      _coloringParts.add(
+        ColoringPart(
+          path: Path()..addOval(const Rect.fromLTWH(100, 120, 48, 48)),
+          targetColorName: 'Mor',
+          label: 'Üzüm 1',
+        ),
+      );
+      _coloringParts.add(
+        ColoringPart(
+          path: Path()..addOval(const Rect.fromLTWH(140, 120, 48, 48)),
+          targetColorName: 'Mor',
+          label: 'Üzüm 2',
+        ),
+      );
+      _coloringParts.add(
+        ColoringPart(
+          path: Path()..addOval(const Rect.fromLTWH(120, 155, 48, 48)),
+          targetColorName: 'Mor',
+          label: 'Üzüm 3',
+        ),
+      );
+      _coloringParts.add(
+        ColoringPart(
+          path:
+              Path()
+                ..moveTo(140, 120)
+                ..lineTo(140, 80)
+                ..quadraticBezierTo(110, 80, 90, 100)
+                ..lineTo(140, 120)
+                ..close(),
+          targetColorName: 'Yeşil',
+          label: 'Asma Yaprağı',
+        ),
+      );
     }
   }
 
@@ -641,18 +719,19 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
           showDialog<void>(
             context: context,
             barrierDismissible: false,
-            builder: (context) => SuccessModal(
-              emoji: '🎨',
-              title: 'Mükemmel Boyama!',
-              message: 'Resim defterinin bu sayfasını tamamladın! +5 ⭐',
-              onContinue: () {
-                Navigator.pop(context);
-                setState(() {
-                  _coloringLevel++;
-                  _setupColoringLevel();
-                });
-              },
-            ),
+            builder:
+                (context) => SuccessModal(
+                  emoji: '🎨',
+                  title: 'Mükemmel Boyama!',
+                  message: 'Resim defterinin bu sayfasını tamamladın! +5 ⭐',
+                  onContinue: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _coloringLevel++;
+                      _setupColoringLevel();
+                    });
+                  },
+                ),
           );
         }
       });
@@ -675,20 +754,23 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   void _triggerCelebration() {
     final random = Random();
     for (int i = 0; i < 40; i++) {
-      _confetti.add(ConfettiParticle(
-        x: random.nextDouble() * 800,
-        y: -20 - random.nextDouble() * 50,
-        vx: (random.nextDouble() - 0.5) * 150,
-        vy: 150 + random.nextDouble() * 200,
-        color: HSLColor.fromAHSL(
-          1.0,
-          random.nextDouble() * 360,
-          0.8,
-          0.6,
-        ).toColor(),
-        radius: 4.0 + random.nextDouble() * 6.0,
-        rotationSpeed: 1.0 + random.nextDouble() * 4.0,
-      ));
+      _confetti.add(
+        ConfettiParticle(
+          x: random.nextDouble() * 800,
+          y: -20 - random.nextDouble() * 50,
+          vx: (random.nextDouble() - 0.5) * 150,
+          vy: 150 + random.nextDouble() * 200,
+          color:
+              HSLColor.fromAHSL(
+                1.0,
+                random.nextDouble() * 360,
+                0.8,
+                0.6,
+              ).toColor(),
+          radius: 4.0 + random.nextDouble() * 6.0,
+          rotationSpeed: 1.0 + random.nextDouble() * 4.0,
+        ),
+      );
     }
   }
 
@@ -709,9 +791,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       body: Stack(
         children: [
           // Arka Plan Dekorasyonu (Moda özel)
-          Positioned.fill(
-            child: _buildBackground(),
-          ),
+          Positioned.fill(child: _buildBackground()),
 
           // Sol Taraf: Bukalemun Kamo & Canlılar
           Positioned(
@@ -763,13 +843,15 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFFF9500).withOpacity(0.15),
+                            color: const Color(
+                              0xFFFF9500,
+                            ).withValues(alpha: 0.15),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
                         ],
                         border: Border.all(
-                          color: const Color(0xFFFF9500).withOpacity(0.4),
+                          color: const Color(0xFFFF9500).withValues(alpha: 0.4),
                           width: 3.5,
                         ),
                       ),
@@ -784,7 +866,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                   ),
                   const SizedBox(width: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
@@ -794,7 +879,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 6,
                           offset: const Offset(0, 3),
                         ),
@@ -828,20 +913,26 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 5,
                           ),
                         ],
                       ),
                       child: Text(
                         _birdText,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                     const Text('🦅', style: TextStyle(fontSize: 64)),
@@ -851,20 +942,22 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
             ),
 
           // Kutlama Konfetileri
-          ..._confetti.map((p) => Positioned(
-                left: p.x,
-                top: p.y,
-                child: IgnorePointer(
-                  child: Transform.rotate(
-                    angle: p.rotation,
-                    child: Container(
-                      width: p.radius * 2,
-                      height: p.radius * 1.2,
-                      color: p.color.withOpacity(p.alpha),
-                    ),
+          ..._confetti.map(
+            (p) => Positioned(
+              left: p.x,
+              top: p.y,
+              child: IgnorePointer(
+                child: Transform.rotate(
+                  angle: p.rotation,
+                  child: Container(
+                    width: p.radius * 2,
+                    height: p.radius * 1.2,
+                    color: p.color.withValues(alpha: p.alpha),
                   ),
                 ),
-              )),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -878,7 +971,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              _camouTargetColor.withOpacity(0.08),
+              _camouTargetColor.withValues(alpha: 0.08),
               const Color(0xFFFFFBF2),
             ],
           ),
@@ -902,9 +995,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 key: const ValueKey('magic-colors-back-button'),
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.arrow_back_rounded, size: 28),
-                style: IconButton.styleFrom(
-                  padding: const EdgeInsets.all(12),
-                ),
+                style: IconButton.styleFrom(padding: const EdgeInsets.all(12)),
               ),
             ),
           ),
@@ -935,6 +1026,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildMenuCard(
+                      key: 'sandbox',
                       emoji: '🎨',
                       title: 'Serbest Laboratuvar',
                       color: const Color(0xFFFF9500),
@@ -942,6 +1034,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                     ),
                     const SizedBox(width: 20),
                     _buildMenuCard(
+                      key: 'camouflage',
                       emoji: '🍃',
                       title: 'Kamufle Ol!',
                       color: const Color(0xFF4CAF50),
@@ -954,6 +1047,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildMenuCard(
+                      key: 'flyhunt',
                       emoji: '🦟',
                       title: 'Sinek Avı',
                       color: const Color(0xFF007AFF),
@@ -961,6 +1055,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                     ),
                     const SizedBox(width: 20),
                     _buildMenuCard(
+                      key: 'coloring',
                       emoji: '🖍️',
                       title: 'Resim Defteri',
                       color: const Color(0xFFFF2D55),
@@ -977,6 +1072,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
   }
 
   Widget _buildMenuCard({
+    required String key,
     required String emoji,
     required String title,
     required Color color,
@@ -986,10 +1082,11 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: color.withOpacity(0.3), width: 3),
+        side: BorderSide(color: color.withValues(alpha: 0.3), width: 3),
         borderRadius: BorderRadius.circular(24),
       ),
       child: InkWell(
+        key: ValueKey('magic-colors-mode-$key'),
         onTap: () {
           HapticFeedback.mediumImpact();
           onTap();
@@ -1040,7 +1137,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 height: 180,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _camouTargetColor.withOpacity(0.2),
+                  color: _camouTargetColor.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                   border: Border.all(color: _camouTargetColor, width: 4),
                 ),
@@ -1093,10 +1190,13 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: _chameleonColor.withOpacity(0.8), width: 3),
+              border: Border.all(
+                color: _chameleonColor.withValues(alpha: 0.8),
+                width: 3,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                 ),
               ],
@@ -1106,7 +1206,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w900,
-                color: _chameleonColorName == 'Beyaz' ? Colors.grey[700] : _chameleonColor,
+                color:
+                    _chameleonColorName == 'Beyaz'
+                        ? Colors.grey[700]
+                        : _chameleonColor,
               ),
             ),
           ),
@@ -1125,11 +1228,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
           bottomLeft: Radius.circular(32),
         ),
         boxShadow: [
-          BoxShadow(
-            color: Color(0x0C000000),
-            blurRadius: 15,
-            spreadRadius: 2,
-          ),
+          BoxShadow(color: Color(0x0C000000), blurRadius: 15, spreadRadius: 2),
         ],
       ),
       child: Column(
@@ -1142,7 +1241,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
 
           // Seçili Moda Göre İlgili Arayüz
           Expanded(
-            child: _currentMode == 'coloring' ? _buildColoringCanvas() : _buildLabFlaskMixing(),
+            child:
+                _currentMode == 'coloring'
+                    ? _buildColoringCanvas()
+                    : _buildLabFlaskMixing(),
           ),
         ],
       ),
@@ -1160,7 +1262,8 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       boxColor = const Color(0xFFFF9500);
     } else if (_currentMode == 'camouflage') {
       title = '🍃 Kamufle Ol! (Seviye $_camouLevel)';
-      sub = 'Kamo\'yu $_camouBgEmoji üzerine gizlemek için $_camouTargetName yap!';
+      sub =
+          'Kamo\'yu $_camouBgEmoji üzerine gizlemek için $_camouTargetName yap!';
       boxColor = const Color(0xFF4CAF50);
     } else if (_currentMode == 'flyhunt') {
       title = '🦟 Sinek Avı (Seviye $_flyHuntLevel)';
@@ -1175,9 +1278,9 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: boxColor.withOpacity(0.1),
+        color: boxColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: boxColor.withOpacity(0.4), width: 2.5),
+        border: Border.all(color: boxColor.withValues(alpha: 0.4), width: 2.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1219,9 +1322,12 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                     value: _starTimer,
                     minHeight: 8,
                     backgroundColor: const Color(0xFFE6ECE8),
-                    color: _starTimer > 0.6
-                        ? const Color(0xFF4CAF50)
-                        : (_starTimer > 0.3 ? const Color(0xFFFFCC00) : const Color(0xFFFF3B30)),
+                    color:
+                        _starTimer > 0.6
+                            ? const Color(0xFF4CAF50)
+                            : (_starTimer > 0.3
+                                ? const Color(0xFFFFCC00)
+                                : const Color(0xFFFF3B30)),
                   ),
                 ),
               ),
@@ -1250,7 +1356,7 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                   border: Border.all(color: const Color(0xFF2FA7A0), width: 4),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF2FA7A0).withOpacity(0.15),
+                      color: const Color(0xFF2FA7A0).withValues(alpha: 0.15),
                       blurRadius: 8,
                     ),
                   ],
@@ -1269,13 +1375,20 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                           height: 30.0 * _beakerSlots.length,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: _beakerSlots.length == 1
-                                ? _beakerSlots[0]['color'].withOpacity(0.85)
-                                : Color.lerp(_beakerSlots[0]['color'], _beakerSlots[1]['color'], 0.5)!.withOpacity(0.85),
+                            color:
+                                _beakerSlots.length == 1
+                                    ? _beakerSlots[0]['color'].withValues(
+                                      alpha: 0.85,
+                                    )
+                                    : Color.lerp(
+                                      _beakerSlots[0]['color'],
+                                      _beakerSlots[1]['color'],
+                                      0.5,
+                                    )!.withValues(alpha: 0.85),
                           ),
                         ),
                       ),
-                    
+
                     // Köpürme baloncukları
                     if (_beakerSlots.isNotEmpty)
                       const Positioned(
@@ -1307,14 +1420,24 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 children: [
                   const Text(
                     'Karışım Slotları:',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF53666C)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF53666C),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
                       _buildSlotTile(0),
                       const SizedBox(width: 8),
-                      const Text('+', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const Text(
+                        '+',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(width: 8),
                       _buildSlotTile(1),
                     ],
@@ -1323,28 +1446,42 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                   Row(
                     children: [
                       ElevatedButton.icon(
+                        key: const ValueKey('magic-colors-clear-button'),
                         onPressed: _beakerSlots.isEmpty ? null : _clearBeaker,
                         icon: const Icon(Icons.delete_outline, size: 14),
-                        label: const Text('Temizle', style: TextStyle(fontSize: 11)),
+                        label: const Text(
+                          'Temizle',
+                          style: TextStyle(fontSize: 11),
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF2D55),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton.icon(
+                        key: const ValueKey('magic-colors-mix-button'),
                         onPressed: _beakerSlots.isEmpty ? null : _mixBeaker,
                         icon: const Icon(Icons.science, size: 14),
-                        label: const Text('Karıştır!', style: TextStyle(fontSize: 11)),
+                        label: const Text(
+                          'Karıştır!',
+                          style: TextStyle(fontSize: 11),
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF4CAF50),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
@@ -1372,13 +1509,16 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
         color: filled ? _beakerSlots[index]['color'] : Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: filled ? Colors.white : const Color(0xFF2FA7A0).withOpacity(0.3),
+          color:
+              filled
+                  ? Colors.white
+                  : const Color(0xFF2FA7A0).withValues(alpha: 0.3),
           width: 2.5,
         ),
         boxShadow: [
           if (filled)
             BoxShadow(
-              color: _beakerSlots[index]['color'].withOpacity(0.4),
+              color: _beakerSlots[index]['color'].withValues(alpha: 0.4),
               blurRadius: 4,
               offset: const Offset(0, 1.5),
             ),
@@ -1403,47 +1543,55 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
       decoration: BoxDecoration(
         color: const Color(0xFFFFFBF2),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFCC00).withOpacity(0.3), width: 2),
+        border: Border.all(
+          color: const Color(0xFFFFCC00).withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: baseColors.entries.map((e) {
-          return GestureDetector(
-            onTap: () => _addPaintToBeaker(e.key, e.value),
-            child: Column(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: e.value,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: e.key == 'Beyaz' ? Colors.grey[300]! : Colors.white,
-                      width: 2.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 3,
-                        offset: const Offset(0, 2),
+        children:
+            baseColors.entries.map((e) {
+              return GestureDetector(
+                key: ValueKey('magic-colors-tube-${e.key}'),
+                onTap: () => _addPaintToBeaker(e.key, e.value),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: e.value,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color:
+                              e.key == 'Beyaz'
+                                  ? Colors.grey[300]!
+                                  : Colors.white,
+                          width: 2.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 3,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      e.key,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF233238),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  e.key,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF233238),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -1462,24 +1610,28 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: const Color(0xFFFF2D55).withOpacity(0.3), width: 4),
+                  border: Border.all(
+                    color: const Color(0xFFFF2D55).withValues(alpha: 0.3),
+                    width: 4,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 8,
                     ),
                   ],
                 ),
                 child: Stack(
-                  children: _coloringParts.map((part) {
-                    return GestureDetector(
-                      onTap: () => _onColoringPartTapped(part),
-                      child: CustomPaint(
-                        painter: PartPainter(part: part),
-                        size: const Size(320, 240),
-                      ),
-                    );
-                  }).toList(),
+                  children:
+                      _coloringParts.map((part) {
+                        return GestureDetector(
+                          onTap: () => _onColoringPartTapped(part),
+                          child: CustomPaint(
+                            painter: PartPainter(part: part),
+                            size: const Size(320, 240),
+                          ),
+                        );
+                      }).toList(),
                 ),
               ),
             ),
@@ -1503,7 +1655,10 @@ class _MagicColorsGameState extends State<MagicColorsGame> with SingleTickerProv
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF2D55),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
@@ -1563,14 +1718,16 @@ class PartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = part.currentColor
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = part.currentColor
+          ..style = PaintingStyle.fill;
 
-    final strokePaint = Paint()
-      ..color = const Color(0xFF233238)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0;
+    final strokePaint =
+        Paint()
+          ..color = const Color(0xFF233238)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0;
 
     canvas.drawPath(part.path, paint);
     canvas.drawPath(part.path, strokePaint);
@@ -1645,10 +1802,18 @@ class SuccessModal extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF9500),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
-              child: const Text('Devam Et ➡️', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: const Text(
+                'Devam Et ➡️',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
           ],
         ),

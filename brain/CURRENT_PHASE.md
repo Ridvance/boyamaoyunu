@@ -4,18 +4,18 @@
 
 ## Active Phase
 
-Phase 2D - Color Mix Learning Mini Game
+Phase 2E - Values And Habits Mini Tasks
 
 ## Neden Bu Faz
 
-Phase 2C hikayeli boyama akışı tamamlandı. Sıradaki iş renk karışımı mini oyununu Phase 2D kapsamına göre doğrulamak ve gerekirse tamamlamak.
+Phase 2D renk karışımı mini oyunu mevcut Renk Laboratuvarı üzerinden doğrulandı ve testle kilitlendi. Sıradaki iş değer ve alışkanlık mini görevleri.
 
 ## Oku
 
 1. `brain/STATE.md`
 2. `brain/RULES.md`
 3. `brain/PHASES.md`
-4. `brain/PROMPTS/phase-02D-color-mix-learning-mini-game.md`
+4. `brain/PROMPTS/phase-02E-values-and-habits-mini-tasks.md`
 5. `brain/UX_ARCHITECTURE.md`
 
 ## Planlama Kuralı
@@ -25,15 +25,15 @@ Uygulamaya geçmeden önce aktif faz, scope dışı işler, dosya etki alanı, t
 ## Scope Locked Prompt
 
 ```text
-Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme, dış sistem veya fotoğraf AI ekleme.
+Sadece 3 kısa değer/alışkanlık görevini prototip olarak ekle; metin ağırlıklı eğitim, karmaşık seviye veya ticari özellik ekleme.
 ```
 
 ## Exit Criteria
 
-- Mini oyun 4-5 yaş çocuğun anlayacağı kadar basit.
-- Eğitim kazanımı görünür: çocuk karışım sonucunu görür.
-- Oyun motivasyonu görünür: doğru karışımda kısa ödül/ilerleme ve heyecan döngüsü vardır.
-- Boyama SLC akışı bozulmaz.
+- En az 3 görev oynanabilir.
+- Çocuk görev hedefini görsel olarak anlayabilir.
+- Her görev 30-60 saniyede tamamlanabilir.
+- Ana akış karışmaz.
 
 ## Test
 

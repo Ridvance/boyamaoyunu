@@ -192,6 +192,32 @@ void main() {
 
     expect(find.byKey(const ValueKey('story-complete-panel')), findsOneWidget);
   });
+
+  testWidgets('magic colors mixes two primary colors into orange', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mode-sandbox')));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Kırmızı')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Sarı')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mix-button')));
+    await tester.pump();
+
+    expect(find.text('Turuncu'), findsWidgets);
+  });
 }
 
 Future<void> tapColoringCanvasAt(
