@@ -1,6 +1,6 @@
 # VALIDATION.md - Araştırma ve Ticari Doğrulama
 
-> Son güncelleme: 2026-05-20
+> Son güncelleme: 2026-06-04
 > Rol: Research, commercial validation, AI substitution, SLC ve kill report kapılarını proje özelinde tutar.
 
 ## Kullanma Kuralı
@@ -10,6 +10,13 @@
 - Çocuk güvenliği, ebeveyn güveni, karakter/isim saha doğrulaması ve dağıtım gerçekliği ticari doğrulamanın parçasıdır.
 
 ## Research Gate
+
+### Phase 2F - Okul Öncesi Paket Doğrulama Notu
+
+- 2026-06-04 tarihinde "İlk Beceriler" adlı tek örnek paket eklendi.
+- Paket renkler, hikayeli boyama ve günlük alışkanlık başlıklarını mevcut oyunlara bağlayan içerik taksonomisi olarak kullanılmaktadır.
+- Bu paket resmi müfredat uyumu iddiası taşımaz.
+- Resmi kazanım, okul/kurum uyumu veya öğretmen kullanım iddiası yazılmadan önce saha görüşmesi ve kaynaklı pedagojik doğrulama gerekir.
 
 ### Şu Anki Durum
 - Durum: Hızlı sprint yapıldı; deep research açık.

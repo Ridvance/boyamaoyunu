@@ -247,6 +247,48 @@ void main() {
 
     expect(find.byKey(const ValueKey('habits-complete-panel')), findsOneWidget);
   });
+
+  testWidgets('learning packs opens an example pack and activity', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-learning_packs')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-learning_packs')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('learning-pack-first-skills')));
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('learning-activity-story-coloring')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('learning-activity-color-mix')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('learning-activity-habits')),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('learning-activity-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('habit-action-toys')), findsOneWidget);
+  });
 }
 
 Future<void> tapColoringCanvasAt(

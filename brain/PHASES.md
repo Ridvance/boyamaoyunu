@@ -107,7 +107,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Çıkış kriterleri: Çocuk ne yapacağını metin okumadan anlayabilir; 3 adımlık akış tamamlanır; mevcut boyama SLC bozulmaz.
 - Test: `flutter test`, `flutter analyze`, manuel çocuk akışı smoke, `git diff --check`.
 - Scope Locked Prompt: Sadece mevcut boyama deneyimine 1 kısa hikayeli görev akışı ekle; yeni mini oyun, ödeme, dış sistem veya büyük refactor ekleme.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: Ev temalı 3 adımlı hikayeli boyama akışı, hedef parça vurgusu ve tamamlanma paneli eklendi.
 
 ### Phase 2D - Color Mix Learning Mini Game
 - Amaç: Renk karışımıyla yeni renk oluşumunu öğreten, heyecan ve merak hissi veren, boyama akışına bağlı küçük eğitim mini oyunu eklemek.
@@ -117,7 +118,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Çıkış kriterleri: 3 temel karışım çalışır; eğitim kazanımı görünür; kısa ödül/ilerleme vardır; boyama SLC akışı bozulmaz.
 - Test: Widget test, manuel çocuk akışı smoke, playtestte çocuğun karışımı anlayıp tekrar deneme isteği ve heyecan sinyali.
 - Scope Locked Prompt: Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme, dış sistem veya fotoğraf AI ekleme.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: Mevcut Renk Laboratuvarı temel renk karışımı akışı test key'leriyle doğrulandı; kırmızı+sarı=turuncu widget testi eklendi.
 
 ### Phase 2E - Values And Habits Mini Tasks
 - Amaç: Günlük yaşam değerlerini ve alışkanlıklarını 4-5 yaş çocuğa uygun kısa etkileşim görevleriyle denemek.
@@ -127,7 +129,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Çıkış kriterleri: En az 3 görev oynanabilir; çocuk görev hedefini görsel olarak anlayabilir; görevler 30-60 saniyede tamamlanabilir; ana akış karışmaz.
 - Test: `flutter test`, `flutter analyze`, manuel smoke, en az 1 ebeveyn/çocuk gözlem notu hedefi.
 - Scope Locked Prompt: Sadece 3 kısa değer/alışkanlık görevini prototip olarak ekle; metin ağırlıklı eğitim, karmaşık seviye veya ticari özellik ekleme.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: Oyuncak toplama, diş fırçalama ve çöpü kutusuna atma görevlerini içeren `HabitsGame` eklendi.
 
 ### Phase 2F - Preschool Learning Packs
 - Amaç: Hikaye, renk karışımı ve mini görevleri okul öncesi kazanım başlıklarına göre paketlenebilir hale getirmek.
@@ -137,7 +140,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Çıkış kriterleri: En az 1 paket uçtan uca seçilip oynanır; içerikler ileride yeni paket eklenebilecek şekilde ayrışır; resmi eğitim iddiaları doğrulama olmadan yazılmaz.
 - Test: `flutter test`, `flutter analyze`, paket ekleme smoke, `git diff --check`.
 - Scope Locked Prompt: Sadece okul öncesi kazanım paketleri için içerik yapısı ve 1 örnek paket oluştur; ödeme, resmi müfredat iddiası veya geniş katalog ekleme.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: "İlk Beceriler" adlı tek örnek öğrenme paketi eklendi; hikayeli boyama, renk karışımı ve alışkanlık görevleri paket ekranından açılabilir hale getirildi.
 
 ## Phase 3 - Differentiator
 

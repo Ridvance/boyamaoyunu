@@ -8,6 +8,7 @@ import 'games/shape_sorter_game.dart';
 import 'games/sound_board_game.dart';
 import 'games/magic_colors_game.dart';
 import 'games/habits_game.dart';
+import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
 
 void main() {
@@ -228,6 +229,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: const Color(0xFF2FA7A0),
                           title: 'İyi Alışkanlıklar',
                           gameWidget: const HabitsGame(),
+                        ),
+                        _buildGameCard(
+                          context: context,
+                          key: 'learning_packs',
+                          icon: Icons.school_rounded,
+                          color: const Color(0xFF8B5CF6),
+                          title: 'Öğrenme Paketleri',
+                          gameWidget: const LearningPacksGame(),
                         ),
                       ],
                     );
