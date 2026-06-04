@@ -1,6 +1,6 @@
 # Prompt Index
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-04
 
 ## Yeni Pencere Başlangıç Prompt'u
 
@@ -30,4 +30,13 @@ brain/PROMPTS/phase-02A-child-playtest-feedback-loop.md
 
 ```text
 brain/PHASES.md
+```
+
+## Planlanmış Yakın Faz Promptları
+
+```text
+brain/PROMPTS/phase-02C-story-coloring-flow.md
+brain/PROMPTS/phase-02D-color-mix-learning-mini-game.md
+brain/PROMPTS/phase-02E-values-and-habits-mini-tasks.md
+brain/PROMPTS/phase-02F-preschool-learning-packs.md
 ```

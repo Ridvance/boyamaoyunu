@@ -1,6 +1,6 @@
 # IDEA_POOL.md - Keşfedilmiş Fikirler
 
-> Son güncelleme: 2026-06-01
+> Son güncelleme: 2026-06-04
 > Rol: Unutulmuş, onay bekleyen veya ileride değerlendirilecek hedefleri kaynaklarıyla korur.
 
 ## Kullanma Kuralı
@@ -16,25 +16,25 @@
 - Kaynak: 2026-05-19 kullanıcı ve ebeveyn geri bildirimi.
 - Niyet: Çocuğa iki rengin karışınca yeni renk oluşturduğunu öğretmek; eğitim kazanımı sağlamak ve oyunu heyecanlandırıcı hale getirmek.
 - Etki: Boyama çekirdeğine doğrudan bağlı kalır, ebeveynin "faydalı oyun" algısını güçlendirir, çocuğa merak/ödül/ilerleme motivasyonu verir.
-- Durum: Phase 2C adayı; ilk playtest sonrası scope'a alınmalı.
+- Durum: Phase 2D olarak planlandı; ilk playtest sonrası scope'a alınmalı.
 
 ### Hikayeli Boyama Akışı
 - Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
 - Niyet: Boyama ekranını tekil bir aktivite olmaktan çıkarıp "kaybolan renkleri geri getir", "bahçeyi canlandır", "karakterin evini tamamla" gibi basit hikaye görevleriyle ilerletmek.
 - Etki: Çocuğun tekrar oynama motivasyonunu artırır; ebeveyne uygulamanın sadece ekran oyalaması değil, düzenli ve anlamlı bir deneyim sunduğunu hissettirir.
-- Durum: Phase-01 boyama çekirdeği tamamlandıktan sonra playtest adayı; ilk sürümde kısa, yazısız ve sesli/ikonlu görevlerle denenmeli.
+- Durum: Phase 2C olarak planlandı; ilk sürümde kısa, yazısız ve sesli/ikonlu görevlerle denenmeli.
 
 ### Okul Öncesi Kazanım Paketleri
 - Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
 - Niyet: 4-5 yaş okul öncesi çocuklara renkler, şekiller, büyük-küçük, eşleştirme, sıralama, temizlik alışkanlığı ve duygular gibi temel kazanımları mini oyun paketleriyle sunmak.
 - Etki: Ebeveyn ve öğretmen için "faydalı oyun" algısını güçlendirir; Milli Eğitim / okul öncesi uyumlu ürün konumlandırmasına zemin hazırlar.
-- Durum: Research/Validation ve saha görüşmesi gerektirir; AI veya internet varsayımıyla kesin müfredat iddiasına dönüştürülmemeli.
+- Durum: Phase 2F olarak planlandı; Research/Validation ve saha görüşmesi olmadan resmi kazanım iddiasına dönüştürülmemeli.
 
 ### Değer ve Alışkanlık Mini Görevleri
 - Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.
 - Niyet: Oyuncakları yerine koyma, diş fırçalama, çöpü kutuya atma, arkadaşına yardım etme ve hayvanlara nazik davranma gibi değerleri kısa etkileşimlerle oyunlaştırmak.
 - Etki: Uygulamanın ahlaki ve günlük yaşam faydasını artırır; ebeveynin ödeme veya tavsiye motivasyonunu güçlendirir.
-- Durum: İlk SLC sonrası aday; vaaz veren metinlerden kaçınıp görsel, kısa ve tekrar oynanabilir görevlerle doğrulanmalı.
+- Durum: Phase 2E olarak planlandı; vaaz veren metinlerden kaçınıp görsel, kısa ve tekrar oynanabilir görevlerle doğrulanmalı.
 
 ### Reklamsız Güven Konumlandırması
 - Kaynak: 2026-06-01 kullanıcı beyin fırtınası ve paylaşılan görüşme notları.

@@ -1,6 +1,6 @@
 # PHASES.md - Küçük Faz Rotası
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-04
 
 ## Faz Kullanma Kuralı
 
@@ -15,9 +15,20 @@
 ## Version Architecture
 
 - SLC Epic: Reklamsız boyama çekirdeği ve ebeveyn güvenliği.
-- V1 Epic: Playtest düzeltmeleri, karakter/ad doğrulama, renk karışımı mini oyun ve içerik yenileme.
+- V1 Epic: Playtest düzeltmeleri, karakter/ad doğrulama, hikayeli boyama akışı, renk karışımı mini oyun, değer/alışkanlık mini görevleri ve okul öncesi kazanım paketleri.
 - V2 Epic: Ücretli paket, global/İngilizce hazırlığı ve gelişmiş içerik sistemi.
 - Long-term Epic: Fotoğrafı güvenli şekilde çizime/boyama sayfasına dönüştürme.
+
+## Onaylı İlk 4 Ürün İşi - Faz Özeti
+
+Kullanıcı 2026-06-04 tarihinde ilk etapta aşağıdaki 4 ürün işinin planlanmasını istedi:
+
+1. Hikayeli Boyama Akışı: Mevcut boyama çekirdeğine kısa, yazısız ve görsel görev hissi eklenir.
+2. Renk Karışımı Mini Oyunu: Ana renkleri karıştırarak yeni renk öğrenme döngüsü kurulur.
+3. Değer ve Alışkanlık Mini Görevleri: Temizlik, düzen, yardım etme gibi günlük davranışlar kısa oyun görevlerine çevrilir.
+4. Okul Öncesi Kazanım Paketleri: Renk, şekil, eşleştirme, sıralama ve temel kavramlar paketlenebilir içerik yapısına alınır.
+
+Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra tek net öğrenme oyunu ekle, ardından davranış görevlerini dene, en sonda bunları paketlenebilir okul öncesi kazanım sistemine bağla.
 
 ## Phase 0 - Brain And Product Framing
 
@@ -88,14 +99,44 @@
 - Test: Yeni içerik ekleme smoke.
 - Durum: pending.
 
-### Phase 2C - Color Mix Learning Mini Game
+### Phase 2C - Story Coloring Flow
+- Amaç: Mevcut boyama ekranını tekil aktiviteden çıkarıp kısa görev hissi veren hikayeli akışa dönüştürmek.
+- Scope: 1 küçük hikaye teması, 3 görev adımı, yazısız/ikonlu yönlendirme, görev tamamlanınca kısa görsel kutlama, mevcut boyama sayfalarıyla uyum.
+- Scope dışı: Uzun hikaye metinleri, diyalog sistemi, karmaşık seviye haritası, yeni ticari model, büyük karakter evreni.
+- Beklenen dosya etki alanı: `lib/main.dart`, ilgili oyun dosyaları, `test/widget_test.dart`, gerekirse `brain/STATE.md`.
+- Çıkış kriterleri: Çocuk ne yapacağını metin okumadan anlayabilir; 3 adımlık akış tamamlanır; mevcut boyama SLC bozulmaz.
+- Test: `flutter test`, `flutter analyze`, manuel çocuk akışı smoke, `git diff --check`.
+- Scope Locked Prompt: Sadece mevcut boyama deneyimine 1 kısa hikayeli görev akışı ekle; yeni mini oyun, ödeme, dış sistem veya büyük refactor ekleme.
+- Durum: pending.
+
+### Phase 2D - Color Mix Learning Mini Game
 - Amaç: Renk karışımıyla yeni renk oluşumunu öğreten, heyecan ve merak hissi veren, boyama akışına bağlı küçük eğitim mini oyunu eklemek.
 - Scope: 2 renk seç, karıştır, oluşan renkle doğru nesneyi boya; yıldız/rozet, sürpriz açılma veya kısa seviye ilerlemesiyle çocuğu motive et.
-- Scope dışı: Karmaşık seviye sistemi, reklam/ödeme/dış link, çok sayıda renk kombinasyonu, ana boyama çekirdeğini bozacak büyük refactor.
+- Scope dışı: Karmaşık seviye sistemi, ödeme/dış link, çok sayıda renk kombinasyonu, ana boyama çekirdeğini bozacak büyük refactor.
 - Beklenen dosya etki alanı: `lib/main.dart`, `test/widget_test.dart`, `brain/STATE.md`.
 - Çıkış kriterleri: 3 temel karışım çalışır; eğitim kazanımı görünür; kısa ödül/ilerleme vardır; boyama SLC akışı bozulmaz.
 - Test: Widget test, manuel çocuk akışı smoke, playtestte çocuğun karışımı anlayıp tekrar deneme isteği ve heyecan sinyali.
-- Scope Locked Prompt: Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme/reklam/fotoğraf AI ekleme.
+- Scope Locked Prompt: Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme, dış sistem veya fotoğraf AI ekleme.
+- Durum: pending.
+
+### Phase 2E - Values And Habits Mini Tasks
+- Amaç: Günlük yaşam değerlerini ve alışkanlıklarını 4-5 yaş çocuğa uygun kısa etkileşim görevleriyle denemek.
+- Scope: 3 mikro görev prototipi; oyuncakları yerine koy, dişleri fırçala veya çöpü kutuya at gibi tek eylemli görevler; doğru eylemde kısa görsel/sesli geri bildirim.
+- Scope dışı: Metin ağırlıklı öğüt ekranları, puan ekonomisi, ceza sistemi, uzun görev zinciri, okul/öğretmen paneli.
+- Beklenen dosya etki alanı: `lib/main.dart`, `lib/games/*`, `test/widget_test.dart`, gerekirse `brain/STATE.md`.
+- Çıkış kriterleri: En az 3 görev oynanabilir; çocuk görev hedefini görsel olarak anlayabilir; görevler 30-60 saniyede tamamlanabilir; ana akış karışmaz.
+- Test: `flutter test`, `flutter analyze`, manuel smoke, en az 1 ebeveyn/çocuk gözlem notu hedefi.
+- Scope Locked Prompt: Sadece 3 kısa değer/alışkanlık görevini prototip olarak ekle; metin ağırlıklı eğitim, karmaşık seviye veya ticari özellik ekleme.
+- Durum: pending.
+
+### Phase 2F - Preschool Learning Packs
+- Amaç: Hikaye, renk karışımı ve mini görevleri okul öncesi kazanım başlıklarına göre paketlenebilir hale getirmek.
+- Scope: Renkler, şekiller, eşleştirme/sıralama ve günlük alışkanlıklar için içerik taksonomisi; paket seçimi ekranı; 1 örnek paket.
+- Scope dışı: Resmi müfredat uyumu iddiası, öğretmen paneli, ödeme sistemi, geniş içerik kataloğu, canlı içerik indirme.
+- Beklenen dosya etki alanı: `lib/main.dart`, içerik model dosyaları, `test/widget_test.dart`, `brain/VALIDATION.md`, gerekirse `brain/STATE.md`.
+- Çıkış kriterleri: En az 1 paket uçtan uca seçilip oynanır; içerikler ileride yeni paket eklenebilecek şekilde ayrışır; resmi eğitim iddiaları doğrulama olmadan yazılmaz.
+- Test: `flutter test`, `flutter analyze`, paket ekleme smoke, `git diff --check`.
+- Scope Locked Prompt: Sadece okul öncesi kazanım paketleri için içerik yapısı ve 1 örnek paket oluştur; ödeme, resmi müfredat iddiası veya geniş katalog ekleme.
 - Durum: pending.
 
 ## Phase 3 - Differentiator

@@ -1,4 +1,4 @@
-# Phase 2C - Color Mix Learning Mini Game
+# Phase 2D - Color Mix Learning Mini Game
 
 ## Amaç
 
@@ -24,7 +24,7 @@ Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı, 
 ## Scope Dışı
 
 - Karmaşık seviye sistemi.
-- Reklam, ödeme, dış link veya hesap sistemi.
+- Ödeme, dış link veya hesap sistemi.
 - Çok sayıda renk kombinasyonu.
 - Ana boyama çekirdeğini bozacak büyük mimari değişiklik.
 
@@ -47,4 +47,10 @@ Renk karışımıyla yeni renk oluşumunu öğreten, boyama akışına bağlı, 
 flutter test
 flutter analyze
 git diff --check
+```
+
+## Scope Locked Prompt
+
+```text
+Sadece renk karışımı mini oyununu tek ekranlık eğitim/heyecan döngüsü olarak ekle; boyama çekirdeğini bozma; ödeme, dış sistem veya fotoğraf AI ekleme.
 ```
