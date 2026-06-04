@@ -4,25 +4,38 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cocuk_oyun/main.dart';
 
 void main() {
-  testWidgets('shows the dashboard with five games and the parent gate button', (
-    WidgetTester tester,
-  ) async {
-    // Set screen size to landscape for testing
-    tester.view.physicalSize = const Size(1200, 800);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.resetPhysicalSize);
+  testWidgets(
+    'shows the dashboard with five games and the parent gate button',
+    (WidgetTester tester) async {
+      // Set screen size to landscape for testing
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
 
-    await tester.pumpWidget(const CocukOyunApp());
+      await tester.pumpWidget(const CocukOyunApp());
 
-    expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-coloring')), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-tracing')), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-balloon_pop')), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-shape_sorter')), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-sound_board')), findsOneWidget);
-    expect(find.byKey(const ValueKey('game-card-magic_colors')), findsOneWidget);
-    expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
-  });
+      expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
+      expect(find.byKey(const ValueKey('game-card-coloring')), findsOneWidget);
+      expect(find.byKey(const ValueKey('game-card-tracing')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('game-card-balloon_pop')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('game-card-shape_sorter')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('game-card-sound_board')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('game-card-magic_colors')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
+    },
+  );
 
   testWidgets('opens parent safety screen through the multi-finger gate', (
     WidgetTester tester,
@@ -40,9 +53,18 @@ void main() {
     expect(find.text('Ebeveyn Doğrulaması'), findsOneWidget);
 
     // Simulate touching screen with 3 fingers simultaneously
-    final gesture1 = await tester.startGesture(const Offset(500, 350), pointer: 1);
-    final gesture2 = await tester.startGesture(const Offset(600, 350), pointer: 2);
-    final gesture3 = await tester.startGesture(const Offset(700, 350), pointer: 3);
+    final gesture1 = await tester.startGesture(
+      const Offset(500, 350),
+      pointer: 1,
+    );
+    final gesture2 = await tester.startGesture(
+      const Offset(600, 350),
+      pointer: 2,
+    );
+    final gesture3 = await tester.startGesture(
+      const Offset(700, 350),
+      pointer: 3,
+    );
 
     // Pump and wait for 3 seconds timer
     await tester.pump(const Duration(seconds: 4));
@@ -126,11 +148,66 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
-    expect(find.byKey(const ValueKey('magic-colors-back-button')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('magic-colors-back-button')),
+      findsOneWidget,
+    );
     await tester.tap(find.byKey(const ValueKey('magic-colors-back-button')));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
 
     expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
   });
+
+  testWidgets('coloring game advances the three-step story flow', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-coloring')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('story-flow-panel')), findsOneWidget);
+    expect(find.byKey(const ValueKey('story-step-0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('story-step-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('story-step-2')), findsOneWidget);
+
+    await tapColoringCanvasAt(tester, const Offset(160, 145)); // roof
+    await tester.pump();
+    await tapColoringCanvasAt(tester, const Offset(170, 250)); // wall
+    await tester.pump();
+    await tapColoringCanvasAt(tester, const Offset(200, 300)); // door
+    await tester.pump();
+    await tapColoringCanvasAt(tester, const Offset(130, 235)); // left window
+    await tester.pump();
+    await tapColoringCanvasAt(tester, const Offset(270, 235)); // right window
+    await tester.pump();
+    await tapColoringCanvasAt(tester, const Offset(200, 115)); // attic window
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('story-complete-panel')), findsOneWidget);
+  });
+}
+
+Future<void> tapColoringCanvasAt(
+  WidgetTester tester,
+  Offset virtualPoint,
+) async {
+  final finder = find.byKey(const ValueKey('coloring-canvas-touch-area'));
+  final topLeft = tester.getTopLeft(finder);
+  final size = tester.getSize(finder);
+  final side = size.shortestSide;
+  final offsetX = (size.width - side) / 2;
+  final offsetY = (size.height - side) / 2;
+  final localPoint = Offset(
+    offsetX + (virtualPoint.dx / 400) * side,
+    offsetY + (virtualPoint.dy / 400) * side,
+  );
+
+  await tester.tapAt(topLeft + localPoint);
 }

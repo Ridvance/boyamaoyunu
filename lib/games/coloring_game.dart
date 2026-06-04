@@ -31,6 +31,22 @@ class ColoringTemplate {
   });
 }
 
+class StoryColoringStep {
+  final int templateIndex;
+  final Set<String> targetPartIds;
+  final IconData icon;
+  final Color accentColor;
+  final String semanticsLabel;
+
+  const StoryColoringStep({
+    required this.templateIndex,
+    required this.targetPartIds,
+    required this.icon,
+    required this.accentColor,
+    required this.semanticsLabel,
+  });
+}
+
 class Particle {
   Offset position;
   Offset velocity;
@@ -58,10 +74,37 @@ class ColoringGame extends StatefulWidget {
   State<ColoringGame> createState() => _ColoringGameState();
 }
 
-class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMixin {
+class _ColoringGameState extends State<ColoringGame>
+    with TickerProviderStateMixin {
   late List<ColoringTemplate> _templates;
-  int _selectedTemplateIndex = 0;
+  int _selectedTemplateIndex = 1;
   Color _selectedColor = const Color(0xFFFF4B4B);
+  int _storyStepIndex = 0;
+  bool _storyCompleted = false;
+
+  static const List<StoryColoringStep> _storySteps = [
+    StoryColoringStep(
+      templateIndex: 1,
+      targetPartIds: {'roof'},
+      icon: Icons.roofing_rounded,
+      accentColor: Color(0xFFFFB300),
+      semanticsLabel: 'Hikaye gorevi 1: catiyi boya',
+    ),
+    StoryColoringStep(
+      templateIndex: 1,
+      targetPartIds: {'wall', 'door'},
+      icon: Icons.home_rounded,
+      accentColor: Color(0xFF2FA7A0),
+      semanticsLabel: 'Hikaye gorevi 2: evi tamamla',
+    ),
+    StoryColoringStep(
+      templateIndex: 1,
+      targetPartIds: {'left_window', 'right_window', 'attic_window'},
+      icon: Icons.wb_sunny_rounded,
+      accentColor: Color(0xFFFFD13B),
+      semanticsLabel: 'Hikaye gorevi 3: isiklari yak',
+    ),
+  ];
 
   final List<Color> _paletteColors = [
     const Color(0xFFFF4B4B), // Red
@@ -94,8 +137,8 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     )..addListener(() {
-        _updateParticles();
-      });
+      _updateParticles();
+    });
   }
 
   @override
@@ -161,17 +204,31 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
       for (var part in _templates[_selectedTemplateIndex].parts) {
         part.color = part.defaultColor;
       }
+      if (_selectedTemplateIndex == _storySteps.first.templateIndex) {
+        _storyStepIndex = 0;
+        _storyCompleted = false;
+      }
     });
     HapticFeedback.vibrate();
     AudioSynth.playSparkleSound();
 
     // Trigger cleanup fireworks
-    final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _canvasKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       final size = renderBox.size;
-      _spawnParticles(Offset(size.width * 0.3, size.height * 0.4), const Color(0xFFFF4B4B));
-      _spawnParticles(Offset(size.width * 0.5, size.height * 0.5), const Color(0xFFFFD13B));
-      _spawnParticles(Offset(size.width * 0.7, size.height * 0.4), const Color(0xFF3B82F6));
+      _spawnParticles(
+        Offset(size.width * 0.3, size.height * 0.4),
+        const Color(0xFFFF4B4B),
+      );
+      _spawnParticles(
+        Offset(size.width * 0.5, size.height * 0.5),
+        const Color(0xFFFFD13B),
+      );
+      _spawnParticles(
+        Offset(size.width * 0.7, size.height * 0.4),
+        const Color(0xFF3B82F6),
+      );
     }
   }
 
@@ -188,26 +245,41 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           HapticFeedback.mediumImpact();
           AudioSynth.playRaindropSound();
           // Use bright colors for particle explosion even if eraser (white) is used
-          final explosionColor = _selectedColor == Colors.white
-              ? const Color(0xFFFFD13B)
-              : _selectedColor;
+          final explosionColor =
+              _selectedColor == Colors.white
+                  ? const Color(0xFFFFD13B)
+                  : _selectedColor;
           _spawnParticles(localPosition, explosionColor);
+          _advanceStoryIfNeeded(part, localPosition);
 
           // Check if template is fully colored
-          final allColored = template.parts.every((p) => p.color != Colors.white);
-          if (allColored && !_celebratedTemplates.contains(_selectedTemplateIndex)) {
+          final allColored = template.parts.every(
+            (p) => p.color != Colors.white,
+          );
+          if (allColored &&
+              !_celebratedTemplates.contains(_selectedTemplateIndex)) {
             _celebratedTemplates.add(_selectedTemplateIndex);
             HapticFeedback.heavyImpact();
             AudioSynth.playSparkleSound();
 
             Future.delayed(const Duration(milliseconds: 150), () {
               if (mounted) {
-                final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+                final RenderBox? renderBox =
+                    _canvasKey.currentContext?.findRenderObject() as RenderBox?;
                 if (renderBox != null) {
                   final size = renderBox.size;
-                  _spawnParticles(Offset(size.width * 0.3, size.height * 0.45), const Color(0xFFFF4B4B));
-                  _spawnParticles(Offset(size.width * 0.5, size.height * 0.5), const Color(0xFFFFD13B));
-                  _spawnParticles(Offset(size.width * 0.7, size.height * 0.45), const Color(0xFF3B82F6));
+                  _spawnParticles(
+                    Offset(size.width * 0.3, size.height * 0.45),
+                    const Color(0xFFFF4B4B),
+                  );
+                  _spawnParticles(
+                    Offset(size.width * 0.5, size.height * 0.5),
+                    const Color(0xFFFFD13B),
+                  );
+                  _spawnParticles(
+                    Offset(size.width * 0.7, size.height * 0.45),
+                    const Color(0xFF3B82F6),
+                  );
                 }
               }
             });
@@ -216,6 +288,40 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
         break;
       }
     }
+  }
+
+  void _advanceStoryIfNeeded(ColoringPart changedPart, Offset localPosition) {
+    if (_storyCompleted || _storyStepIndex >= _storySteps.length) {
+      return;
+    }
+
+    final step = _storySteps[_storyStepIndex];
+    if (_selectedTemplateIndex != step.templateIndex ||
+        !step.targetPartIds.contains(changedPart.id)) {
+      return;
+    }
+
+    final template = _templates[_selectedTemplateIndex];
+    final stepFinished = step.targetPartIds.every(
+      (id) => template.parts.any(
+        (part) => part.id == id && part.color != Colors.white,
+      ),
+    );
+    if (!stepFinished) {
+      return;
+    }
+
+    setState(() {
+      if (_storyStepIndex == _storySteps.length - 1) {
+        _storyCompleted = true;
+      } else {
+        _storyStepIndex += 1;
+      }
+    });
+
+    HapticFeedback.heavyImpact();
+    AudioSynth.playSparkleSound();
+    _spawnParticles(localPosition, step.accentColor);
   }
 
   Offset _convertToVirtualPoint(Offset localPoint, Size size) {
@@ -249,12 +355,13 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           color: isSelected ? const Color(0xFFFFE082) : Colors.white,
           shape: BoxShape.circle,
           border: Border.all(
-            color: isSelected ? const Color(0xFFFFB300) : const Color(0xFFE0E0E0),
+            color:
+                isSelected ? const Color(0xFFFFB300) : const Color(0xFFE0E0E0),
             width: isSelected ? 3 : 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -264,8 +371,99 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           child: SizedBox(
             width: 36,
             height: 36,
-            child: CustomPaint(
-              painter: TemplateMiniPainter(template),
+            child: CustomPaint(painter: TemplateMiniPainter(template)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Set<String> get _activeStoryTargets {
+    if (_storyCompleted || _storyStepIndex >= _storySteps.length) {
+      return const {};
+    }
+
+    final step = _storySteps[_storyStepIndex];
+    if (_selectedTemplateIndex != step.templateIndex) {
+      return const {};
+    }
+
+    return step.targetPartIds;
+  }
+
+  Widget _buildStoryOverlay() {
+    final currentStep =
+        _storyCompleted ? _storySteps.last : _storySteps[_storyStepIndex];
+
+    return Positioned(
+      key: const ValueKey('story-flow-panel'),
+      top: 12,
+      left: 48,
+      right: 48,
+      child: IgnorePointer(
+        child: Semantics(
+          label:
+              _storyCompleted
+                  ? 'Hikaye tamamlandi'
+                  : currentStep.semanticsLabel,
+          child: DecoratedBox(
+            key: ValueKey(
+              _storyCompleted ? 'story-complete-panel' : 'story-active-panel',
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7D6).withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFFFFC83D), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(_storySteps.length, (index) {
+                  final isDone = _storyCompleted || index < _storyStepIndex;
+                  final isActive = !_storyCompleted && index == _storyStepIndex;
+                  final step = _storySteps[index];
+
+                  return AnimatedContainer(
+                    key: ValueKey('story-step-$index'),
+                    duration: const Duration(milliseconds: 200),
+                    width: isActive ? 48 : 40,
+                    height: isActive ? 48 : 40,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color:
+                          isDone
+                              ? const Color(0xFF10B981)
+                              : isActive
+                              ? step.accentColor
+                              : Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color:
+                            isActive
+                                ? const Color(0xFF233238)
+                                : const Color(0xFFFFD13B),
+                        width: isActive ? 3 : 2,
+                      ),
+                    ),
+                    child: Icon(
+                      isDone ? Icons.check_rounded : step.icon,
+                      size: isActive ? 28 : 24,
+                      color:
+                          isDone || isActive
+                              ? Colors.white
+                              : const Color(0xFF8A6A00),
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         ),
@@ -325,7 +523,7 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
                       borderRadius: BorderRadius.circular(32),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         ),
@@ -335,23 +533,32 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
                       children: [
                         // Clickable Custom Paint Canvas
                         GestureDetector(
+                          key: const ValueKey('coloring-canvas-touch-area'),
                           onTapUp: (details) {
                             final RenderBox? canvasBox =
-                                _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+                                _canvasKey.currentContext?.findRenderObject()
+                                    as RenderBox?;
                             if (canvasBox != null) {
-                              final canvasLocalPos =
-                                  canvasBox.globalToLocal(details.globalPosition);
-                              final virtualPoint =
-                                  _convertToVirtualPoint(canvasLocalPos, canvasBox.size);
+                              final canvasLocalPos = canvasBox.globalToLocal(
+                                details.globalPosition,
+                              );
+                              final virtualPoint = _convertToVirtualPoint(
+                                canvasLocalPos,
+                                canvasBox.size,
+                              );
                               _handleTap(virtualPoint, canvasLocalPos);
                             }
                           },
                           child: CustomPaint(
                             key: _canvasKey,
                             size: Size.infinite,
-                            painter: ColoringPainter(_templates[_selectedTemplateIndex]),
+                            painter: ColoringPainter(
+                              _templates[_selectedTemplateIndex],
+                              highlightedPartIds: _activeStoryTargets,
+                            ),
                           ),
                         ),
+                        _buildStoryOverlay(),
                         // Floating Particles Canvas (Unclickable)
                         IgnorePointer(
                           child: CustomPaint(
@@ -414,19 +621,20 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.12),
+                                  color: Colors.black.withValues(alpha: 0.12),
                                   blurRadius: 3,
                                   offset: const Offset(0, 1.5),
                                 ),
                               ],
                             ),
-                            child: color == Colors.white
-                                ? Icon(
-                                    Icons.auto_fix_high_rounded,
-                                    size: isSelected ? 20 : 16,
-                                    color: Colors.grey.shade700,
-                                  )
-                                : null,
+                            child:
+                                color == Colors.white
+                                    ? Icon(
+                                      Icons.auto_fix_high_rounded,
+                                      size: isSelected ? 20 : 16,
+                                      color: Colors.grey.shade700,
+                                    )
+                                    : null,
                           ),
                         );
                       }),
@@ -460,32 +668,38 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'head', path: _getCatHeadPath()),
         ],
         drawDetails: (canvas, size, basePaint) {
-          final paint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 4
-            ..strokeCap = StrokeCap.round
-            ..strokeJoin = StrokeJoin.round;
+          final paint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..strokeCap = StrokeCap.round
+                ..strokeJoin = StrokeJoin.round;
 
-          final fillPaint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.fill;
+          final fillPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.fill;
 
           // Eyes
           canvas.drawCircle(const Offset(160, 160), 8, fillPaint);
           canvas.drawCircle(const Offset(240, 160), 8, fillPaint);
 
           // Eye highlights
-          final whitePaint = Paint()..color = Colors.white..style = PaintingStyle.fill;
+          final whitePaint =
+              Paint()
+                ..color = Colors.white
+                ..style = PaintingStyle.fill;
           canvas.drawCircle(const Offset(158, 157), 2.5, whitePaint);
           canvas.drawCircle(const Offset(238, 157), 2.5, whitePaint);
 
           // Nose (Triangle)
-          final nosePath = Path()
-            ..moveTo(192, 178)
-            ..lineTo(208, 178)
-            ..lineTo(200, 186)
-            ..close();
+          final nosePath =
+              Path()
+                ..moveTo(192, 178)
+                ..lineTo(208, 178)
+                ..lineTo(200, 186)
+                ..close();
           canvas.drawPath(nosePath, fillPaint);
 
           // Mouth
@@ -511,9 +725,21 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           canvas.drawLine(const Offset(135, 189), const Offset(90, 189), paint);
           canvas.drawLine(const Offset(135, 196), const Offset(95, 201), paint);
           // Right side whiskers
-          canvas.drawLine(const Offset(265, 182), const Offset(305, 177), paint);
-          canvas.drawLine(const Offset(265, 189), const Offset(310, 189), paint);
-          canvas.drawLine(const Offset(265, 196), const Offset(305, 201), paint);
+          canvas.drawLine(
+            const Offset(265, 182),
+            const Offset(305, 177),
+            paint,
+          );
+          canvas.drawLine(
+            const Offset(265, 189),
+            const Offset(310, 189),
+            paint,
+          );
+          canvas.drawLine(
+            const Offset(265, 196),
+            const Offset(305, 201),
+            paint,
+          );
         },
       ),
 
@@ -531,37 +757,60 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'attic_window', path: _getHouseAtticWindowPath()),
         ],
         drawDetails: (canvas, size, basePaint) {
-          final paint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 4
-            ..strokeCap = StrokeCap.round
-            ..strokeJoin = StrokeJoin.round;
+          final paint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..strokeCap = StrokeCap.round
+                ..strokeJoin = StrokeJoin.round;
 
           // Door knob
-          final fillPaint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.fill;
+          final fillPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.fill;
           canvas.drawCircle(const Offset(215, 315), 5, fillPaint);
 
           // Left window inner cross (+)
-          canvas.drawLine(const Offset(105, 235), const Offset(155, 235), paint);
-          canvas.drawLine(const Offset(130, 210), const Offset(130, 260), paint);
+          canvas.drawLine(
+            const Offset(105, 235),
+            const Offset(155, 235),
+            paint,
+          );
+          canvas.drawLine(
+            const Offset(130, 210),
+            const Offset(130, 260),
+            paint,
+          );
 
           // Right window inner cross (+)
-          canvas.drawLine(const Offset(245, 235), const Offset(295, 235), paint);
-          canvas.drawLine(const Offset(270, 210), const Offset(270, 260), paint);
+          canvas.drawLine(
+            const Offset(245, 235),
+            const Offset(295, 235),
+            paint,
+          );
+          canvas.drawLine(
+            const Offset(270, 210),
+            const Offset(270, 260),
+            paint,
+          );
 
           // Attic window cross (+)
-          canvas.drawLine(const Offset(180, 115), const Offset(220, 115), paint);
+          canvas.drawLine(
+            const Offset(180, 115),
+            const Offset(220, 115),
+            paint,
+          );
           canvas.drawLine(const Offset(200, 95), const Offset(200, 135), paint);
 
           // Smoke puffs from chimney
-          final smokePath = Path()
-            ..moveTo(275, 55)
-            ..quadraticBezierTo(285, 35, 270, 25)
-            ..moveTo(285, 60)
-            ..quadraticBezierTo(295, 40, 280, 30);
+          final smokePath =
+              Path()
+                ..moveTo(275, 55)
+                ..quadraticBezierTo(285, 35, 270, 25)
+                ..moveTo(285, 60)
+                ..quadraticBezierTo(295, 40, 280, 30);
           canvas.drawPath(smokePath, paint..strokeWidth = 3);
         },
       ),
@@ -574,7 +823,10 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'left_ear', path: _getTeddyLeftEarPath()),
           ColoringPart(id: 'right_ear', path: _getTeddyRightEarPath()),
           ColoringPart(id: 'left_inner_ear', path: _getTeddyLeftInnerEarPath()),
-          ColoringPart(id: 'right_inner_ear', path: _getTeddyRightInnerEarPath()),
+          ColoringPart(
+            id: 'right_inner_ear',
+            path: _getTeddyRightInnerEarPath(),
+          ),
           ColoringPart(id: 'body', path: _getTeddyBodyPath()),
           ColoringPart(id: 'left_arm', path: _getTeddyLeftArmPath()),
           ColoringPart(id: 'right_arm', path: _getTeddyRightArmPath()),
@@ -585,38 +837,48 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'muzzle', path: _getTeddyMuzzlePath()),
         ],
         drawDetails: (canvas, size, basePaint) {
-          final paint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 4
-            ..strokeCap = StrokeCap.round
-            ..strokeJoin = StrokeJoin.round;
+          final paint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..strokeCap = StrokeCap.round
+                ..strokeJoin = StrokeJoin.round;
 
-          final fillPaint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.fill;
+          final fillPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.fill;
 
           // Eyes
           canvas.drawCircle(const Offset(165, 160), 8, fillPaint);
           canvas.drawCircle(const Offset(235, 160), 8, fillPaint);
 
           // Eye highlights
-          final whitePaint = Paint()..color = Colors.white..style = PaintingStyle.fill;
+          final whitePaint =
+              Paint()
+                ..color = Colors.white
+                ..style = PaintingStyle.fill;
           canvas.drawCircle(const Offset(163, 157), 2.5, whitePaint);
           canvas.drawCircle(const Offset(233, 157), 2.5, whitePaint);
 
           // Nose (Horizontal Oval)
           canvas.drawOval(
-            Rect.fromCenter(center: const Offset(200, 195), width: 28, height: 16),
+            Rect.fromCenter(
+              center: const Offset(200, 195),
+              width: 28,
+              height: 16,
+            ),
             fillPaint,
           );
 
           // Mouth
-          final mouthPath = Path()
-            ..moveTo(200, 203)
-            ..quadraticBezierTo(190, 215, 182, 210)
-            ..moveTo(200, 203)
-            ..quadraticBezierTo(210, 215, 218, 210);
+          final mouthPath =
+              Path()
+                ..moveTo(200, 203)
+                ..quadraticBezierTo(190, 215, 182, 210)
+                ..moveTo(200, 203)
+                ..quadraticBezierTo(210, 215, 218, 210);
           canvas.drawPath(mouthPath, paint..strokeWidth = 3);
         },
       ),
@@ -629,29 +891,38 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'left_wing', path: _getButterflyLeftWingPath()),
           ColoringPart(id: 'right_wing', path: _getButterflyRightWingPath()),
           ColoringPart(id: 'left_spot', path: _getButterflyLeftWingSpotPath()),
-          ColoringPart(id: 'right_spot', path: _getButterflyRightWingSpotPath()),
+          ColoringPart(
+            id: 'right_spot',
+            path: _getButterflyRightWingSpotPath(),
+          ),
           ColoringPart(id: 'body', path: _getButterflyBodyPath()),
           ColoringPart(id: 'head', path: _getButterflyHeadPath()),
         ],
         drawDetails: (canvas, size, basePaint) {
-          final antennaPaint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 3
-            ..strokeCap = StrokeCap.round;
-          final fillPaint = Paint()..color = basePaint.color..style = PaintingStyle.fill;
-          
+          final antennaPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 3
+                ..strokeCap = StrokeCap.round;
+          final fillPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.fill;
+
           // Left antenna
-          final leftAntenna = Path()
-            ..moveTo(195, 85)
-            ..quadraticBezierTo(170, 50, 160, 55);
+          final leftAntenna =
+              Path()
+                ..moveTo(195, 85)
+                ..quadraticBezierTo(170, 50, 160, 55);
           canvas.drawPath(leftAntenna, antennaPaint);
           canvas.drawCircle(const Offset(160, 55), 4, fillPaint);
-          
+
           // Right antenna
-          final rightAntenna = Path()
-            ..moveTo(205, 85)
-            ..quadraticBezierTo(230, 50, 240, 55);
+          final rightAntenna =
+              Path()
+                ..moveTo(205, 85)
+                ..quadraticBezierTo(230, 50, 240, 55);
           canvas.drawPath(rightAntenna, antennaPaint);
           canvas.drawCircle(const Offset(240, 55), 4, fillPaint);
 
@@ -680,11 +951,15 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           ColoringPart(id: 'rear_wheel', path: _getCarRearWheelPath()),
         ],
         drawDetails: (canvas, size, basePaint) {
-          final fillPaint = Paint()..color = basePaint.color..style = PaintingStyle.fill;
-          final lightPaint = Paint()
-            ..color = basePaint.color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 3;
+          final fillPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.fill;
+          final lightPaint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 3;
 
           // Wheel Hubcaps
           canvas.drawCircle(const Offset(125, 310), 8, fillPaint);
@@ -693,17 +968,14 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
           // Front Headlight (Facing Right)
           canvas.drawArc(
             Rect.fromLTRB(330, 235, 345, 260),
-            -pi/2,
+            -pi / 2,
             pi,
             false,
             lightPaint,
           );
 
           // Rear Stoplight
-          canvas.drawRect(
-            Rect.fromLTRB(55, 235, 62, 255),
-            fillPaint,
-          );
+          canvas.drawRect(Rect.fromLTRB(55, 235, 62, 255), fillPaint);
         },
       ),
     ];
@@ -755,10 +1027,12 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
   // --- CAR TEMPLATE PATHS ---
   Path _getCarBodyPath() {
     final path = Path();
-    path.addRRect(RRect.fromRectAndRadius(
-      const Rect.fromLTRB(60, 220, 340, 310),
-      const Radius.circular(20),
-    ));
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTRB(60, 220, 340, 310),
+        const Radius.circular(20),
+      ),
+    );
     return path;
   }
 
@@ -943,8 +1217,9 @@ class _ColoringGameState extends State<ColoringGame> with TickerProviderStateMix
 // Custom Painter for main coloring page
 class ColoringPainter extends CustomPainter {
   final ColoringTemplate template;
+  final Set<String> highlightedPartIds;
 
-  ColoringPainter(this.template);
+  ColoringPainter(this.template, {this.highlightedPartIds = const {}});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -956,12 +1231,13 @@ class ColoringPainter extends CustomPainter {
     canvas.translate(offsetX, offsetY);
     canvas.scale(side / 400);
 
-    final borderPaint = Paint()
-      ..color = const Color(0xFF2B2B2B)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+    final borderPaint =
+        Paint()
+          ..color = const Color(0xFF2B2B2B)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 6
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
 
     final fillPaint = Paint()..style = PaintingStyle.fill;
 
@@ -974,6 +1250,33 @@ class ColoringPainter extends CustomPainter {
     // 2. Draw black boundary strokes
     for (var part in template.parts) {
       canvas.drawPath(part.path, borderPaint);
+    }
+
+    if (highlightedPartIds.isNotEmpty) {
+      final highlightPaint =
+          Paint()
+            ..color = const Color(0xFFFFD13B)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 12
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round;
+
+      final innerHighlightPaint =
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 5
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round;
+
+      for (var part in template.parts) {
+        if (highlightedPartIds.contains(part.id) &&
+            part.color == Colors.white) {
+          canvas.drawPath(part.path, highlightPaint);
+          canvas.drawPath(part.path, innerHighlightPaint);
+          canvas.drawPath(part.path, borderPaint);
+        }
+      }
     }
 
     // 3. Draw features/details (Eyes, nose, whiskers etc.)
@@ -998,16 +1301,18 @@ class TemplateMiniPainter extends CustomPainter {
     canvas.save();
     canvas.scale(side / 400);
 
-    final paint = Paint()
-      ..color = const Color(0xFF555555)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+    final paint =
+        Paint()
+          ..color = const Color(0xFF555555)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
 
-    final fillPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
+    final fillPaint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
 
     for (var part in template.parts) {
       canvas.drawPath(part.path, fillPaint);
@@ -1032,15 +1337,20 @@ class ParticlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (var p in particles) {
-      final paint = Paint()
-        ..color = p.color.withOpacity(p.life)
-        ..style = PaintingStyle.fill;
+      final paint =
+          Paint()
+            ..color = p.color.withValues(alpha: p.life)
+            ..style = PaintingStyle.fill;
 
       if (p.type == 0) {
         canvas.drawCircle(p.position, p.size, paint);
       } else if (p.type == 1) {
         canvas.drawRect(
-          Rect.fromCenter(center: p.position, width: p.size * 1.4, height: p.size),
+          Rect.fromCenter(
+            center: p.position,
+            width: p.size * 1.4,
+            height: p.size,
+          ),
           paint,
         );
       } else {
@@ -1086,7 +1396,8 @@ class BouncyButton extends StatefulWidget {
   State<BouncyButton> createState() => _BouncyButtonState();
 }
 
-class _BouncyButtonState extends State<BouncyButton> with SingleTickerProviderStateMixin {
+class _BouncyButtonState extends State<BouncyButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -1097,9 +1408,10 @@ class _BouncyButtonState extends State<BouncyButton> with SingleTickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.9,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
   }
 
   @override
@@ -1127,7 +1439,7 @@ class _BouncyButtonState extends State<BouncyButton> with SingleTickerProviderSt
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
