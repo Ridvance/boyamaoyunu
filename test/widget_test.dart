@@ -218,6 +218,35 @@ void main() {
 
     expect(find.text('Turuncu'), findsWidgets);
   });
+
+  testWidgets('habits game completes three daily habit tasks', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-habits')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('habit-action-teeth')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('habit-action-trash')));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('habits-complete-panel')), findsOneWidget);
+  });
 }
 
 Future<void> tapColoringCanvasAt(

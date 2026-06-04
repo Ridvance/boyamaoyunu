@@ -7,6 +7,7 @@ import 'games/balloon_pop_game.dart';
 import 'games/shape_sorter_game.dart';
 import 'games/sound_board_game.dart';
 import 'games/magic_colors_game.dart';
+import 'games/habits_game.dart';
 import 'services/audio_synth.dart';
 
 void main() {
@@ -147,13 +148,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       showDialog<void>(
                         context: context,
                         barrierDismissible: false,
-                        builder: (context) => MultiFingerParentGate(
-                          onUnlocked: () {
-                            Navigator.of(context).pop();
-                            AudioSynth.playSparkleSound();
-                            _openParentArea();
-                          },
-                        ),
+                        builder:
+                            (context) => MultiFingerParentGate(
+                              onUnlocked: () {
+                                Navigator.of(context).pop();
+                                AudioSynth.playSparkleSound();
+                                _openParentArea();
+                              },
+                            ),
                       );
                     },
                   ),
@@ -219,6 +221,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           title: 'Renk Laboratuvarı',
                           gameWidget: const MagicColorsGame(),
                         ),
+                        _buildGameCard(
+                          context: context,
+                          key: 'habits',
+                          icon: Icons.volunteer_activism_rounded,
+                          color: const Color(0xFF2FA7A0),
+                          title: 'İyi Alışkanlıklar',
+                          gameWidget: const HabitsGame(),
+                        ),
                       ],
                     );
                   },
@@ -242,9 +252,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Material(
       color: Colors.white,
       elevation: 2,
-      shadowColor: color.withOpacity(0.2),
+      shadowColor: color.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: color.withOpacity(0.3), width: 3),
+        side: BorderSide(color: color.withValues(alpha: 0.3), width: 3),
         borderRadius: BorderRadius.circular(24),
       ),
       child: InkWell(
@@ -253,9 +263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           AudioSynth.playSparkleSound();
           Navigator.push<void>(
             context,
-            MaterialPageRoute(
-              builder: (context) => gameWidget,
-            ),
+            MaterialPageRoute(builder: (context) => gameWidget),
           );
         },
         borderRadius: BorderRadius.circular(21),
@@ -267,14 +275,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon,
-                  size: 48,
-                  color: color,
-                ),
+                child: Icon(icon, size: 48, color: color),
               ),
               const SizedBox(height: 12),
               Text(
@@ -474,7 +478,7 @@ class _MultiFingerParentGateState extends State<MultiFingerParentGate> {
                       width: 70,
                       height: 70,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2FA7A0).withOpacity(0.3),
+                        color: const Color(0xFF2FA7A0).withValues(alpha: 0.3),
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: const Color(0xFF2FA7A0),
@@ -539,22 +543,26 @@ class ParentSafetyScreen extends StatelessWidget {
                   children: const [
                     SafetyStatusCard(
                       label: 'Sıfır Reklam Gösterimi',
-                      description: 'Uygulamada hiçbir ticari reklam alanı bulunmamaktadır.',
+                      description:
+                          'Uygulamada hiçbir ticari reklam alanı bulunmamaktadır.',
                       icon: Icons.block_rounded,
                     ),
                     SafetyStatusCard(
                       label: 'Ödeme Duvarı Yok',
-                      description: 'Gizli veya yanlışlıkla satın alınabilecek içerik yoktur.',
+                      description:
+                          'Gizli veya yanlışlıkla satın alınabilecek içerik yoktur.',
                       icon: Icons.payments_rounded,
                     ),
                     SafetyStatusCard(
                       label: 'İnternetsiz / Çevrimdışı Çalışma',
-                      description: 'Cihazın internet bağlantısı kesilse dahi tüm oyunlar çalışır.',
+                      description:
+                          'Cihazın internet bağlantısı kesilse dahi tüm oyunlar çalışır.',
                       icon: Icons.wifi_off_rounded,
                     ),
                     SafetyStatusCard(
                       label: 'Kamera ve Galeri İzni Yok',
-                      description: 'Uygulama kişisel verilerinizi toplamaz ve erişim istemez.',
+                      description:
+                          'Uygulama kişisel verilerinizi toplamaz ve erişim istemez.',
                       icon: Icons.no_photography_rounded,
                     ),
                   ],
@@ -594,7 +602,7 @@ class SafetyStatusCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF2FA7A0).withOpacity(0.1),
+              color: const Color(0xFF2FA7A0).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: const Color(0xFF2FA7A0), size: 28),
