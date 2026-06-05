@@ -2,11 +2,12 @@
     "name": "Cocuk Oyun",
     "short_name": "Cocuk Oyun",
     "start_url": ".",
-    "display": "standalone",
+    "display": "fullscreen",
+    "display_override": ["fullscreen", "standalone"],
     "background_color": "#FFFBF2",
     "theme_color": "#2FA7A0",
     "description": "A safe coloring app scaffold for preschool children.",
-    "orientation": "portrait-primary",
+    "orientation": "landscape",
     "prefer_related_applications": false,
     "icons": [
         {
