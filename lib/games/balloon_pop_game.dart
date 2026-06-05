@@ -10,7 +10,8 @@ class BalloonPopGame extends StatefulWidget {
   State<BalloonPopGame> createState() => _BalloonPopGameState();
 }
 
-class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProviderStateMixin {
+class _BalloonPopGameState extends State<BalloonPopGame>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _tickerController;
   final List<Balloon> _balloons = [];
   final List<Particle> _particles = [];
@@ -21,8 +22,11 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
   bool _isInitialized = false;
   double _balloonSpawnTimer = 0.0;
   int _popCount = 0;
+  int _score = 0;
+  int _level = 1;
+  int _levelPopCount = 0;
   bool _showExitHint = false;
-  
+
   // Son güncelleme zamanı
   int _lastTimestamp = 0;
 
@@ -47,14 +51,22 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
   void _initializeGame(double width, double height) {
     _screenWidth = width;
     _screenHeight = height;
-    
+
     // Yavaşça kayan sevimli bulutları başlat
     _clouds.clear();
     final random = Random();
-    _clouds.add(Cloud(x: width * 0.1, y: height * 0.15, scale: 1.0, speed: 6.0));
-    _clouds.add(Cloud(x: width * 0.4, y: height * 0.08, scale: 1.4, speed: 8.0));
-    _clouds.add(Cloud(x: width * 0.7, y: height * 0.20, scale: 0.8, speed: 5.0));
-    _clouds.add(Cloud(x: width * 1.0, y: height * 0.12, scale: 1.2, speed: 7.0));
+    _clouds.add(
+      Cloud(x: width * 0.1, y: height * 0.15, scale: 1.0, speed: 6.0),
+    );
+    _clouds.add(
+      Cloud(x: width * 0.4, y: height * 0.08, scale: 1.4, speed: 8.0),
+    );
+    _clouds.add(
+      Cloud(x: width * 0.7, y: height * 0.20, scale: 0.8, speed: 5.0),
+    );
+    _clouds.add(
+      Cloud(x: width * 1.0, y: height * 0.12, scale: 1.2, speed: 7.0),
+    );
 
     // İlk başta ekranda hazır yükselen birkaç balon oluştur
     for (int i = 0; i < 4; i++) {
@@ -87,16 +99,20 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     }
 
     // 2. Balonları güncelle ve ekran dışına çıkanları temizle
-    final double elapsedSeconds = DateTime.now().millisecondsSinceEpoch / 1000.0;
-    
+    final double elapsedSeconds =
+        DateTime.now().millisecondsSinceEpoch / 1000.0;
+
     for (int i = _balloons.length - 1; i >= 0; i--) {
       final balloon = _balloons[i];
-      
+
       // Yukarı doğru yükselme
       balloon.y -= balloon.speed * dt;
-      
+
       // Sinüs dalgası ile pürüzsüz sağa-sola salınım
-      balloon.x = balloon.baseX + sin(elapsedSeconds * balloon.waveFrequency + balloon.wavePhase) * balloon.waveAmplitude;
+      balloon.x =
+          balloon.baseX +
+          sin(elapsedSeconds * balloon.waveFrequency + balloon.wavePhase) *
+              balloon.waveAmplitude;
 
       // Ekranın üstünden tamamen çıktıysa sil
       if (balloon.y < -balloon.radius * 3) {
@@ -118,7 +134,8 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     if (_balloonSpawnTimer <= 0) {
       _spawnBalloon();
       // Bir sonraki balonun doğuş süresi (0.7 - 1.3 saniye arası rastgele)
-      _balloonSpawnTimer = 0.7 + Random().nextDouble() * 0.6;
+      final levelSpeedUp = min(0.35, (_level - 1) * 0.05);
+      _balloonSpawnTimer = 0.7 - levelSpeedUp + Random().nextDouble() * 0.6;
     }
   }
 
@@ -127,13 +144,18 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     final random = Random();
 
     // Boyut ve Hız parametreleri (Çocuklar kolay dokunsun diye ideal boyutta)
-    final double radius = 38.0 + random.nextDouble() * 18.0; // 38 - 56 piksel arası yarıçap
-    final double speed = 65.0 + random.nextDouble() * 75.0; // 65 - 140 piksel/sn arası yükselme hızı
-    
+    final double radius =
+        38.0 + random.nextDouble() * 18.0; // 38 - 56 piksel arası yarıçap
+    final double speed =
+        65.0 +
+        (_level - 1) * 10.0 +
+        random.nextDouble() * 75.0; // Bölüm ilerledikçe hafif hızlanır
+
     // Yatayda ekran dışına taşmayacak şekilde X konumu
     final double margin = radius * 1.5;
-    final double baseX = margin + random.nextDouble() * (_screenWidth - margin * 2);
-    
+    final double baseX =
+        margin + random.nextDouble() * (_screenWidth - margin * 2);
+
     // Başlangıç Y konumu (isteğe bağlı olarak ekranın ortasından veya altından)
     final double y = initialY ?? (_screenHeight + radius * 3);
 
@@ -154,7 +176,10 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
 
     if (isSpecial) {
       color = const Color(0xFFFFD700); // Parlak Altın Rengi
-      icon = random.nextBool() ? Icons.star_rounded : Icons.redeem_rounded; // Yıldız veya Hediye ikonu
+      icon =
+          random.nextBool()
+              ? Icons.star_rounded
+              : Icons.redeem_rounded; // Yıldız veya Hediye ikonu
     } else {
       color = colors[random.nextInt(colors.length)];
       // %45 ihtimalle içinde sevimli bir sembol gösterilsin
@@ -173,29 +198,33 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     }
 
     // Dalgalanma (Salınım) Hareket Parametreleri
-    final double waveAmplitude = 10.0 + random.nextDouble() * 18.0; // 10-28 piksel salınım genişliği
-    final double waveFrequency = 1.2 + random.nextDouble() * 1.8; // Salınım hızı
+    final double waveAmplitude =
+        10.0 + random.nextDouble() * 18.0; // 10-28 piksel salınım genişliği
+    final double waveFrequency =
+        1.2 + random.nextDouble() * 1.8; // Salınım hızı
     final double wavePhase = random.nextDouble() * 2 * pi; // Başlangıç fazı
 
-    _balloons.add(Balloon(
-      x: baseX,
-      y: y,
-      baseX: baseX,
-      radius: radius,
-      color: color,
-      speed: speed,
-      icon: icon,
-      waveAmplitude: waveAmplitude,
-      waveFrequency: waveFrequency,
-      wavePhase: wavePhase,
-      isSpecial: isSpecial,
-    ));
+    _balloons.add(
+      Balloon(
+        x: baseX,
+        y: y,
+        baseX: baseX,
+        radius: radius,
+        color: color,
+        speed: speed,
+        icon: icon,
+        waveAmplitude: waveAmplitude,
+        waveFrequency: waveFrequency,
+        wavePhase: wavePhase,
+        isSpecial: isSpecial,
+      ),
+    );
   }
 
   // Dokunma (Touch) Algılama Yönetimi - Multi-touch Dostu
   void _handleTouch(Offset touchPoint) {
     bool poppedAny = false;
-    
+
     // En son çizilen balon en üsttedir, bu yüzden sondan başa doğru ararız
     for (int i = _balloons.length - 1; i >= 0; i--) {
       final balloon = _balloons[i];
@@ -204,7 +233,7 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
       // Dokunmayı daha bağışlayıcı yapmak adına alan toleransını artırıyoruz.
       final double dx = touchPoint.dx - balloon.x;
       final double dy = touchPoint.dy - balloon.y;
-      
+
       // Elips çarpışma kontrolü: (x²/a²) + (y²/b²) <= 1
       // Çocukların kolayca dokunabilmesi için çarpışma alanını %25 daha geniş tutuyoruz.
       final double a = balloon.radius * 1.25;
@@ -226,6 +255,8 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
   void _popBalloon(Balloon balloon, int index) {
     _balloons.removeAt(index);
     _popCount++;
+    _levelPopCount++;
+    _score += balloon.isSpecial ? 5 : 1;
 
     // Dokunsal Geri Bildirim (Haptic Feedback) - Çocuklar için çok tatmin edicidir
     if (balloon.isSpecial) {
@@ -237,11 +268,14 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     }
 
     final random = Random();
-    
+
     // Patlama anında yayılacak parçacıklar (Particles)
     // Sihirli balon patladığında double parçacık saçılması (24-35 parçacık)
-    final int particleCount = balloon.isSpecial ? (24 + random.nextInt(12)) : (12 + random.nextInt(6));
-    
+    final int particleCount =
+        balloon.isSpecial
+            ? (24 + random.nextInt(12))
+            : (12 + random.nextInt(6));
+
     final rainbowColors = [
       const Color(0xFFFF5252), // Kırmızı
       const Color(0xFFFF4081), // Pembe
@@ -258,48 +292,64 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
     for (int i = 0; i < particleCount; i++) {
       final double angle = random.nextDouble() * 2 * pi;
       // Özel balon parçacıkları biraz daha hızlı saçılabilir
-      final double speed = (balloon.isSpecial ? 150.0 : 100.0) + random.nextDouble() * (balloon.isSpecial ? 300.0 : 200.0);
+      final double speed =
+          (balloon.isSpecial ? 150.0 : 100.0) +
+          random.nextDouble() * (balloon.isSpecial ? 300.0 : 200.0);
       final double vx = cos(angle) * speed;
-      final double vy = sin(angle) * speed - 50.0; // Yukarı doğru hafif bir itme verelim
-      
-      final Color particleColor = balloon.isSpecial 
-          ? rainbowColors[random.nextInt(rainbowColors.length)]
-          : balloon.color;
+      final double vy =
+          sin(angle) * speed - 50.0; // Yukarı doğru hafif bir itme verelim
 
-      _particles.add(Particle(
-        x: balloon.x,
-        y: balloon.y,
-        vx: vx,
-        vy: vy,
-        color: particleColor,
-        // Özel parçacıklar biraz daha büyük olabilir
-        radius: (balloon.isSpecial ? 5.0 : 4.0) + random.nextDouble() * (balloon.isSpecial ? 8.0 : 6.0),
-      ));
+      final Color particleColor =
+          balloon.isSpecial
+              ? rainbowColors[random.nextInt(rainbowColors.length)]
+              : balloon.color;
+
+      _particles.add(
+        Particle(
+          x: balloon.x,
+          y: balloon.y,
+          vx: vx,
+          vy: vy,
+          color: particleColor,
+          // Özel parçacıklar biraz daha büyük olabilir
+          radius:
+              (balloon.isSpecial ? 5.0 : 4.0) +
+              random.nextDouble() * (balloon.isSpecial ? 8.0 : 6.0),
+        ),
+      );
     }
 
-    // Her 8 balonda bir çocukları ödüllendirmek için büyük bir konfeti yağmuru tetikle!
-    if (_popCount % 8 == 0) {
+    final levelTarget = _levelTarget;
+    if (_levelPopCount >= levelTarget) {
+      _level++;
+      _levelPopCount = 0;
+      _triggerCelebration();
+    } else if (_popCount % 8 == 0) {
       _triggerCelebration();
     }
   }
+
+  int get _levelTarget => 8 + min(_level - 1, 4) * 2;
 
   // Boş dokunmalar için küçük halka efekti parçacıkları
   void _triggerRipple(Offset point) {
     final random = Random();
     final colors = [Colors.white70, const Color(0x66B3E5FC)];
     final color = colors[random.nextInt(colors.length)];
-    
+
     for (int i = 0; i < 4; i++) {
       final angle = random.nextDouble() * 2 * pi;
       final speed = 40.0 + random.nextDouble() * 60.0;
-      _particles.add(Particle(
-        x: point.dx,
-        y: point.dy,
-        vx: cos(angle) * speed,
-        vy: sin(angle) * speed,
-        color: color,
-        radius: 3.0 + random.nextDouble() * 3.0,
-      ));
+      _particles.add(
+        Particle(
+          x: point.dx,
+          y: point.dy,
+          vx: cos(angle) * speed,
+          vy: sin(angle) * speed,
+          color: color,
+          radius: 3.0 + random.nextDouble() * 3.0,
+        ),
+      );
     }
   }
 
@@ -313,10 +363,12 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
       final double x = random.nextDouble() * _screenWidth;
       // Ekranın hemen üstünden dökülmeye başlasınlar
       final double y = -20.0 - random.nextDouble() * 60.0;
-      
-      final double vx = -40.0 + random.nextDouble() * 80.0; // rüzgar gibi sağa sola savrulma hızı
+
+      final double vx =
+          -40.0 +
+          random.nextDouble() * 80.0; // rüzgar gibi sağa sola savrulma hızı
       final double vy = 120.0 + random.nextDouble() * 150.0; // aşağı düşme hızı
-      
+
       final colors = [
         const Color(0xFFFF4081),
         const Color(0xFF00E676),
@@ -327,18 +379,20 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
         const Color(0xFFFF5252),
       ];
 
-      _particles.add(Particle(
-        x: x,
-        y: y,
-        vx: vx,
-        vy: vy,
-        color: colors[random.nextInt(colors.length)],
-        radius: 4.0 + random.nextDouble() * 5.0,
-        isConfetti: true,
-        rotationSpeed: 2.0 + random.nextDouble() * 5.0,
-      ));
+      _particles.add(
+        Particle(
+          x: x,
+          y: y,
+          vx: vx,
+          vy: vy,
+          color: colors[random.nextInt(colors.length)],
+          radius: 4.0 + random.nextDouble() * 5.0,
+          isConfetti: true,
+          rotationSpeed: 2.0 + random.nextDouble() * 5.0,
+        ),
+      );
     }
-    
+
     // Konfeti patlamasında daha güçlü bir titreşim verelim
     HapticFeedback.lightImpact();
     AudioSynth.playSparkleSound();
@@ -381,7 +435,9 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
                   colors: [
                     Color(0xFFBEE3F8), // Sevimli açık mavi gökyüzü
                     Color(0xFFEBF8FF), // Alt taraflara doğru açılan gökyüzü
-                    Color(0xFFFFFBF2), // Uygulamanın genel arka planıyla bütünleşme
+                    Color(
+                      0xFFFFFBF2,
+                    ), // Uygulamanın genel arka planıyla bütünleşme
                   ],
                 ),
               ),
@@ -396,7 +452,7 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
                   // Ekran boyutları alındıktan sonra oyunu başlat
                   _initializeGame(constraints.maxWidth, constraints.maxHeight);
                 }
-                
+
                 return Listener(
                   behavior: HitTestBehavior.opaque,
                   onPointerDown: (event) {
@@ -415,13 +471,60 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
             ),
           ),
 
+          Positioned(
+            top: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: buttonPadding,
+                  right: buttonPadding,
+                ),
+                child: Container(
+                  key: const ValueKey('balloon-score-panel'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.88),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: const Color(0xFFFFD000),
+                      width: borderWidth,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Bölüm $_level  •  Skor $_score  •  $_levelPopCount / $_levelTarget',
+                    style: const TextStyle(
+                      color: Color(0xFF233238),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           // 3. Çocuk Dostu Büyük Geri Dönüş Butonu (Sol Üst)
           Positioned(
             top: 0,
             left: 0,
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.only(top: buttonPadding, left: buttonPadding),
+                padding: EdgeInsets.only(
+                  top: buttonPadding,
+                  left: buttonPadding,
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -440,13 +543,17 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF2FA7A0).withOpacity(0.2),
+                              color: const Color(
+                                0xFF2FA7A0,
+                              ).withValues(alpha: 0.2),
                               blurRadius: 12,
                               offset: const Offset(0, 5),
                             ),
                           ],
                           border: Border.all(
-                            color: const Color(0xFF2FA7A0).withOpacity(0.4),
+                            color: const Color(
+                              0xFF2FA7A0,
+                            ).withValues(alpha: 0.4),
                             width: borderWidth,
                           ),
                         ),
@@ -465,13 +572,18 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
                         opacity: _showExitHint ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 200),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFF2FA7A0),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2FA7A0).withOpacity(0.3),
+                                color: const Color(
+                                  0xFF2FA7A0,
+                                ).withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
@@ -480,7 +592,11 @@ class _BalloonPopGameState extends State<BalloonPopGame> with SingleTickerProvid
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.touch_app_rounded, color: Colors.amber.shade300, size: 20),
+                              Icon(
+                                Icons.touch_app_rounded,
+                                color: Colors.amber.shade300,
+                                size: 20,
+                              ),
                               const SizedBox(width: 8),
                               const Text(
                                 'Çıkmak için çift dokun! 🌟',
@@ -531,7 +647,7 @@ class Balloon {
   final Color color;
   final double speed;
   final IconData? icon;
-  
+
   // Salınım hareketi için
   final double waveAmplitude;
   final double waveFrequency;
@@ -562,7 +678,7 @@ class Particle {
   final Color color;
   double radius;
   double alpha = 1.0;
-  
+
   // Konfetiye özel alanlar
   final bool isConfetti;
   final double rotationSpeed;
@@ -586,7 +702,10 @@ class Particle {
     if (isConfetti) {
       // Konfeti rüzgar ve hafif yerçekimi simülasyonu
       vy += 80.0 * dt; // yerçekimi
-      vx += sin(DateTime.now().millisecondsSinceEpoch / 150.0) * 15.0 * dt; // rüzgar salınımı
+      vx +=
+          sin(DateTime.now().millisecondsSinceEpoch / 150.0) *
+          15.0 *
+          dt; // rüzgar salınımı
       alpha -= 0.6 * dt; // yavaşça kaybolma
       rotation += rotationSpeed * dt;
     } else {
@@ -622,33 +741,39 @@ class BalloonPainter extends CustomPainter {
     // 2. Balonları çiz
     for (var balloon in balloons) {
       final center = Offset(balloon.x, balloon.y);
-      
+
       // Balon İpi (Dalgalı sevimli bir çizgi)
-      final ipPaint = Paint()
-        ..color = const Color(0x3D000000) // Hafif saydam siyah ip
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0;
+      final ipPaint =
+          Paint()
+            ..color = const Color(0x3D000000) // Hafif saydam siyah ip
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2.0;
 
       final ipPath = Path();
       final double knotY = center.dy + balloon.radius * 1.15;
       ipPath.moveTo(center.dx, knotY);
-      
+
       // İpin dalgalı aşağı inmesi
       ipPath.quadraticBezierTo(
-        center.dx - 8, knotY + balloon.radius * 0.4,
-        center.dx, knotY + balloon.radius * 0.8,
+        center.dx - 8,
+        knotY + balloon.radius * 0.4,
+        center.dx,
+        knotY + balloon.radius * 0.8,
       );
       ipPath.quadraticBezierTo(
-        center.dx + 8, knotY + balloon.radius * 1.2,
-        center.dx, knotY + balloon.radius * 1.6,
+        center.dx + 8,
+        knotY + balloon.radius * 1.2,
+        center.dx,
+        knotY + balloon.radius * 1.6,
       );
       canvas.drawPath(ipPath, ipPaint);
 
       // Balonun Gövdesi (Yumurta şeklinde dikey elips)
-      final bodyPaint = Paint()
-        ..color = balloon.color
-        ..style = PaintingStyle.fill;
-      
+      final bodyPaint =
+          Paint()
+            ..color = balloon.color
+            ..style = PaintingStyle.fill;
+
       final rect = Rect.fromCenter(
         center: center,
         width: balloon.radius * 2.0,
@@ -657,16 +782,18 @@ class BalloonPainter extends CustomPainter {
 
       // Özel balonlar için parıltılı ve parlak dış kontur (outline) eklenmesi
       if (balloon.isSpecial) {
-        final glowPaint = Paint()
-          ..color = const Color(0xFFFFE082).withOpacity(0.5)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 8.0;
+        final glowPaint =
+            Paint()
+              ..color = const Color(0xFFFFE082).withValues(alpha: 0.5)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 8.0;
         canvas.drawOval(rect, glowPaint);
 
-        final strokePaint = Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.5;
+        final strokePaint =
+            Paint()
+              ..color = Colors.white
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2.5;
         canvas.drawOval(rect, strokePaint);
       }
 
@@ -681,13 +808,17 @@ class BalloonPainter extends CustomPainter {
       canvas.drawPath(dugumPath, bodyPaint);
 
       // Balon Üzerindeki Parlama Efekti (3D parlaklık kazandırmak için sol üstte beyaz elips)
-      final parlamaPaint = Paint()
-        ..color = Colors.white.withOpacity(0.35)
-        ..style = PaintingStyle.fill;
+      final parlamaPaint =
+          Paint()
+            ..color = Colors.white.withValues(alpha: 0.35)
+            ..style = PaintingStyle.fill;
 
       canvas.save();
       // Parlamayı hafif sola ve yukarı taşıyıp döndürerek gerçekçi bir yansıma elde ediyoruz
-      canvas.translate(center.dx - balloon.radius * 0.4, center.dy - balloon.radius * 0.55);
+      canvas.translate(
+        center.dx - balloon.radius * 0.4,
+        center.dy - balloon.radius * 0.55,
+      );
       canvas.rotate(-0.35);
       canvas.drawOval(
         Rect.fromCenter(
@@ -708,7 +839,7 @@ class BalloonPainter extends CustomPainter {
             fontSize: balloon.radius * 0.85,
             fontFamily: balloon.icon!.fontFamily,
             package: balloon.icon!.fontPackage,
-            color: Colors.white.withOpacity(0.85),
+            color: Colors.white.withValues(alpha: 0.85),
           ),
         );
         iconPainter.layout();
@@ -730,10 +861,11 @@ class BalloonPainter extends CustomPainter {
         canvas.save();
         canvas.translate(particle.x, particle.y);
         canvas.rotate(particle.rotation);
-        
-        final paint = Paint()
-          ..color = particle.color.withOpacity(particle.alpha)
-          ..style = PaintingStyle.fill;
+
+        final paint =
+            Paint()
+              ..color = particle.color.withValues(alpha: particle.alpha)
+              ..style = PaintingStyle.fill;
 
         canvas.drawRect(
           Rect.fromCenter(
@@ -746,26 +878,48 @@ class BalloonPainter extends CustomPainter {
         canvas.restore();
       } else {
         // Normal Balon Parçacığı Çizimi (Daireler)
-        final paint = Paint()
-          ..color = particle.color.withOpacity(particle.alpha)
-          ..style = PaintingStyle.fill;
-        canvas.drawCircle(Offset(particle.x, particle.y), particle.radius, paint);
+        final paint =
+            Paint()
+              ..color = particle.color.withValues(alpha: particle.alpha)
+              ..style = PaintingStyle.fill;
+        canvas.drawCircle(
+          Offset(particle.x, particle.y),
+          particle.radius,
+          paint,
+        );
       }
     }
   }
 
   // Basit vektörel bulut çizici yardımcı fonksiyonu
   void _drawCloud(Canvas canvas, Offset position, double scale) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.68)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.68)
+          ..style = PaintingStyle.fill;
 
     // Birkaç daireyi birleştirerek yumuşak bir bulut kümesi oluşturuyoruz
     canvas.drawCircle(position, 28 * scale, paint);
-    canvas.drawCircle(Offset(position.dx - 22 * scale, position.dy + 4 * scale), 20 * scale, paint);
-    canvas.drawCircle(Offset(position.dx + 22 * scale, position.dy + 4 * scale), 22 * scale, paint);
-    canvas.drawCircle(Offset(position.dx, position.dy + 12 * scale), 20 * scale, paint);
-    canvas.drawCircle(Offset(position.dx - 10 * scale, position.dy + 12 * scale), 22 * scale, paint);
+    canvas.drawCircle(
+      Offset(position.dx - 22 * scale, position.dy + 4 * scale),
+      20 * scale,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(position.dx + 22 * scale, position.dy + 4 * scale),
+      22 * scale,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(position.dx, position.dy + 12 * scale),
+      20 * scale,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(position.dx - 10 * scale, position.dy + 12 * scale),
+      22 * scale,
+      paint,
+    );
   }
 
   @override

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 
 /// Şablon Tipleri
-enum ShapeType { circle, star, house, square, heart }
+enum ShapeType { circle, star, house, square, heart, triangle, diamond, wave }
 
 /// Parçacık Sınıfı (Başarı Animasyonu Yıldızları)
 class TracingParticle {
@@ -39,7 +39,7 @@ class TracingParticle {
 /// Çizgi Takip Noktası
 class TracingDot {
   final Offset normalizedPosition; // 0.0 - 1.0 arası normalize pozisyon
-  Offset position;                 // Ekran üzerindeki gerçek piksel koordinatı
+  Offset position; // Ekran üzerindeki gerçek piksel koordinatı
   bool isTraced;
   double scale;
 
@@ -73,11 +73,12 @@ class TracingGame extends StatefulWidget {
   State<TracingGame> createState() => _TracingGameState();
 }
 
-class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin {
+class _TracingGameState extends State<TracingGame>
+    with TickerProviderStateMixin {
   late final AnimationController _particleController;
   late final AnimationController _pulseController;
   late final AnimationController _hintController;
-  
+
   // Şablonlar
   final List<TracingTemplate> _templates = [];
   int _currentTemplateIndex = 0;
@@ -85,18 +86,18 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
   // Noktacıklar ve parçacıklar
   List<TracingDot> _dots = [];
   final List<TracingParticle> _particles = [];
-  
+
   bool _isCompleted = false;
   Size _canvasSize = Size.zero;
-  
+
   // İpucu el animasyonu için durumlar
   Timer? _hintTimer;
   bool _showHint = false;
   Offset _hintPosition = Offset.zero;
-  
+
   // Canvas Key
   final GlobalKey _canvasKey = GlobalKey();
-  
+
   @override
   void initState() {
     super.initState();
@@ -107,15 +108,15 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..addListener(() {
-        if (_particles.isNotEmpty) {
-          setState(() {
-            for (var particle in _particles) {
-              particle.update();
-            }
-            _particles.removeWhere((p) => p.opacity <= 0.0);
-          });
-        }
-      });
+      if (_particles.isNotEmpty) {
+        setState(() {
+          for (var particle in _particles) {
+            particle.update();
+          }
+          _particles.removeWhere((p) => p.opacity <= 0.0);
+        });
+      }
+    });
 
     // Nabız gibi büyüyen butonlar için Kontrolcü
     _pulseController = AnimationController(
@@ -128,15 +129,15 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       vsync: this,
       duration: const Duration(seconds: 4),
     )..addListener(() {
-        if (_showHint && _dots.isNotEmpty) {
-          setState(() {
-            // İpucu elinin konumunu güncelle
-            final double progress = _hintController.value;
-            final int index = (progress * (_dots.length - 1)).round();
-            _hintPosition = _dots[index].position;
-          });
-        }
-      });
+      if (_showHint && _dots.isNotEmpty) {
+        setState(() {
+          // İpucu elinin konumunu güncelle
+          final double progress = _hintController.value;
+          final int index = (progress * (_dots.length - 1)).round();
+          _hintPosition = _dots[index].position;
+        });
+      }
+    });
 
     // İpucu timer'ını başlat
     _resetHintTimer();
@@ -148,17 +149,18 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     const int circleSegments = 40;
     for (int i = 0; i <= circleSegments; i++) {
       final double angle = (i * 2 * pi) / circleSegments;
-      circlePoints.add(Offset(
-        0.5 + 0.32 * cos(angle),
-        0.5 + 0.32 * sin(angle),
-      ));
+      circlePoints.add(
+        Offset(0.5 + 0.32 * cos(angle), 0.5 + 0.32 * sin(angle)),
+      );
     }
-    _templates.add(TracingTemplate(
-      type: ShapeType.circle,
-      points: circlePoints,
-      themeColor: const Color(0xFFFF5252), // Pembe/Kırmızı
-      icon: Icons.circle_outlined,
-    ));
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.circle,
+        points: circlePoints,
+        themeColor: const Color(0xFFFF5252), // Pembe/Kırmızı
+        icon: Icons.circle_outlined,
+      ),
+    );
 
     // 2. Yıldız Şablonu
     final starPoints = <Offset>[];
@@ -167,35 +169,38 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     for (int i = 0; i <= 10; i++) {
       final double angle = -pi / 2 + (i * pi / 5);
       final double radius = (i % 2 == 0) ? R : r;
-      starPoints.add(Offset(
-        0.5 + radius * cos(angle),
-        0.5 + radius * sin(angle),
-      ));
+      starPoints.add(
+        Offset(0.5 + radius * cos(angle), 0.5 + radius * sin(angle)),
+      );
     }
-    _templates.add(TracingTemplate(
-      type: ShapeType.star,
-      points: starPoints,
-      themeColor: const Color(0xFFFFC107), // Altın Sarısı
-      icon: Icons.star_border_rounded,
-    ));
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.star,
+        points: starPoints,
+        themeColor: const Color(0xFFFFC107), // Altın Sarısı
+        icon: Icons.star_border_rounded,
+      ),
+    );
 
     // 3. Ev Şablonu
     final housePoints = const [
       Offset(0.25, 0.75), // Sol alt
       Offset(0.75, 0.75), // Sağ alt
       Offset(0.75, 0.45), // Sağ üst
-      Offset(0.5, 0.18),  // Çatı tepesi
+      Offset(0.5, 0.18), // Çatı tepesi
       Offset(0.25, 0.45), // Sol üst
       Offset(0.25, 0.75), // Sol alt (gövde kapandı)
       Offset(0.25, 0.45), // Sol üst
       Offset(0.75, 0.45), // Sağ üst (tavan çizgisi)
     ];
-    _templates.add(TracingTemplate(
-      type: ShapeType.house,
-      points: housePoints,
-      themeColor: const Color(0xFF4CAF50), // Yeşil
-      icon: Icons.home_outlined,
-    ));
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.house,
+        points: housePoints,
+        themeColor: const Color(0xFF4CAF50), // Yeşil
+        icon: Icons.home_outlined,
+      ),
+    );
 
     // 4. Kare Şablonu
     final squarePoints = const [
@@ -205,12 +210,14 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       Offset(0.25, 0.75), // Sol alt
       Offset(0.25, 0.25), // Sol üst (kapandı)
     ];
-    _templates.add(TracingTemplate(
-      type: ShapeType.square,
-      points: squarePoints,
-      themeColor: const Color(0xFF2B86FF), // Mavi
-      icon: Icons.square_outlined,
-    ));
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.square,
+        points: squarePoints,
+        themeColor: const Color(0xFF2B86FF), // Mavi
+        icon: Icons.square_outlined,
+      ),
+    );
 
     // 5. Kalp Şablonu
     final heartPoints = <Offset>[];
@@ -218,18 +225,64 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     for (int i = 0; i <= heartSegments; i++) {
       final double t = (i * 2 * pi) / heartSegments;
       final double x = 16 * sin(t) * sin(t) * sin(t);
-      final double y = 13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t);
-      heartPoints.add(Offset(
-        0.5 + (x / 17.5) * 0.32,
-        0.46 - (y / 17.5) * 0.32,
-      ));
+      final double y =
+          13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t);
+      heartPoints.add(
+        Offset(0.5 + (x / 17.5) * 0.32, 0.46 - (y / 17.5) * 0.32),
+      );
     }
-    _templates.add(TracingTemplate(
-      type: ShapeType.heart,
-      points: heartPoints,
-      themeColor: const Color(0xFFEC4899), // Pembe
-      icon: Icons.favorite_border_rounded,
-    ));
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.heart,
+        points: heartPoints,
+        themeColor: const Color(0xFFEC4899), // Pembe
+        icon: Icons.favorite_border_rounded,
+      ),
+    );
+
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.triangle,
+        points: [
+          Offset(0.5, 0.18),
+          Offset(0.78, 0.76),
+          Offset(0.22, 0.76),
+          Offset(0.5, 0.18),
+        ],
+        themeColor: Color(0xFFFF8E2B),
+        icon: Icons.change_history_rounded,
+      ),
+    );
+
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.diamond,
+        points: [
+          Offset(0.5, 0.14),
+          Offset(0.82, 0.5),
+          Offset(0.5, 0.86),
+          Offset(0.18, 0.5),
+          Offset(0.5, 0.14),
+        ],
+        themeColor: Color(0xFF8B5CF6),
+        icon: Icons.diamond_outlined,
+      ),
+    );
+
+    final wavePoints = <Offset>[];
+    const int waveSegments = 52;
+    for (int i = 0; i <= waveSegments; i++) {
+      final t = i / waveSegments;
+      wavePoints.add(Offset(0.16 + t * 0.68, 0.5 + sin(t * pi * 4) * 0.18));
+    }
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.wave,
+        points: wavePoints,
+        themeColor: const Color(0xFF00A6D6),
+        icon: Icons.water_rounded,
+      ),
+    );
   }
 
   @override
@@ -267,8 +320,14 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     const double stepDistance = 15.0; // Pikseller arası mesafe
 
     for (int i = 0; i < template.points.length - 1; i++) {
-      final pA = Offset(template.points[i].dx * size.width, template.points[i].dy * size.height);
-      final pB = Offset(template.points[i + 1].dx * size.width, template.points[i + 1].dy * size.height);
+      final pA = Offset(
+        template.points[i].dx * size.width,
+        template.points[i].dy * size.height,
+      );
+      final pB = Offset(
+        template.points[i + 1].dx * size.width,
+        template.points[i + 1].dy * size.height,
+      );
 
       final vector = pB - pA;
       final distance = vector.distance;
@@ -277,20 +336,25 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       for (int j = 0; j < steps; j++) {
         final t = j / steps;
         final dotPos = Offset.lerp(pA, pB, t)!;
-        newDots.add(TracingDot(
-          normalizedPosition: Offset.lerp(template.points[i], template.points[i + 1], t)!,
-          position: dotPos,
-        ));
+        newDots.add(
+          TracingDot(
+            normalizedPosition:
+                Offset.lerp(template.points[i], template.points[i + 1], t)!,
+            position: dotPos,
+          ),
+        );
       }
     }
 
     // Son noktayı ekleyelim
     final lastNormalized = template.points.last;
-    final lastPos = Offset(lastNormalized.dx * size.width, lastNormalized.dy * size.height);
-    newDots.add(TracingDot(
-      normalizedPosition: lastNormalized,
-      position: lastPos,
-    ));
+    final lastPos = Offset(
+      lastNormalized.dx * size.width,
+      lastNormalized.dy * size.height,
+    );
+    newDots.add(
+      TracingDot(normalizedPosition: lastNormalized, position: lastPos),
+    );
 
     setState(() {
       _dots = newDots;
@@ -303,13 +367,14 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     if (_isCompleted) return;
     _resetHintTimer();
 
-    final RenderBox? renderBox = _canvasKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _canvasKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
     final localPosition = renderBox.globalToLocal(details.globalPosition);
 
     bool updated = false;
     // Çocukların parmakları için toleranslı mesafe (40 piksel)
-    const double touchThreshold = 40.0; 
+    const double touchThreshold = 40.0;
 
     setState(() {
       for (var dot in _dots) {
@@ -347,7 +412,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     final int tracedCount = _dots.where((d) => d.isTraced).length;
     final double progress = tracedCount / _dots.length;
 
-    if (progress >= 0.85 && !_isCompleted) {
+    if (progress >= 0.98 && !_isCompleted) {
       _isCompleted = true;
       _hintTimer?.cancel();
       _showHint = false;
@@ -377,14 +442,16 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
     for (int i = 0; i < 90; i++) {
       final angle = random.nextDouble() * 2 * pi;
       final speed = 4.0 + random.nextDouble() * 9.0;
-      _particles.add(TracingParticle(
-        position: center,
-        velocity: Offset(cos(angle) * speed, sin(angle) * speed),
-        color: colors[random.nextInt(colors.length)],
-        size: 10.0 + random.nextDouble() * 14.0,
-        rotation: random.nextDouble() * 2 * pi,
-        rotationSpeed: -0.15 + random.nextDouble() * 0.3,
-      ));
+      _particles.add(
+        TracingParticle(
+          position: center,
+          velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+          color: colors[random.nextInt(colors.length)],
+          size: 10.0 + random.nextDouble() * 14.0,
+          rotation: random.nextDouble() * 2 * pi,
+          rotationSpeed: -0.15 + random.nextDouble() * 0.3,
+        ),
+      );
     }
 
     _particleController.forward(from: 0.0);
@@ -483,7 +550,10 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                         height: 500,
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            final size = Size(constraints.maxWidth, constraints.maxHeight);
+                            final size = Size(
+                              constraints.maxWidth,
+                              constraints.maxHeight,
+                            );
                             if (_canvasSize != size) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 if (mounted) _buildDots(size);
@@ -517,17 +587,23 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                                           animation: _pulseController,
                                           builder: (context, child) {
                                             return Transform.scale(
-                                              scale: 1.0 + (_pulseController.value * 0.15),
+                                              scale:
+                                                  1.0 +
+                                                  (_pulseController.value *
+                                                      0.15),
                                               child: child,
                                             );
                                           },
                                           child: Icon(
                                             Icons.touch_app_rounded,
                                             size: 48,
-                                            color: currentTemplate.themeColor.withOpacity(0.8),
+                                            color: currentTemplate.themeColor
+                                                .withValues(alpha: 0.8),
                                             shadows: [
                                               Shadow(
-                                                color: Colors.black.withOpacity(0.3),
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.3,
+                                                ),
                                                 blurRadius: 8,
                                                 offset: const Offset(2, 2),
                                               ),
@@ -553,7 +629,11 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                 left: 120,
                 right: 120,
                 child: Center(
-                  child: _buildProgressBar(currentTemplate.themeColor, progressBarWidth, progressBarHeight),
+                  child: _buildProgressBar(
+                    currentTemplate.themeColor,
+                    progressBarWidth,
+                    progressBarHeight,
+                  ),
                 ),
               ),
 
@@ -601,11 +681,11 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                       horizontal: templateBarPaddingHorizontal,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -617,8 +697,15 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                         final temp = _templates[index];
                         final isSelected = index == _currentTemplateIndex;
                         return Padding(
-                          padding: EdgeInsets.symmetric(vertical: isShortHeight ? 4.0 : 8.0),
-                          child: _buildTemplateSelector(temp, index, isSelected, isShortHeight),
+                          padding: EdgeInsets.symmetric(
+                            vertical: isShortHeight ? 4.0 : 8.0,
+                          ),
+                          child: _buildTemplateSelector(
+                            temp,
+                            index,
+                            isSelected,
+                            isShortHeight,
+                          ),
                         );
                       }),
                     ),
@@ -638,7 +725,10 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
                         curve: Curves.easeInOut,
                       ),
                     ),
-                    child: _buildSuccessNextButton(successButtonSize, successIconSize),
+                    child: _buildSuccessNextButton(
+                      successButtonSize,
+                      successIconSize,
+                    ),
                   ),
                 ),
             ],
@@ -666,27 +756,32 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
+              color: color.withValues(alpha: 0.4),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
           ],
         ),
-        child: Center(
-          child: Icon(icon, color: Colors.white, size: iconSize),
-        ),
+        child: Center(child: Icon(icon, color: Colors.white, size: iconSize)),
       ),
     );
   }
 
   // Sol taraftaki şablon seçim butonları
-  Widget _buildTemplateSelector(TracingTemplate template, int index, bool isSelected, bool isShortHeight) {
-    final double size = isSelected
-        ? (isShortHeight ? 52.0 : 72.0)
-        : (isShortHeight ? 42.0 : 60.0);
-    final double iconSize = isSelected
-        ? (isShortHeight ? 26.0 : 36.0)
-        : (isShortHeight ? 20.0 : 28.0);
+  Widget _buildTemplateSelector(
+    TracingTemplate template,
+    int index,
+    bool isSelected,
+    bool isShortHeight,
+  ) {
+    final double size =
+        isSelected
+            ? (isShortHeight ? 52.0 : 72.0)
+            : (isShortHeight ? 42.0 : 60.0);
+    final double iconSize =
+        isSelected
+            ? (isShortHeight ? 26.0 : 36.0)
+            : (isShortHeight ? 20.0 : 28.0);
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
@@ -702,7 +797,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: template.themeColor.withOpacity(0.4),
+                color: template.themeColor.withValues(alpha: 0.4),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -729,7 +824,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.6),
+        color: Colors.white.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(height / 2),
         border: Border.all(color: Colors.white, width: 2),
       ),
@@ -741,7 +836,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [themeColor.withOpacity(0.7), themeColor],
+                  colors: [themeColor.withValues(alpha: 0.7), themeColor],
                 ),
                 borderRadius: BorderRadius.circular(height / 2 - 2),
               ),
@@ -754,7 +849,7 @@ class _TracingGameState extends State<TracingGame> with TickerProviderStateMixin
             bottom: 0,
             child: Icon(
               Icons.star_rounded,
-              color: ratio >= 0.85 ? Colors.amber : Colors.grey[400],
+              color: ratio >= 0.98 ? Colors.amber : Colors.grey[400],
               size: height - 8,
             ),
           ),
@@ -815,9 +910,10 @@ class TracingPainter extends CustomPainter {
     if (dots.isEmpty) return;
 
     // 1. Çizilmeyen (yetToTrace) Noktaları Gri/Kesikli Çizelim
-    final dotCorePaint = Paint()
-      ..color = Colors.blueGrey[200]!.withOpacity(0.5)
-      ..style = PaintingStyle.fill;
+    final dotCorePaint =
+        Paint()
+          ..color = Colors.blueGrey[200]!.withValues(alpha: 0.5)
+          ..style = PaintingStyle.fill;
 
     // Şablonun genel hattını (gri kılavuz yolu) çizelim
     for (int i = 0; i < dots.length; i++) {
@@ -825,13 +921,15 @@ class TracingPainter extends CustomPainter {
     }
 
     // 2. Çizilen (Traced) Noktaları Parlak ve Neon Şeklinde Boyayalım
-    final tracePaint = Paint()
-      ..color = themeColor
-      ..style = PaintingStyle.fill;
+    final tracePaint =
+        Paint()
+          ..color = themeColor
+          ..style = PaintingStyle.fill;
 
-    final traceGlowPaint = Paint()
-      ..color = themeColor.withOpacity(0.35)
-      ..style = PaintingStyle.fill;
+    final traceGlowPaint =
+        Paint()
+          ..color = themeColor.withValues(alpha: 0.35)
+          ..style = PaintingStyle.fill;
 
     for (int i = 0; i < dots.length; i++) {
       final dot = dots[i];
@@ -846,13 +944,25 @@ class TracingPainter extends CustomPainter {
     // 3. Patlama Parçacıklarını (TracingParticle) Çizelim
     if (particles.isNotEmpty) {
       for (var p in particles) {
-        _drawStar(canvas, p.position, p.size, p.color.withOpacity(p.opacity), p.rotation);
+        _drawStar(
+          canvas,
+          p.position,
+          p.size,
+          p.color.withValues(alpha: p.opacity),
+          p.rotation,
+        );
       }
     }
   }
 
   // Yıldız Şekli Çizici (CustomPainter için)
-  void _drawStar(Canvas canvas, Offset center, double size, Color color, double rotation) {
+  void _drawStar(
+    Canvas canvas,
+    Offset center,
+    double size,
+    Color color,
+    double rotation,
+  ) {
     final paint = Paint()..color = color;
     final path = Path();
     const int points = 5;
@@ -868,10 +978,7 @@ class TracingPainter extends CustomPainter {
     for (int i = 1; i < points * 2; i++) {
       final double angle = rotation - pi / 2 + i * pi / points;
       final double r = i.isEven ? externalRadius : internalRadius;
-      path.lineTo(
-        center.dx + r * cos(angle),
-        center.dy + r * sin(angle),
-      );
+      path.lineTo(center.dx + r * cos(angle), center.dy + r * sin(angle));
     }
     path.close();
     canvas.drawPath(path, paint);

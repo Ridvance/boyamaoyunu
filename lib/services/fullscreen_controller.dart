@@ -6,4 +6,8 @@ class FullscreenController {
   static Future<bool> enterImmersiveMode() {
     return impl.enterImmersiveMode();
   }
+
+  static Future<bool> toggleImmersiveMode() {
+    return impl.toggleImmersiveMode();
+  }
 }

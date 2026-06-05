@@ -344,6 +344,7 @@ class _ColoringGameState extends State<ColoringGame>
       onTap: () {
         setState(() {
           _selectedTemplateIndex = index;
+          _resetStoryProgressForSelectedTemplate();
         });
         HapticFeedback.selectionClick();
       },
@@ -392,14 +393,18 @@ class _ColoringGameState extends State<ColoringGame>
   }
 
   Widget _buildStoryOverlay() {
+    if (_selectedTemplateIndex != _storySteps.first.templateIndex) {
+      return const SizedBox.shrink();
+    }
+
     final currentStep =
         _storyCompleted ? _storySteps.last : _storySteps[_storyStepIndex];
 
     return Positioned(
       key: const ValueKey('story-flow-panel'),
-      top: 12,
-      left: 48,
-      right: 48,
+      left: 66,
+      right: 66,
+      bottom: 12,
       child: IgnorePointer(
         child: Semantics(
           label:
@@ -469,6 +474,13 @@ class _ColoringGameState extends State<ColoringGame>
         ),
       ),
     );
+  }
+
+  void _resetStoryProgressForSelectedTemplate() {
+    if (_selectedTemplateIndex == _storySteps.first.templateIndex) {
+      _storyStepIndex = 0;
+      _storyCompleted = false;
+    }
   }
 
   @override
@@ -978,7 +990,151 @@ class _ColoringGameState extends State<ColoringGame>
           canvas.drawRect(Rect.fromLTRB(55, 235, 62, 255), fillPaint);
         },
       ),
+
+      // 6. FLOWER TEMPLATE
+      ColoringTemplate(
+        name: 'Flower',
+        icon: Icons.local_florist_rounded,
+        parts: [
+          ColoringPart(id: 'stem', path: _getFlowerStemPath()),
+          ColoringPart(id: 'left_leaf', path: _getFlowerLeftLeafPath()),
+          ColoringPart(id: 'right_leaf', path: _getFlowerRightLeafPath()),
+          ColoringPart(id: 'top_petal', path: _getFlowerTopPetalPath()),
+          ColoringPart(id: 'left_petal', path: _getFlowerLeftPetalPath()),
+          ColoringPart(id: 'right_petal', path: _getFlowerRightPetalPath()),
+          ColoringPart(id: 'bottom_petal', path: _getFlowerBottomPetalPath()),
+          ColoringPart(id: 'center', path: _getFlowerCenterPath()),
+        ],
+        drawDetails: (canvas, size, basePaint) {
+          final paint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..strokeCap = StrokeCap.round;
+          canvas.drawLine(
+            const Offset(200, 260),
+            const Offset(200, 360),
+            paint,
+          );
+        },
+      ),
+
+      // 7. ROCKET TEMPLATE
+      ColoringTemplate(
+        name: 'Rocket',
+        icon: Icons.rocket_launch_rounded,
+        parts: [
+          ColoringPart(id: 'body', path: _getRocketBodyPath()),
+          ColoringPart(id: 'window', path: _getRocketWindowPath()),
+          ColoringPart(id: 'left_fin', path: _getRocketLeftFinPath()),
+          ColoringPart(id: 'right_fin', path: _getRocketRightFinPath()),
+          ColoringPart(id: 'flame', path: _getRocketFlamePath()),
+        ],
+        drawDetails: (canvas, size, basePaint) {
+          final paint =
+              Paint()
+                ..color = basePaint.color
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4
+                ..strokeCap = StrokeCap.round;
+          canvas.drawLine(
+            const Offset(170, 170),
+            const Offset(230, 170),
+            paint,
+          );
+          canvas.drawLine(
+            const Offset(170, 270),
+            const Offset(230, 270),
+            paint,
+          );
+        },
+      ),
     ];
+  }
+
+  // --- FLOWER TEMPLATE PATHS ---
+  Path _getFlowerStemPath() {
+    return Path()..addRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTRB(185, 230, 215, 370),
+        const Radius.circular(14),
+      ),
+    );
+  }
+
+  Path _getFlowerLeftLeafPath() {
+    return Path()
+      ..moveTo(195, 310)
+      ..quadraticBezierTo(120, 280, 110, 230)
+      ..quadraticBezierTo(170, 235, 205, 300)
+      ..close();
+  }
+
+  Path _getFlowerRightLeafPath() {
+    return Path()
+      ..moveTo(205, 330)
+      ..quadraticBezierTo(280, 300, 300, 250)
+      ..quadraticBezierTo(235, 255, 195, 320)
+      ..close();
+  }
+
+  Path _getFlowerTopPetalPath() {
+    return Path()..addOval(Rect.fromLTRB(160, 65, 240, 155));
+  }
+
+  Path _getFlowerLeftPetalPath() {
+    return Path()..addOval(Rect.fromLTRB(105, 125, 195, 205));
+  }
+
+  Path _getFlowerRightPetalPath() {
+    return Path()..addOval(Rect.fromLTRB(205, 125, 295, 205));
+  }
+
+  Path _getFlowerBottomPetalPath() {
+    return Path()..addOval(Rect.fromLTRB(160, 180, 240, 270));
+  }
+
+  Path _getFlowerCenterPath() {
+    return Path()..addOval(Rect.fromLTRB(165, 135, 235, 205));
+  }
+
+  // --- ROCKET TEMPLATE PATHS ---
+  Path _getRocketBodyPath() {
+    return Path()
+      ..moveTo(200, 45)
+      ..quadraticBezierTo(270, 120, 245, 300)
+      ..lineTo(155, 300)
+      ..quadraticBezierTo(130, 120, 200, 45)
+      ..close();
+  }
+
+  Path _getRocketWindowPath() {
+    return Path()..addOval(Rect.fromLTRB(170, 125, 230, 185));
+  }
+
+  Path _getRocketLeftFinPath() {
+    return Path()
+      ..moveTo(160, 250)
+      ..lineTo(90, 330)
+      ..lineTo(170, 315)
+      ..close();
+  }
+
+  Path _getRocketRightFinPath() {
+    return Path()
+      ..moveTo(240, 250)
+      ..lineTo(310, 330)
+      ..lineTo(230, 315)
+      ..close();
+  }
+
+  Path _getRocketFlamePath() {
+    return Path()
+      ..moveTo(175, 300)
+      ..quadraticBezierTo(200, 385, 225, 300)
+      ..lineTo(200, 330)
+      ..close();
   }
 
   // --- BUTTERFLY TEMPLATE PATHS ---

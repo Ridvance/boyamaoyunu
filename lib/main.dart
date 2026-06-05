@@ -112,7 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _enterFullscreen() async {
     AudioSynth.playSparkleSound();
-    final didEnter = await FullscreenController.enterImmersiveMode();
+    final didEnter = await FullscreenController.toggleImmersiveMode();
     if (!mounted) return;
     setState(() {
       _showFullscreenHint = !didEnter;

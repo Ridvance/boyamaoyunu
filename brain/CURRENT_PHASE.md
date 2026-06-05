@@ -8,7 +8,7 @@ Phase 2H - Fly Hunt V2
 
 ## Neden Bu Faz
 
-Phase 2G mobil web tam ekran/PWA kullanılabilirliği tamamlandı. Kullanıcının özellikle belirttiği sıradaki ürün fırsatı Renk Laboratuvarı içindeki Sinek Avı modunu daha güçlü bölüm/oyun hissine taşımak.
+Phase 2J oyun cilalama paketi tamamlandı. Sıradaki güvenli ürün fırsatı, kullanıcının daha önce işaret ettiği Renk Laboratuvarı içindeki Sinek Avı modunu daha güçlü bölüm/oyun hissine taşımak.
 
 ## Oku
 

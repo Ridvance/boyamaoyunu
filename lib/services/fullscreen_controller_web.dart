@@ -28,3 +28,21 @@ Future<bool> enterImmersiveMode() async {
 
   return didRequestFullscreen || web.document.fullscreenElement != null;
 }
+
+Future<bool> toggleImmersiveMode() async {
+  if (web.document.fullscreenElement != null) {
+    try {
+      await web.document.exitFullscreen().toDart;
+      try {
+        web.window.screen.orientation.unlock();
+      } catch (_) {
+        // Orientation unlock is best-effort.
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  return enterImmersiveMode();
+}

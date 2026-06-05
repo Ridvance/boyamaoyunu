@@ -12,6 +12,10 @@ enum ShapeType {
   diamond,
   crescent,
   oval,
+  pentagon,
+  hexagon,
+  cross,
+  rectangle,
 }
 
 // Şekil yollarını çizen sınıf
@@ -24,10 +28,12 @@ class ShapePaths {
 
   static Path getSquarePath(Size size, {double radius = 20.0}) {
     final path = Path();
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    ));
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        Radius.circular(radius),
+      ),
+    );
     return path;
   }
 
@@ -36,7 +42,7 @@ class ShapePaths {
     final w = size.width;
     final h = size.height;
     final r = w * 0.12; // Yuvarlama yarıçapı
-    
+
     // Yumuşak köşeli üçgen
     path.moveTo(w / 2, r);
     path.quadraticBezierTo(w / 2, 0, w / 2 + r * 0.8, r * 0.5);
@@ -55,22 +61,19 @@ class ShapePaths {
     final double cx = size.width / 2;
     final double cy = size.height / 2;
     final double rx = size.width / 2;
-    
+
     final double rOuter = rx;
     final double rInner = rx * 0.45;
-    
+
     double angle = -90.0 * (pi / 180.0);
     double angleStep = 360.0 / 10 * (pi / 180.0);
-    
+
     path.moveTo(cx + rOuter * cos(angle), cy + rOuter * sin(angle));
-    
+
     for (int i = 1; i < 10; i++) {
       angle += angleStep;
       double r = (i % 2 == 0) ? rOuter : rInner;
-      path.lineTo(
-        cx + r * cos(angle),
-        cy + r * sin(angle),
-      );
+      path.lineTo(cx + r * cos(angle), cy + r * sin(angle));
     }
     path.close();
     return path;
@@ -80,7 +83,7 @@ class ShapePaths {
     final path = Path();
     final double w = size.width;
     final double h = size.height;
-    
+
     path.moveTo(w / 2, h * 0.3);
     path.cubicTo(w * 0.2, h * 0.05, w * -0.1, h * 0.45, w / 2, h * 0.9);
     path.cubicTo(w * 1.1, h * 0.45, w * 0.8, h * 0.05, w / 2, h * 0.3);
@@ -92,7 +95,7 @@ class ShapePaths {
     final path = Path();
     final double w = size.width;
     final double h = size.height;
-    
+
     final double r = w * 0.1;
     path.moveTo(w / 2, r);
     path.quadraticBezierTo(w / 2, 0, w / 2 + r, r);
@@ -121,7 +124,61 @@ class ShapePaths {
 
   static Path getOvalPath(Size size) {
     final path = Path();
-    path.addOval(Rect.fromLTWH(size.width * 0.15, 0, size.width * 0.7, size.height));
+    path.addOval(
+      Rect.fromLTWH(size.width * 0.15, 0, size.width * 0.7, size.height),
+    );
+    return path;
+  }
+
+  static Path getPolygonPath(Size size, int sides) {
+    final path = Path();
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = min(size.width, size.height) / 2;
+    for (int i = 0; i < sides; i++) {
+      final angle = -pi / 2 + (2 * pi * i / sides);
+      final point = Offset(
+        center.dx + cos(angle) * radius,
+        center.dy + sin(angle) * radius,
+      );
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+    path.close();
+    return path;
+  }
+
+  static Path getCrossPath(Size size) {
+    final w = size.width;
+    final h = size.height;
+    final path =
+        Path()
+          ..moveTo(w * 0.35, 0)
+          ..lineTo(w * 0.65, 0)
+          ..lineTo(w * 0.65, h * 0.35)
+          ..lineTo(w, h * 0.35)
+          ..lineTo(w, h * 0.65)
+          ..lineTo(w * 0.65, h * 0.65)
+          ..lineTo(w * 0.65, h)
+          ..lineTo(w * 0.35, h)
+          ..lineTo(w * 0.35, h * 0.65)
+          ..lineTo(0, h * 0.65)
+          ..lineTo(0, h * 0.35)
+          ..lineTo(w * 0.35, h * 0.35)
+          ..close();
+    return path;
+  }
+
+  static Path getRectanglePath(Size size) {
+    final path = Path();
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, size.height * 0.2, size.width, size.height * 0.6),
+        const Radius.circular(18),
+      ),
+    );
     return path;
   }
 }
@@ -142,12 +199,13 @@ class ShapeCustomPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = style
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = style
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
 
     Path path;
     switch (type) {
@@ -175,25 +233,41 @@ class ShapeCustomPainter extends CustomPainter {
       case ShapeType.oval:
         path = ShapePaths.getOvalPath(size);
         break;
+      case ShapeType.pentagon:
+        path = ShapePaths.getPolygonPath(size, 5);
+        break;
+      case ShapeType.hexagon:
+        path = ShapePaths.getPolygonPath(size, 6);
+        break;
+      case ShapeType.cross:
+        path = ShapePaths.getCrossPath(size);
+        break;
+      case ShapeType.rectangle:
+        path = ShapePaths.getRectanglePath(size);
+        break;
     }
 
     canvas.drawPath(path, paint);
 
     if (style == PaintingStyle.fill) {
       // Şekli daha 3 boyutlu ve şirin göstermek için kenarlık gölgesi
-      final strokePaint = Paint()
-        ..color = color.withOpacity(0.25)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 4.0
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round;
+      final strokePaint =
+          Paint()
+            ..color = color.withValues(alpha: 0.25)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 4.0
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round;
       canvas.drawPath(path, strokePaint);
     }
   }
 
   @override
   bool shouldRepaint(covariant ShapeCustomPainter oldDelegate) {
-    return oldDelegate.type != type || oldDelegate.color != color || oldDelegate.style != style || oldDelegate.strokeWidth != strokeWidth;
+    return oldDelegate.type != type ||
+        oldDelegate.color != color ||
+        oldDelegate.style != style ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }
 
@@ -218,30 +292,32 @@ class ShapeWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        boxShadow: isShadow
-            ? []
-            : [
-                BoxShadow(
-                  color: color.withOpacity(0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                )
-              ],
+        boxShadow:
+            isShadow
+                ? []
+                : [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
       ),
       child: CustomPaint(
         painter: ShapeCustomPainter(
           type: type,
-          color: isShadow ? Colors.blueGrey.withOpacity(0.12) : color,
+          color: isShadow ? Colors.blueGrey.withValues(alpha: 0.12) : color,
           style: PaintingStyle.fill,
         ),
-        foregroundPainter: isShadow
-            ? ShapeCustomPainter(
-                type: type,
-                color: Colors.blueGrey.withOpacity(0.35),
-                style: PaintingStyle.stroke,
-                strokeWidth: 3.5,
-              )
-            : null,
+        foregroundPainter:
+            isShadow
+                ? ShapeCustomPainter(
+                  type: type,
+                  color: Colors.blueGrey.withValues(alpha: 0.35),
+                  style: PaintingStyle.stroke,
+                  strokeWidth: 3.5,
+                )
+                : null,
       ),
     );
   }
@@ -287,15 +363,16 @@ class ActiveReturnAnimation {
       vsync: vsync,
       duration: const Duration(milliseconds: 350),
     );
-    animation = Tween<Offset>(begin: startOffset, end: endOffset).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeOutBack),
-    )
-      ..addListener(onUpdate)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          onComplete();
-        }
-      });
+    animation =
+        Tween<Offset>(begin: startOffset, end: endOffset).animate(
+            CurvedAnimation(parent: controller, curve: Curves.easeOutBack),
+          )
+          ..addListener(onUpdate)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              onComplete();
+            }
+          });
     controller.forward();
   }
 
@@ -335,12 +412,14 @@ class ActiveSparkleEffect {
   }) : particles = [] {
     final random = Random();
     for (int i = 0; i < 12; i++) {
-      particles.add(SparkleParticle(
-        angle: (i * 30.0) * (pi / 180.0) + (random.nextDouble() * 0.3 - 0.15),
-        speed: 2.0 + random.nextDouble() * 2.5,
-        color: colors[random.nextInt(colors.length)],
-        size: 6.0 + random.nextDouble() * 8.0,
-      ));
+      particles.add(
+        SparkleParticle(
+          angle: (i * 30.0) * (pi / 180.0) + (random.nextDouble() * 0.3 - 0.15),
+          speed: 2.0 + random.nextDouble() * 2.5,
+          color: colors[random.nextInt(colors.length)],
+          size: 6.0 + random.nextDouble() * 8.0,
+        ),
+      );
     }
 
     controller = AnimationController(
@@ -383,9 +462,10 @@ class SparklePainter extends CustomPainter {
       final opacity = 1.0 - progress;
 
       for (var p in effect.particles) {
-        final paint = Paint()
-          ..color = p.color.withOpacity(opacity)
-          ..style = PaintingStyle.fill;
+        final paint =
+            Paint()
+              ..color = p.color.withValues(alpha: opacity)
+              ..style = PaintingStyle.fill;
 
         final double x = effect.position.dx + cos(p.angle) * p.distance;
         final double y = effect.position.dy + sin(p.angle) * p.distance;
@@ -433,9 +513,10 @@ class ConfettiPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (var p in particles) {
-      final paint = Paint()
-        ..color = p.color
-        ..style = PaintingStyle.fill;
+      final paint =
+          Paint()
+            ..color = p.color
+            ..style = PaintingStyle.fill;
 
       canvas.save();
       canvas.translate(p.x, p.y);
@@ -445,7 +526,11 @@ class ConfettiPainter extends CustomPainter {
         canvas.drawCircle(Offset.zero, p.size / 2, paint);
       } else {
         canvas.drawRect(
-          Rect.fromCenter(center: Offset.zero, width: p.size, height: p.size * 0.6),
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: p.size,
+            height: p.size * 0.6,
+          ),
           paint,
         );
       }
@@ -466,7 +551,8 @@ class CuteBackButton extends StatefulWidget {
   State<CuteBackButton> createState() => _CuteBackButtonState();
 }
 
-class _CuteBackButtonState extends State<CuteBackButton> with SingleTickerProviderStateMixin {
+class _CuteBackButtonState extends State<CuteBackButton>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
 
@@ -477,9 +563,10 @@ class _CuteBackButtonState extends State<CuteBackButton> with SingleTickerProvid
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.88).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.88,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -507,15 +594,12 @@ class _CuteBackButtonState extends State<CuteBackButton> with SingleTickerProvid
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.12),
+                color: Colors.black.withValues(alpha: 0.12),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
             ],
-            border: Border.all(
-              color: const Color(0xFFFF8A80),
-              width: 3,
-            ),
+            border: Border.all(color: const Color(0xFFFF8A80), width: 3),
           ),
           child: const Center(
             child: Icon(
@@ -538,7 +622,8 @@ class ShapeSorterGame extends StatefulWidget {
   State<ShapeSorterGame> createState() => _ShapeSorterGameState();
 }
 
-class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderStateMixin {
+class _ShapeSorterGameState extends State<ShapeSorterGame>
+    with TickerProviderStateMixin {
   static const double _itemContainerSize = 100.0;
   static const double _shapeSize = 72.0;
   static const double _itemPadding = 4.0;
@@ -556,6 +641,8 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   late final AnimationController _celebrationController;
   bool _isCelebrationActive = false;
+  int _levelNumber = 1;
+  int _matchesThisLevel = 0;
 
   final List<Color> _presetColors = const [
     Color(0xFFFF5252), // Kırmızı
@@ -593,18 +680,21 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   void _generateNewLevel() {
     final random = Random();
-    
+
     // Şekil havuzundan 4 adet seç
-    final List<ShapeType> availableShapes = List.from(ShapeType.values)..shuffle(random);
+    final List<ShapeType> availableShapes = List.from(ShapeType.values)
+      ..shuffle(random);
     final List<ShapeType> selectedShapes = availableShapes.take(4).toList();
 
     // Renk havuzundan 4 adet seç
-    final List<Color> availableColors = List.from(_presetColors)..shuffle(random);
+    final List<Color> availableColors = List.from(_presetColors)
+      ..shuffle(random);
     final List<Color> selectedColors = availableColors.take(4).toList();
 
     setState(() {
       _returningShapes.clear();
       _sparkles.clear();
+      _matchesThisLevel = 0;
 
       _leftItems = List.generate(4, (index) {
         return ShapeItem(
@@ -625,8 +715,10 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
   }
 
   void _handleDragCancel(ShapeItem item, Offset cancelOffset) {
-    final RenderBox? playAreaBox = _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox? itemBox = item.key.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? playAreaBox =
+        _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? itemBox =
+        item.key.currentContext?.findRenderObject() as RenderBox?;
     if (playAreaBox == null || itemBox == null) {
       setState(() {
         item.isDragging = false;
@@ -641,7 +733,9 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
     // Hedef kutunun oyun alanı üzerindeki lokal pozisyonunu bul
     // Ortalamak için paddingOffset ekliyoruz
     const double paddingOffset = (_itemContainerSize - _shapeSize) / 2;
-    final localTargetOffset = playAreaBox.globalToLocal(itemBox.localToGlobal(const Offset(paddingOffset, paddingOffset)));
+    final localTargetOffset = playAreaBox.globalToLocal(
+      itemBox.localToGlobal(const Offset(paddingOffset, paddingOffset)),
+    );
 
     setState(() {
       item.isDragging = false;
@@ -678,7 +772,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
       color,
       Colors.white,
       Colors.yellowAccent,
-      color.withOpacity(0.6),
+      color.withValues(alpha: 0.6),
     ];
 
     effect = ActiveSparkleEffect(
@@ -711,25 +805,28 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
   void _startCelebration() {
     setState(() {
       _isCelebrationActive = true;
+      _levelNumber++;
     });
     AudioSynth.playSparkleSound();
 
     final random = Random();
     final double screenWidth = MediaQuery.of(context).size.width;
-    
+
     _confetti.clear();
     for (int i = 0; i < 100; i++) {
-      _confetti.add(ConfettiParticle(
-        x: random.nextDouble() * screenWidth,
-        y: -20 - random.nextDouble() * 120,
-        vx: random.nextDouble() * 4 - 2,
-        vy: 3 + random.nextDouble() * 4,
-        size: 8 + random.nextDouble() * 8,
-        rotation: random.nextDouble() * 2 * pi,
-        rotationSpeed: random.nextDouble() * 0.1 - 0.05,
-        color: _presetColors[random.nextInt(_presetColors.length)],
-        shapeType: random.nextInt(2).toDouble(),
-      ));
+      _confetti.add(
+        ConfettiParticle(
+          x: random.nextDouble() * screenWidth,
+          y: -20 - random.nextDouble() * 120,
+          vx: random.nextDouble() * 4 - 2,
+          vy: 3 + random.nextDouble() * 4,
+          size: 8 + random.nextDouble() * 8,
+          rotation: random.nextDouble() * 2 * pi,
+          rotationSpeed: random.nextDouble() * 0.1 - 0.05,
+          color: _presetColors[random.nextInt(_presetColors.length)],
+          shapeType: random.nextInt(2).toDouble(),
+        ),
+      );
     }
 
     _celebrationController.repeat();
@@ -749,7 +846,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
 
   void _updateConfetti() {
     if (!mounted || !_isCelebrationActive) return;
-    
+
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final random = Random();
@@ -775,7 +872,8 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
   }
 
   Widget _buildLeftItem(ShapeItem item) {
-    final bool shouldShowShape = !item.isPlaced && !item.isReturning && !item.isDragging;
+    final bool shouldShowShape =
+        !item.isPlaced && !item.isReturning && !item.isDragging;
 
     return Padding(
       padding: const EdgeInsets.all(_itemPadding),
@@ -784,56 +882,57 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
         width: _itemContainerSize,
         height: _itemContainerSize,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.4),
+          color: Colors.white.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             width: 2,
           ),
         ),
         child: Center(
-          child: shouldShowShape
-              ? Draggable<ShapeType>(
-                  data: item.type,
-                  feedback: Transform.scale(
-                    scale: 1.15,
-                    child: Opacity(
-                      opacity: 0.85,
+          child:
+              shouldShowShape
+                  ? Draggable<ShapeType>(
+                    data: item.type,
+                    feedback: Transform.scale(
+                      scale: 1.15,
+                      child: Opacity(
+                        opacity: 0.85,
+                        child: ShapeWidget(
+                          type: item.type,
+                          color: item.color,
+                          size: _shapeSize,
+                        ),
+                      ),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.1,
                       child: ShapeWidget(
                         type: item.type,
                         color: item.color,
                         size: _shapeSize,
                       ),
                     ),
-                  ),
-                  childWhenDragging: Opacity(
-                    opacity: 0.1,
+                    onDragStarted: () {
+                      setState(() {
+                        item.isDragging = true;
+                      });
+                    },
+                    onDragEnd: (details) {
+                      setState(() {
+                        item.isDragging = false;
+                      });
+                    },
+                    onDraggableCanceled: (velocity, offset) {
+                      _handleDragCancel(item, offset);
+                    },
                     child: ShapeWidget(
                       type: item.type,
                       color: item.color,
                       size: _shapeSize,
                     ),
-                  ),
-                  onDragStarted: () {
-                    setState(() {
-                      item.isDragging = true;
-                    });
-                  },
-                  onDragEnd: (details) {
-                    setState(() {
-                      item.isDragging = false;
-                    });
-                  },
-                  onDraggableCanceled: (velocity, offset) {
-                    _handleDragCancel(item, offset);
-                  },
-                  child: ShapeWidget(
-                    type: item.type,
-                    color: item.color,
-                    size: _shapeSize,
-                  ),
-                )
-              : Container(),
+                  )
+                  : Container(),
         ),
       ),
     );
@@ -849,18 +948,25 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
         onAcceptWithDetails: (details) {
           setState(() {
             item.isPlaced = true;
+            _matchesThisLevel++;
             // Sol taraftaki eşleşeni de yerleşti olarak işaretle
-            final leftItem = _leftItems.firstWhere((left) => left.type == item.type);
+            final leftItem = _leftItems.firstWhere(
+              (left) => left.type == item.type,
+            );
             leftItem.isPlaced = true;
           });
           AudioSynth.playRaindropSound();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            final RenderBox? playAreaBox = _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
-            final RenderBox? itemBox = item.key.currentContext?.findRenderObject() as RenderBox?;
+            final RenderBox? playAreaBox =
+                _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
+            final RenderBox? itemBox =
+                item.key.currentContext?.findRenderObject() as RenderBox?;
             if (playAreaBox != null && itemBox != null) {
               final localCenter = playAreaBox.globalToLocal(
-                itemBox.localToGlobal(Offset(itemBox.size.width / 2, itemBox.size.height / 2)),
+                itemBox.localToGlobal(
+                  Offset(itemBox.size.width / 2, itemBox.size.height / 2),
+                ),
               );
               _startSparkle(localCenter, item.color);
             }
@@ -868,21 +974,24 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
           });
         },
         builder: (context, candidateData, rejectedData) {
-          final bool isHovered = candidateData.isNotEmpty && candidateData.first == item.type;
+          final bool isHovered =
+              candidateData.isNotEmpty && candidateData.first == item.type;
 
           return Container(
             key: item.key,
             width: _itemContainerSize,
             height: _itemContainerSize,
             decoration: BoxDecoration(
-              color: isHovered 
-                  ? item.color.withOpacity(0.2) 
-                  : Colors.white.withOpacity(0.25),
+              color:
+                  isHovered
+                      ? item.color.withValues(alpha: 0.2)
+                      : Colors.white.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isHovered 
-                    ? item.color.withOpacity(0.65) 
-                    : Colors.white.withOpacity(0.4),
+                color:
+                    isHovered
+                        ? item.color.withValues(alpha: 0.65)
+                        : Colors.white.withValues(alpha: 0.4),
                 width: isHovered ? 3.5 : 2,
               ),
             ),
@@ -966,22 +1075,52 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFFFFDF5),
-              Color(0xFFE8F4FD),
-            ],
+            colors: [Color(0xFFFFFDF5), Color(0xFFE8F4FD)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: Stack(
           children: [
+            Positioned(
+              top: 16,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Center(
+                  child: Container(
+                    key: const ValueKey('shape-sorter-level-badge'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.86),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: const Color(0xFF2FA7A0),
+                        width: 3,
+                      ),
+                    ),
+                    child: Text(
+                      'Bölüm $_levelNumber  •  $_matchesThisLevel / ${_rightItems.length}',
+                      style: const TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             // Oyun Alanı (Yatay yerleşim)
             SafeArea(
               child: Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Container(
+                  child: SizedBox(
                     key: _playAreaKey,
                     width: 600,
                     height: 260,
@@ -991,9 +1130,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                         Row(
                           children: [
                             // Sol Bölüm (2x2 Renkli Şekiller)
-                            Expanded(
-                              child: Center(child: _buildLeftGrid()),
-                            ),
+                            Expanded(child: Center(child: _buildLeftGrid())),
 
                             // Orta İkon / Süreç Belirteci (Sevimli bir yıldız)
                             Container(
@@ -1007,9 +1144,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
                             ),
 
                             // Sağ Bölüm (2x2 Gölgeler)
-                            Expanded(
-                              child: Center(child: _buildRightGrid()),
-                            ),
+                            Expanded(child: Center(child: _buildRightGrid())),
                           ],
                         ),
 
@@ -1054,9 +1189,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
               top: 16,
               left: 16,
               child: SafeArea(
-                child: CuteBackButton(
-                  onPressed: () => Navigator.pop(context),
-                ),
+                child: CuteBackButton(onPressed: () => Navigator.pop(context)),
               ),
             ),
 
@@ -1064,9 +1197,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame> with TickerProviderSt
             if (_isCelebrationActive)
               Positioned.fill(
                 child: IgnorePointer(
-                  child: CustomPaint(
-                    painter: ConfettiPainter(_confetti),
-                  ),
+                  child: CustomPaint(painter: ConfettiPainter(_confetti)),
                 ),
               ),
           ],

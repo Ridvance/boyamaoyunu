@@ -172,6 +172,16 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Test: `flutter test`, ilgili dosyalar için `dart analyze`, manuel smoke.
 - Durum: pending.
 
+### Phase 2J - Game Polish Batch
+- Amaç: Kullanıcı gözlemine dayalı olarak mevcut oyunlardaki bölüm hissini, skor görünürlüğünü, çizim tamamlama doğruluğunu ve mobil tam ekran kontrolünü iyileştirmek.
+- Scope: Şekil eşleştirmeye yeni şekiller/bölüm rozeti; çiz takipte daha yüksek tamamlanma eşiği ve yeni şekiller; balon patlatmada bölüm/skor paneli; boyama kitabında yeni sayfalar ve güncel tamamlanma göstergesi; fullscreen düğmesinde aç/kapat davranışı.
+- Scope dışı: Yeni ana oyun modu, ödeme/reklam sistemi, global profil ekonomisi, büyük navigasyon refactor.
+- Beklenen dosya etki alanı: `lib/games/shape_sorter_game.dart`, `lib/games/tracing_game.dart`, `lib/games/balloon_pop_game.dart`, `lib/games/coloring_game.dart`, `lib/main.dart`, `lib/services/fullscreen_controller*.dart`, `test/widget_test.dart`, `brain/*`.
+- Çıkış kriterleri: Şekil, çiz takip, balon ve boyama oyunları daha uzun oynanır; fullscreen düğmesi tekrar basınca çıkış yapar; boyama göstergesi tuvali kapatmaz; testler geçer.
+- Test: `flutter test`, değişen dosyalar için `dart analyze`, `git diff --check`, web build smoke.
+- Durum: completed.
+- Sonuç: Mevcut oyunlara yeni içerik/bölüm göstergeleri eklendi; çiz takip erken bitirme eşiği sıkılaştırıldı; balon skor/bölüm paneli eklendi; boyama kitabına çiçek ve roket sayfaları eklendi; fullscreen düğmesi toggle davranışına geçti.
+
 ## Phase 3 - Differentiator
 
 ### Phase 3A - Photo To Coloring Prototype

@@ -23,7 +23,7 @@ brain/CURRENT_PHASE.md
 ## Aktif Faz Prompt'u
 
 ```text
-brain/PROMPTS/phase-02A-child-playtest-feedback-loop.md
+brain/CURRENT_PHASE.md
 ```
 
 ## Faz Listesi
@@ -39,4 +39,5 @@ brain/PROMPTS/phase-02C-story-coloring-flow.md
 brain/PROMPTS/phase-02D-color-mix-learning-mini-game.md
 brain/PROMPTS/phase-02E-values-and-habits-mini-tasks.md
 brain/PROMPTS/phase-02F-preschool-learning-packs.md
+brain/PROMPTS/phase-02J-game-polish-batch.md
 ```
