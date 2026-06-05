@@ -1,6 +1,6 @@
 # PHASES.md - Küçük Faz Rotası
 
-> Son güncelleme: 2026-06-04
+> Son güncelleme: 2026-06-05
 
 ## Faz Kullanma Kuralı
 
@@ -142,6 +142,35 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Scope Locked Prompt: Sadece okul öncesi kazanım paketleri için içerik yapısı ve 1 örnek paket oluştur; ödeme, resmi müfredat iddiası veya geniş katalog ekleme.
 - Durum: completed.
 - Sonuç: "İlk Beceriler" adlı tek örnek öğrenme paketi eklendi; hikayeli boyama, renk karışımı ve alışkanlık görevleri paket ekranından açılabilir hale getirildi.
+
+### Phase 2G - Mobile Web Fullscreen And Game Hierarchy
+- Amaç: Mobil Chrome yatay kullanımda adres çubuğu/üst menü nedeniyle daralan oyun alanını iyileştirmek ve ana ekran/oyun bölümü hiyerarşisini sadeleştirmek.
+- Scope: Web fullscreen isteği, PWA landscape/fullscreen manifest ayarı, ana ekranda tam ekran düğmesi, ana ekran kartlarının bölüm sistemiyle ilişkisini netleştiren plan.
+- Scope dışı: Native Android/iOS tam ekran paketleme, store yayın ayarları, büyük navigasyon refactor.
+- Beklenen dosya etki alanı: `lib/main.dart`, `lib/services/*`, `web/index.html`, `web/manifest.json`, `test/widget_test.dart`, `brain/*`.
+- Çıkış kriterleri: Web'de kullanıcı dokunuşuyla fullscreen isteği yapılır; PWA landscape/fullscreen davranışı tanımlıdır; testler geçer.
+- Test: `flutter test`, değişen dosyalar için `dart analyze`, `git diff --check`.
+- Scope Locked Prompt: Sadece mobil web tam ekran/PWA kullanılabilirliğini ve sıradaki oyun hiyerarşisi planını ekle; büyük oyun refactor veya yeni oyun modu ekleme.
+- Durum: completed.
+- Sonuç: Ana ekrana tam ekran düğmesi eklendi; web fullscreen/orientation servisi ve PWA landscape/fullscreen manifest ayarları yapıldı. Phase 2H ve 2I oyun geliştirme fazları planlandı.
+
+### Phase 2H - Fly Hunt V2
+- Amaç: Renk Laboratuvarı içindeki Sinek Avı modunu daha net bölüm hissi, hedef renk, doğru/yanlış geri bildirim ve rozet döngüsüyle güçlendirmek.
+- Scope: 3 kısa bölüm, hedef renk kartı, iki doğru sinek seçimi, yanlış sinekte yumuşak geri bildirim, bölüm sonu kutlama/rozet.
+- Scope dışı: Karmaşık seviye ekonomisi, ceza sistemi, yeni karakter evreni, dış içerik.
+- Beklenen dosya etki alanı: `lib/games/magic_colors_game.dart`, `test/widget_test.dart`, gerekirse `brain/STATE.md`.
+- Çıkış kriterleri: Sinek Avı çocuk için hedefi daha görünür ve tekrar denenebilir hale gelir; mevcut renk karışımı modu bozulmaz.
+- Test: `flutter test`, ilgili dosyalar için `dart analyze`, manuel smoke.
+- Durum: pending.
+
+### Phase 2I - Coloring And Drawing Creative Tools
+- Amaç: Boyama deneyimini tam serbest çizim karmaşasına girmeden kontrollü yaratıcılıkla geliştirmek.
+- Scope: Sahne tamamlama, çıkartma/sticker, parıltı fırçası veya özel fırça gibi 1-2 küçük yaratıcı araç.
+- Scope dışı: Fotoğraf import, AI üretim, sınırsız çizim editörü, karmaşık katman sistemi.
+- Beklenen dosya etki alanı: `lib/games/coloring_game.dart`, `test/widget_test.dart`, gerekirse `brain/STATE.md`.
+- Çıkış kriterleri: Çocuk boyama sonrası sahneye küçük yaratıcı dokunuş ekleyebilir; mevcut hikayeli boyama bozulmaz.
+- Test: `flutter test`, ilgili dosyalar için `dart analyze`, manuel smoke.
+- Durum: pending.
 
 ## Phase 3 - Differentiator
 

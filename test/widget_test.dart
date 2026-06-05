@@ -33,6 +33,7 @@ void main() {
         find.byKey(const ValueKey('game-card-magic_colors')),
         findsOneWidget,
       );
+      expect(find.byKey(const ValueKey('fullscreen-button')), findsOneWidget);
       expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
     },
   );

@@ -1,18 +1,18 @@
 # STATE.md - Güncel Durum
 
-> Son güncelleme: 2026-06-04
+> Son güncelleme: 2026-06-05
 > Rol: Yeni pencere açıldığında hızlı bağlam yükleme.
 
 ## Aktif Gerçeklik
 
-İlk dört ürün işi tamamlandı: hikayeli boyama, renk karışımı doğrulaması, değer/alışkanlık mini görevleri ve okul öncesi öğrenme paketi.
+Phase 2G mobil web tam ekran/PWA kullanılabilirliği tamamlandı. Sıradaki aktif odak Phase 2H Sinek Avı V2.
 
 ## Aktif Odak
 
 - Mevcut Rol: Execution Engineer (Mod: Execution)
-- Durum: COMPLETED
-- Aktif Faz: Phase 2C-2F tamamlandı
-- Mission Control: İlk dört ürün işi uygulanıp test edildi; sıradaki güvenli adım review/playtest.
+- Durum: READY
+- Aktif Faz: Phase 2H - Fly Hunt V2
+- Mission Control: Mobil Chrome tam ekran çözümü eklendi; sıradaki güvenli adım Sinek Avı modunu bölüm/rozet döngüsüyle geliştirmek.
 
 ## Workstream Status Board
 

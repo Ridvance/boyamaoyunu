@@ -1,22 +1,22 @@
 # CURRENT_PHASE.md - Aktif Faz
 
-> Son güncelleme: 2026-06-04
+> Son güncelleme: 2026-06-05
 
 ## Active Phase
 
-Phase 2C-2F - İlk 4 Ürün İşi Tamamlandı
+Phase 2H - Fly Hunt V2
 
 ## Neden Bu Faz
 
-Kullanıcının onayladığı ilk dört ürün işi tamamlandı: hikayeli boyama, renk karışımı doğrulaması, değer/alışkanlık mini görevleri ve okul öncesi öğrenme paketi.
+Phase 2G mobil web tam ekran/PWA kullanılabilirliği tamamlandı. Kullanıcının özellikle belirttiği sıradaki ürün fırsatı Renk Laboratuvarı içindeki Sinek Avı modunu daha güçlü bölüm/oyun hissine taşımak.
 
 ## Oku
 
 1. `brain/STATE.md`
 2. `brain/RULES.md`
 3. `brain/PHASES.md`
-4. `brain/PHASES.md`
-5. `brain/UX_ARCHITECTURE.md`
+4. `brain/UX_ARCHITECTURE.md`
+5. `brain/VALIDATION.md`
 
 ## Planlama Kuralı
 
@@ -25,20 +25,21 @@ Uygulamaya geçmeden önce aktif faz, scope dışı işler, dosya etki alanı, t
 ## Scope Locked Prompt
 
 ```text
-İlk dört ürün işi tamamlandı. Sıradaki güvenli adım test/playtest review veya kullanıcının yeni önceliğidir.
+Sadece Renk Laboratuvarı içindeki Sinek Avı modunu 3 kısa bölüm, hedef renk kartı, doğru/yanlış geri bildirim ve rozet döngüsüyle güçlendir; yeni ana oyun, ödeme, dış sistem veya büyük refactor ekleme.
 ```
 
 ## Exit Criteria
 
-- Phase 2C tamamlandı.
-- Phase 2D tamamlandı.
-- Phase 2E tamamlandı.
-- Phase 2F tamamlandı.
+- Sinek Avı hedefi çocuk için daha görünür olur.
+- En az 3 kısa bölüm ilerlemesi vardır.
+- Yanlış seçim yumuşak geri bildirim verir.
+- Bölüm sonu kutlama/rozet görünür.
+- Mevcut renk karışımı ve diğer modlar bozulmaz.
 
 ## Test
 
 ```bash
 flutter test
-dart analyze lib/main.dart lib/games/coloring_game.dart lib/games/magic_colors_game.dart lib/games/habits_game.dart lib/games/learning_packs_game.dart test/widget_test.dart
+dart analyze lib/games/magic_colors_game.dart test/widget_test.dart
 git diff --check
 ```

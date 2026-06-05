@@ -10,6 +10,7 @@ import 'games/magic_colors_game.dart';
 import 'games/habits_game.dart';
 import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
+import 'services/fullscreen_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -95,6 +96,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _isParentUnlocked = false;
+  bool _showFullscreenHint = false;
 
   void _openParentArea() {
     setState(() {
@@ -105,6 +107,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _closeParentArea() {
     setState(() {
       _isParentUnlocked = false;
+    });
+  }
+
+  Future<void> _enterFullscreen() async {
+    AudioSynth.playSparkleSound();
+    final didEnter = await FullscreenController.enterImmersiveMode();
+    if (!mounted) return;
+    setState(() {
+      _showFullscreenHint = !didEnter;
     });
   }
 
@@ -134,34 +145,79 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  IconButton.filledTonal(
-                    key: const ValueKey('parent-gate-button'),
-                    style: IconButton.styleFrom(
-                      backgroundColor: const Color(0xFFE6ECE8),
-                      padding: const EdgeInsets.all(12),
-                    ),
-                    icon: const Icon(
-                      Icons.shield_rounded,
-                      color: Color(0xFF2FA7A0),
-                      size: 28,
-                    ),
-                    onPressed: () {
-                      showDialog<void>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder:
-                            (context) => MultiFingerParentGate(
-                              onUnlocked: () {
-                                Navigator.of(context).pop();
-                                AudioSynth.playSparkleSound();
-                                _openParentArea();
-                              },
-                            ),
-                      );
-                    },
+                  Row(
+                    children: [
+                      IconButton.filledTonal(
+                        key: const ValueKey('fullscreen-button'),
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFF0BF),
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        icon: const Icon(
+                          Icons.fullscreen_rounded,
+                          color: Color(0xFFFF9500),
+                          size: 30,
+                        ),
+                        onPressed: _enterFullscreen,
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton.filledTonal(
+                        key: const ValueKey('parent-gate-button'),
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFFE6ECE8),
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        icon: const Icon(
+                          Icons.shield_rounded,
+                          color: Color(0xFF2FA7A0),
+                          size: 28,
+                        ),
+                        onPressed: () {
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder:
+                                (context) => MultiFingerParentGate(
+                                  onUnlocked: () {
+                                    Navigator.of(context).pop();
+                                    AudioSynth.playSparkleSound();
+                                    _openParentArea();
+                                  },
+                                ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
+              if (_showFullscreenHint) ...[
+                const SizedBox(height: 8),
+                Container(
+                  key: const ValueKey('fullscreen-hint'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF7D6),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: const Color(0xFFFFCC00),
+                      width: 2,
+                    ),
+                  ),
+                  child: const Text(
+                    'Tam ekran için Chrome menüsünden "Ana ekrana ekle" ile aç.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF6A5200),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               // Oyun Kartları Grid
               Expanded(
