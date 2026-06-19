@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cocuk_oyun/main.dart';
+import 'package:cocuk_oyun/games/magic_colors/chameleon_painter.dart';
+import 'package:cocuk_oyun/services/guidance_widgets.dart';
 
 void main() {
   testWidgets(
@@ -210,6 +212,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('magic-colors-mode-sandbox')));
     await tester.pump();
 
+
+
     await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Kırmızı')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Sarı')));
@@ -289,6 +293,102 @@ void main() {
     await tester.pump();
 
     expect(find.byKey(const ValueKey('habit-action-toys')), findsOneWidget);
+  });
+
+  testWidgets('coloring game inactivity triggers GhostHandHint and interaction hides it', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-coloring')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsWidgets);
+
+    // Perform an activity (e.g., tap on the reset button to hide hint)
+    await tester.tap(find.byIcon(Icons.refresh_rounded));
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Pop the route to clean up timers
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('magic colors sandbox mode triggers guidance hand pointing to red tube then mix button', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mode-sandbox')));
+    await tester.pump();
+
+    // Wait for inactivity timer to fire
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Tap Kırmızı tube
+    await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Kırmızı')));
+    await tester.pump();
+
+    // Hint should disappear
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait for inactivity again (now it should point to mix button since beaker has 1 slot and next is mix button)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Pop route to clean up timers
+    await tester.tap(find.byKey(const ValueKey('magic-colors-back-button')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('ChameleonPainter renders expressions neutral, happy, surprised without error', (
+    WidgetTester tester,
+  ) async {
+    for (final expr in ['neutral', 'happy', 'surprised']) {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomPaint(
+              painter: ChameleonPainter(
+                chameleonColor: Colors.green,
+                tongueProgress: 0.0,
+                lookTarget: Offset.zero,
+                flies: [],
+                idleProgress: 0.0,
+                isCamouflaged: false,
+                chameleonPos: Offset.zero,
+                expression: expr,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
   });
 }
 

@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import 'magic_colors/chameleon_painter.dart';
+import '../services/guidance_widgets.dart';
 
 class MagicColorsGame extends StatefulWidget {
   const MagicColorsGame({super.key});
@@ -22,6 +24,14 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   int _stars = 0;
 
   // Kamo'nun durumu
+  String _kamoExpression = 'neutral';
+  Timer? _kamoExpressionTimer;
+  bool _showCelebration = false;
+  Timer? _celebrationTimer;
+  bool _showGhostHand = false;
+  Offset? _ghostHandPosition;
+  final StreamController<void> _wrongFeedbackController = StreamController<void>.broadcast();
+
   Color _chameleonColor = const Color(0xFF4CAF50); // Başlangıçta Yeşil
   String _chameleonColorName = 'Yeşil';
   Offset _lookTarget = const Offset(400, 200);
@@ -125,7 +135,132 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   @override
   void dispose() {
     _tickerController.dispose();
+    _kamoExpressionTimer?.cancel();
+    _celebrationTimer?.cancel();
+    _wrongFeedbackController.close();
     super.dispose();
+  }
+
+  void _setKamoExpression(String exp, {Duration delay = const Duration(seconds: 2)}) {
+    setState(() {
+      _kamoExpression = exp;
+    });
+    _kamoExpressionTimer?.cancel();
+    _kamoExpressionTimer = Timer(delay, () {
+      if (mounted && _kamoExpression == exp) {
+        setState(() {
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
+  }
+
+  List<String> _getRequiredBaseColors(String targetName) {
+    if (baseColors.containsKey(targetName)) {
+      return [targetName];
+    }
+    for (var entry in mixRules.entries) {
+      if (entry.value == targetName) {
+        return entry.key.split('+');
+      }
+    }
+    return [];
+  }
+
+  Key? _getTargetHighlightKey() {
+    String targetColorName = '';
+    if (_currentMode == 'camouflage') {
+      targetColorName = _camouTargetName;
+    } else if (_currentMode == 'flyhunt') {
+      targetColorName = _flyHuntTargetName;
+    } else if (_currentMode == 'coloring') {
+      final activeParts = _coloringParts.where((p) => !p.isCorrect).toList();
+      if (activeParts.isEmpty) return null;
+      final activePart = activeParts[0];
+      if (_chameleonColorName == activePart.targetColorName) {
+        return null;
+      }
+      targetColorName = activePart.targetColorName;
+    } else if (_currentMode == 'sandbox') {
+      if (_beakerSlots.length < 2) {
+        return const ValueKey('magic-colors-tube-Kırmızı');
+      } else {
+        return const ValueKey('magic-colors-mix-button');
+      }
+    } else {
+      return null;
+    }
+
+    final requiredBases = _getRequiredBaseColors(targetColorName);
+    if (requiredBases.isEmpty) return null;
+
+    if (_beakerSlots.isEmpty) {
+      return ValueKey('magic-colors-tube-${requiredBases[0]}');
+    }
+
+    if (_beakerSlots.length == 1) {
+      final addedColor = _beakerSlots[0]['name'];
+      if (requiredBases.contains(addedColor)) {
+        final otherColor = requiredBases.firstWhere((c) => c != addedColor, orElse: () => requiredBases[0]);
+        return ValueKey('magic-colors-tube-$otherColor');
+      } else {
+        return const ValueKey('magic-colors-clear-button');
+      }
+    }
+
+    if (_beakerSlots.length == 2) {
+      return const ValueKey('magic-colors-mix-button');
+    }
+
+    return null;
+  }
+
+  Offset? _getElementPosition(Key key) {
+    Element? targetElement;
+    void findElement(Element element) {
+      if (element.widget.key == key) {
+        targetElement = element;
+        return;
+      }
+      element.visitChildren(findElement);
+    }
+    context.visitChildElements((element) {
+      findElement(element);
+    });
+
+    if (targetElement == null) return null;
+    final RenderBox? box = targetElement!.findRenderObject() as RenderBox?;
+    if (box == null) return null;
+
+    final position = box.localToGlobal(Offset(box.size.width / 2, box.size.height / 2));
+    final RenderBox? screenBox = context.findRenderObject() as RenderBox?;
+    if (screenBox != null) {
+      return screenBox.globalToLocal(position);
+    }
+    return position;
+  }
+
+  Offset? _getGhostHandPosition() {
+    final key = _getTargetHighlightKey();
+    if (key == null) return null;
+    return _getElementPosition(key);
+  }
+
+  void _onInactivity() {
+    if (mounted) {
+      setState(() {
+        _showGhostHand = true;
+        _ghostHandPosition = _getGhostHandPosition();
+      });
+    }
+  }
+
+  void _onActivity() {
+    if (_showGhostHand && mounted) {
+      setState(() {
+        _showGhostHand = false;
+      });
+    }
   }
 
   void _tick() {
@@ -249,6 +384,24 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       return;
     }
 
+    String targetColorName = '';
+    if (_currentMode == 'camouflage') {
+      targetColorName = _camouTargetName;
+    } else if (_currentMode == 'coloring') {
+      final activeParts = _coloringParts.where((p) => !p.isCorrect).toList();
+      if (activeParts.isNotEmpty) {
+        targetColorName = activeParts[0].targetColorName;
+      }
+    }
+
+    if (targetColorName.isNotEmpty) {
+      final requiredBases = _getRequiredBaseColors(targetColorName);
+      if (requiredBases.isNotEmpty && !requiredBases.contains(name)) {
+        _wrongFeedbackController.add(null);
+        HapticFeedback.lightImpact();
+      }
+    }
+
     HapticFeedback.mediumImpact();
     AudioSynth.playRaindropSound();
 
@@ -307,14 +460,37 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       _chameleonColorName = _mixedColorName;
       _beakerSlots.clear();
 
-      // Kamufle ol kontrolü
-      if (_currentMode == 'camouflage' &&
+      bool isSuccess = false;
+      if (_currentMode == 'sandbox') {
+        isSuccess = true;
+      } else if (_currentMode == 'camouflage' &&
           _chameleonColorName == _camouTargetName) {
         _isCamouflaged = true;
         _showBird = true;
         _birdProgress = 0.0;
         _birdText = 'Kuş geliyor! Kamo gizlendi mi?';
         AudioSynth.playSparkleSound();
+        isSuccess = true;
+      } else if (_currentMode == 'coloring') {
+        final activeParts = _coloringParts.where((p) => !p.isCorrect).toList();
+        if (activeParts.isNotEmpty && _chameleonColorName == activeParts[0].targetColorName) {
+          isSuccess = true;
+        }
+      }
+
+      if (isSuccess) {
+        _setKamoExpression('happy', delay: const Duration(seconds: 3));
+        _showCelebration = true;
+        _celebrationTimer?.cancel();
+        _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
+          if (mounted) {
+            setState(() {
+              _showCelebration = false;
+            });
+          }
+        });
+      } else if (_currentMode == 'camouflage' || _currentMode == 'coloring') {
+        _setKamoExpression('surprised');
       }
     });
   }
@@ -544,6 +720,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       if (_flyHuntEatenColors.length == 1) {
         _chameleonColor = flyColor;
         _chameleonColorName = colorName;
+        _setKamoExpression('happy');
       } else {
         // İki sinek yendi, midede renkleri karıştır
         final r1 = _flyHuntEatenColors[0];
@@ -566,6 +743,16 @@ class _MagicColorsGameState extends State<MagicColorsGame>
         if (_chameleonColorName == _flyHuntTargetName) {
           _stars += 3;
           _triggerCelebration();
+          _setKamoExpression('happy', delay: const Duration(seconds: 3));
+          _showCelebration = true;
+          _celebrationTimer?.cancel();
+          _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
+            if (mounted) {
+              setState(() {
+                _showCelebration = false;
+              });
+            }
+          });
           showDialog<void>(
             context: context,
             barrierDismissible: false,
@@ -585,6 +772,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           );
         } else {
           // Yanlış karışım, baştan dene
+          _setKamoExpression('surprised');
           showDialog<void>(
             context: context,
             barrierDismissible: false,
@@ -788,8 +976,11 @@ class _MagicColorsGameState extends State<MagicColorsGame>
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2),
-      body: Stack(
-        children: [
+      body: InactivityDetector(
+        onInactivity: _onInactivity,
+        onActivity: _onActivity,
+        child: Stack(
+          children: [
           // Arka Plan Dekorasyonu (Moda özel)
           Positioned.fill(child: _buildBackground()),
 
@@ -958,10 +1149,33 @@ class _MagicColorsGameState extends State<MagicColorsGame>
               ),
             ),
           ),
+          // Görsel Dokunma İpuçları (Faz 4)
+          if (_showGhostHand && _ghostHandPosition != null) ...[
+            Positioned(
+              left: _ghostHandPosition!.dx - 28,
+              top: _ghostHandPosition!.dy - 28,
+              child: IgnorePointer(
+                child: PulseTarget(
+                  active: true,
+                  baseSize: 56,
+                  child: const SizedBox(width: 56, height: 56),
+                ),
+              ),
+            ),
+            GhostHandHint(
+              position: _ghostHandPosition!,
+              active: true,
+            ),
+          ],
+          if (_showCelebration)
+            const Positioned.fill(
+              child: CelebrationEffect(active: true),
+            ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildBackground() {
     if (_currentMode == 'camouflage') {
@@ -1175,6 +1389,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                 idleProgress: _time,
                 isCamouflaged: _isCamouflaged,
                 chameleonPos: Offset(width * 0.22, height * 0.5),
+                expression: _kamoExpression,
               ),
               size: Size.infinite,
             ),

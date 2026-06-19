@@ -56,6 +56,7 @@ class ChameleonPainter extends CustomPainter {
   final double idleProgress;
   final bool isCamouflaged;
   final Offset chameleonPos;
+  final String expression; // 'neutral', 'happy', 'surprised'
 
   ChameleonPainter({
     required this.chameleonColor,
@@ -66,6 +67,7 @@ class ChameleonPainter extends CustomPainter {
     required this.idleProgress,
     required this.isCamouflaged,
     required this.chameleonPos,
+    this.expression = 'neutral',
   });
 
   @override
@@ -229,18 +231,29 @@ class ChameleonPainter extends CustomPainter {
     canvas.drawPath(headPath, bodyPaint);
     canvas.drawPath(headPath, strokePaint);
 
-    // Ağız çizgisi
+    // Ağız çizgisi (Expression'a göre çizilir)
     final mouthPath = Path();
-    mouthPath.moveTo(pos.dx + 70, pos.dy + 22);
-    mouthPath.quadraticBezierTo(pos.dx + 82, pos.dy + 20, pos.dx + 90, pos.dy + 15);
-    canvas.drawPath(
-      mouthPath,
-      Paint()
-        ..color = Colors.black.withOpacity(0.3 * opacity)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.0
-        ..strokeCap = StrokeCap.round,
-    );
+    final mouthPaint = Paint()
+      ..color = Colors.black.withOpacity(0.3 * opacity)
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round;
+
+    if (expression == 'happy') {
+      // Gülen ağız
+      mouthPath.moveTo(pos.dx + 68, pos.dy + 16);
+      mouthPath.quadraticBezierTo(pos.dx + 80, pos.dy + 28, pos.dx + 90, pos.dy + 14);
+      mouthPaint.style = PaintingStyle.stroke;
+    } else if (expression == 'surprised') {
+      // Şaşırmış açık yuvarlak ağız
+      mouthPath.addOval(Rect.fromCenter(center: Offset(pos.dx + 80, pos.dy + 18), width: 8, height: 12));
+      mouthPaint.style = PaintingStyle.fill;
+    } else {
+      // neutral
+      mouthPath.moveTo(pos.dx + 70, pos.dy + 22);
+      mouthPath.quadraticBezierTo(pos.dx + 82, pos.dy + 20, pos.dx + 90, pos.dy + 15);
+      mouthPaint.style = PaintingStyle.stroke;
+    }
+    canvas.drawPath(mouthPath, mouthPaint);
 
     // Sevimli Yanak Pembesi (Eğer kamufle değilse)
     if (!isCamouflaged) {
@@ -253,49 +266,71 @@ class ChameleonPainter extends CustomPainter {
       );
     }
 
-    // 5. Göz Tasarımı (Büyük Dış Daire ve Bağımsız Pupil)
+    // Göz Tasarımı (Büyük Dış Daire ve Bağımsız Pupil)
     final double eyeX = pos.dx + 52;
     final double eyeY = pos.dy - 8;
 
-    // Göz kapağı (chameleonColor)
-    canvas.drawCircle(Offset(eyeX, eyeY), 18, bodyPaint);
-    canvas.drawCircle(Offset(eyeX, eyeY), 18, strokePaint);
+    if (expression == 'happy') {
+      // Mutlu/Göz kırpan kısık göz kavisi (circle yerine yay çizeriz)
+      canvas.drawCircle(Offset(eyeX, eyeY), 18, bodyPaint);
+      canvas.drawCircle(Offset(eyeX, eyeY), 18, strokePaint);
 
-    // Göz akı
-    canvas.drawCircle(
-      Offset(eyeX, eyeY),
-      12,
-      Paint()
-        ..color = Colors.white.withOpacity(opacity)
-        ..style = PaintingStyle.fill,
-    );
+      final happyEyePath = Path()
+        ..moveTo(eyeX - 10, eyeY + 2)
+        ..quadraticBezierTo(eyeX, eyeY - 8, eyeX + 10, eyeY + 2);
 
-    // Göz bebeği (Pupil) - lookTarget yönüne bakar
-    final double dx = lookTarget.dx - eyeX;
-    final double dy = lookTarget.dy - eyeY;
-    final double dist = sqrt(dx * dx + dy * dy);
+      canvas.drawPath(
+        happyEyePath,
+        Paint()
+          ..color = const Color(0xFF233238).withOpacity(opacity)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4.0
+          ..strokeCap = StrokeCap.round,
+      );
+    } else {
+      // Dış Göz Kapağı
+      canvas.drawCircle(Offset(eyeX, eyeY), 18, bodyPaint);
+      canvas.drawCircle(Offset(eyeX, eyeY), 18, strokePaint);
 
-    // Göz bebeği göz akının dışına çıkmasın (maksimum 6 piksel kayabilir)
-    final double maxMove = 5.0;
-    final double moveX = dist > 0 ? (dx / dist) * min(dist, maxMove) : 0.0;
-    final double moveY = dist > 0 ? (dy / dist) * min(dist, maxMove) : 0.0;
+      // Göz akı
+      canvas.drawCircle(
+        Offset(eyeX, eyeY),
+        12,
+        Paint()
+          ..color = Colors.white.withOpacity(opacity)
+          ..style = PaintingStyle.fill,
+      );
 
-    canvas.drawCircle(
-      Offset(eyeX + moveX, eyeY + moveY),
-      5,
-      Paint()
-        ..color = const Color(0xFF233238).withOpacity(opacity)
-        ..style = PaintingStyle.fill,
-    );
+      // Pupil boyutu (surprised modda daha küçük/şaşkın gözbebeği)
+      final double pupilRadius = (expression == 'surprised') ? 3.0 : 5.0;
 
-    // Göz bebeği içi parıltı
-    canvas.drawCircle(
-      Offset(eyeX + moveX - 1.5, eyeY + moveY - 1.5),
-      1.5,
-      Paint()
-        ..color = Colors.white.withOpacity(opacity)
-        ..style = PaintingStyle.fill,
-    );
+      // Göz bebeği (Pupil) - lookTarget yönüne bakar
+      final double dx = lookTarget.dx - eyeX;
+      final double dy = lookTarget.dy - eyeY;
+      final double dist = sqrt(dx * dx + dy * dy);
+
+      // Göz bebeği göz akının dışına çıkmasın (maksimum 5 piksel kayabilir)
+      final double maxMove = 5.0;
+      final double moveX = dist > 0 ? (dx / dist) * min(dist, maxMove) : 0.0;
+      final double moveY = dist > 0 ? (dy / dist) * min(dist, maxMove) : 0.0;
+
+      canvas.drawCircle(
+        Offset(eyeX + moveX, eyeY + moveY),
+        pupilRadius,
+        Paint()
+          ..color = const Color(0xFF233238).withOpacity(opacity)
+          ..style = PaintingStyle.fill,
+      );
+
+      // Göz bebeği içi parıltı
+      canvas.drawCircle(
+        Offset(eyeX + moveX - 1.0, eyeY + moveY - 1.0),
+        1.0,
+        Paint()
+          ..color = Colors.white.withOpacity(opacity)
+          ..style = PaintingStyle.fill,
+      );
+    }
   }
 
   void _drawFlies(Canvas canvas) {

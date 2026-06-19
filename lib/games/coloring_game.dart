@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
 
 class ColoringPart {
   final String id;
@@ -82,6 +85,13 @@ class _ColoringGameState extends State<ColoringGame>
   int _storyStepIndex = 0;
   bool _storyCompleted = false;
 
+  // Görsel Rehber (Quality UX) Değişkenleri
+  bool _showGhostHand = false;
+  Offset? _ghostHandPosition;
+  bool _showCelebration = false;
+  Timer? _celebrationTimer;
+  late AnimationController _pulseAnimationController;
+
   static const List<StoryColoringStep> _storySteps = [
     StoryColoringStep(
       templateIndex: 1,
@@ -139,6 +149,11 @@ class _ColoringGameState extends State<ColoringGame>
     )..addListener(() {
       _updateParticles();
     });
+
+    _pulseAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
   }
 
   @override
@@ -150,7 +165,9 @@ class _ColoringGameState extends State<ColoringGame>
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _celebrationTimer?.cancel();
     _particleController.dispose();
+    _pulseAnimationController.dispose();
     super.dispose();
   }
 
@@ -312,6 +329,7 @@ class _ColoringGameState extends State<ColoringGame>
     }
 
     setState(() {
+      _showCelebration = true;
       if (_storyStepIndex == _storySteps.length - 1) {
         _storyCompleted = true;
       } else {
@@ -319,9 +337,57 @@ class _ColoringGameState extends State<ColoringGame>
       }
     });
 
+    _celebrationTimer?.cancel();
+    _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
+      if (mounted) {
+        setState(() {
+          _showCelebration = false;
+        });
+      }
+    });
+
     HapticFeedback.heavyImpact();
     AudioSynth.playSparkleSound();
     _spawnParticles(localPosition, step.accentColor);
+  }
+
+  void _onInactivity() {
+    if (mounted) {
+      setState(() {
+        _showGhostHand = true;
+        _ghostHandPosition = _getGhostHandPosition();
+      });
+    }
+  }
+
+  void _onActivity() {
+    if (_showGhostHand && mounted) {
+      setState(() {
+        _showGhostHand = false;
+      });
+    }
+  }
+
+  Offset? _getGhostHandPosition() {
+    final targets = _activeStoryTargets;
+    final template = _templates[_selectedTemplateIndex];
+    if (targets.isEmpty) {
+      // Serbest mod: boyanmamış ilk parçayı bul
+      for (var part in template.parts) {
+        if (part.color == Colors.white) {
+          return part.path.getBounds().center;
+        }
+      }
+      return null;
+    }
+
+    // Hikaye modu: boyanmamış ilk hedef parçayı bul
+    for (var part in template.parts) {
+      if (targets.contains(part.id) && part.color == Colors.white) {
+        return part.path.getBounds().center;
+      }
+    }
+    return null;
   }
 
   Offset _convertToVirtualPoint(Offset localPoint, Size size) {
@@ -487,175 +553,234 @@ class _ColoringGameState extends State<ColoringGame>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBEF),
-      body: SafeArea(
-        child: Row(
+      body: InactivityDetector(
+        enabled: !_storyCompleted,
+        onInactivity: _onInactivity,
+        onActivity: _onActivity,
+        child: Stack(
           children: [
-            // Left Column: Navigation & Templates Selection
-            Container(
-              width: 80,
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 4),
-                    BouncyButton(
-                      size: 48,
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
-                        size: 28,
-                        color: Color(0xFF5C5C5C),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...List.generate(_templates.length, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: _buildTemplateButton(index, _templates[index]),
-                      );
-                    }),
-                    const SizedBox(height: 4),
-                  ],
-                ),
-              ),
-            ),
-
-            // Middle Column: Drawing Board
-            Expanded(
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    width: 400,
-                    height: 400,
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(32),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      children: [
-                        // Clickable Custom Paint Canvas
-                        GestureDetector(
-                          key: const ValueKey('coloring-canvas-touch-area'),
-                          onTapUp: (details) {
-                            final RenderBox? canvasBox =
-                                _canvasKey.currentContext?.findRenderObject()
-                                    as RenderBox?;
-                            if (canvasBox != null) {
-                              final canvasLocalPos = canvasBox.globalToLocal(
-                                details.globalPosition,
-                              );
-                              final virtualPoint = _convertToVirtualPoint(
-                                canvasLocalPos,
-                                canvasBox.size,
-                              );
-                              _handleTap(virtualPoint, canvasLocalPos);
-                            }
-                          },
-                          child: CustomPaint(
-                            key: _canvasKey,
-                            size: Size.infinite,
-                            painter: ColoringPainter(
-                              _templates[_selectedTemplateIndex],
-                              highlightedPartIds: _activeStoryTargets,
+            SafeArea(
+              child: Row(
+                children: [
+                  // Left Column: Navigation & Templates Selection
+                  Container(
+                    width: 80,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 4),
+                          BouncyButton(
+                            size: 48,
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(
+                              Icons.arrow_back_rounded,
+                              size: 28,
+                              color: Color(0xFF5C5C5C),
                             ),
                           ),
-                        ),
-                        _buildStoryOverlay(),
-                        // Floating Particles Canvas (Unclickable)
-                        IgnorePointer(
-                          child: CustomPaint(
-                            size: Size.infinite,
-                            painter: ParticlePainter(_particles),
-                          ),
-                        ),
-                      ],
+                          const SizedBox(height: 12),
+                          ...List.generate(_templates.length, (index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: _buildTemplateButton(index, _templates[index]),
+                            );
+                          }),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
 
-            // Right Column: Palette & Trash
-            Container(
-              width: 100,
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 4),
-                    // Reset Button
-                    BouncyButton(
-                      size: 48,
-                      onTap: _resetCurrentTemplate,
-                      child: const Icon(
-                        Icons.refresh_rounded,
-                        size: 24,
-                        color: Color(0xFF5C5C5C),
+                  // Middle Column: Drawing Board
+                  Expanded(
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Container(
+                          width: 400,
+                          height: 400,
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(32),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              // Clickable Custom Paint Canvas
+                              GestureDetector(
+                                key: const ValueKey('coloring-canvas-touch-area'),
+                                onTapUp: (details) {
+                                  final RenderBox? canvasBox =
+                                      _canvasKey.currentContext?.findRenderObject()
+                                          as RenderBox?;
+                                  if (canvasBox != null) {
+                                    final canvasLocalPos = canvasBox.globalToLocal(
+                                      details.globalPosition,
+                                    );
+                                    final virtualPoint = _convertToVirtualPoint(
+                                      canvasLocalPos,
+                                      canvasBox.size,
+                                    );
+                                    _handleTap(virtualPoint, canvasLocalPos);
+                                  }
+                                },
+                                child: AnimatedBuilder(
+                                  animation: _pulseAnimationController,
+                                  builder: (context, child) {
+                                    return CustomPaint(
+                                      key: _canvasKey,
+                                      size: Size.infinite,
+                                      painter: ColoringPainter(
+                                        _templates[_selectedTemplateIndex],
+                                        highlightedPartIds: _activeStoryTargets,
+                                        pulseProgress: _pulseAnimationController.value,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              _buildStoryOverlay(),
+                              // Floating Particles Canvas (Unclickable)
+                              IgnorePointer(
+                                child: CustomPaint(
+                                  size: Size.infinite,
+                                  painter: ParticlePainter(_particles),
+                                ),
+                              ),
+                              if (_showGhostHand && _ghostHandPosition != null)
+                                GhostHandHint(
+                                  position: _ghostHandPosition!,
+                                  active: true,
+                                ),
+                              if (_storyCompleted)
+                                Positioned(
+                                  bottom: 16,
+                                  left: 16,
+                                  child: Container(
+                                    width: 120,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: const Color(0xFF2FA7A0), width: 3),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.1),
+                                          blurRadius: 6,
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(17),
+                                      child: CustomPaint(
+                                        painter: ChameleonPainter(
+                                          chameleonColor: const Color(0xFF2FA7A0),
+                                          tongueProgress: 0.0,
+                                          lookTarget: const Offset(200, 200),
+                                          flies: const [],
+                                          idleProgress: 0.0,
+                                          isCamouflaged: false,
+                                          chameleonPos: const Offset(60, 40),
+                                          expression: 'happy',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    // Colors Grid (2 columns Wrap)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      alignment: WrapAlignment.center,
-                      children: List.generate(_paletteColors.length, (index) {
-                        final color = _paletteColors[index];
-                        final isSelected = _selectedColor == color;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedColor = color;
-                            });
-                            HapticFeedback.selectionClick();
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
-                            width: isSelected ? 40 : 36,
-                            height: isSelected ? 40 : 36,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected ? Colors.black : Colors.white,
-                                width: isSelected ? 2.5 : 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.12),
-                                  blurRadius: 3,
-                                  offset: const Offset(0, 1.5),
-                                ),
-                              ],
+                  ),
+
+                  // Right Column: Palette & Trash
+                  Container(
+                    width: 100,
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 4),
+                          // Reset Button
+                          BouncyButton(
+                            size: 48,
+                            onTap: _resetCurrentTemplate,
+                            child: const Icon(
+                              Icons.refresh_rounded,
+                              size: 24,
+                              color: Color(0xFF5C5C5C),
                             ),
-                            child:
-                                color == Colors.white
-                                    ? Icon(
-                                      Icons.auto_fix_high_rounded,
-                                      size: isSelected ? 20 : 16,
-                                      color: Colors.grey.shade700,
-                                    )
-                                    : null,
                           ),
-                        );
-                      }),
+                          const SizedBox(height: 12),
+                          // Colors Grid (2 columns Wrap)
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            alignment: WrapAlignment.center,
+                            children: List.generate(_paletteColors.length, (index) {
+                              final color = _paletteColors[index];
+                              final isSelected = _selectedColor == color;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedColor = color;
+                                  });
+                                  HapticFeedback.selectionClick();
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 150),
+                                  width: isSelected ? 40 : 36,
+                                  height: isSelected ? 40 : 36,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? Colors.black : Colors.white,
+                                      width: isSelected ? 2.5 : 1.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.12),
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 1.5),
+                                      ),
+                                    ],
+                                  ),
+                                  child:
+                                      color == Colors.white
+                                          ? Icon(
+                                            Icons.auto_fix_high_rounded,
+                                            size: isSelected ? 20 : 16,
+                                            color: Colors.grey.shade700,
+                                          )
+                                          : null,
+                                ),
+                              );
+                            }),
+                          ),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
+            if (_showCelebration)
+              const Positioned.fill(
+                child: CelebrationEffect(active: true),
+              ),
           ],
         ),
       ),
@@ -1374,8 +1499,12 @@ class _ColoringGameState extends State<ColoringGame>
 class ColoringPainter extends CustomPainter {
   final ColoringTemplate template;
   final Set<String> highlightedPartIds;
+  final double pulseProgress;
 
-  ColoringPainter(this.template, {this.highlightedPartIds = const {}});
+  ColoringPainter(this.template, {
+    this.highlightedPartIds = const {},
+    this.pulseProgress = 0.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1409,11 +1538,16 @@ class ColoringPainter extends CustomPainter {
     }
 
     if (highlightedPartIds.isNotEmpty) {
+      // Glow border animates between 9.0 and 15.0 width
+      final double glowWidth = 9.0 + pulseProgress * 6.0;
+      // Border color pulses in opacity
+      final double glowOpacity = 0.5 + (1.0 - pulseProgress) * 0.5;
+
       final highlightPaint =
           Paint()
-            ..color = const Color(0xFFFFD13B)
+            ..color = const Color(0xFFFFD13B).withOpacity(glowOpacity)
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 12
+            ..strokeWidth = glowWidth
             ..strokeCap = StrokeCap.round
             ..strokeJoin = StrokeJoin.round;
 
@@ -1421,7 +1555,7 @@ class ColoringPainter extends CustomPainter {
           Paint()
             ..color = Colors.white
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 5
+            ..strokeWidth = 4.0 + pulseProgress * 2.0
             ..strokeCap = StrokeCap.round
             ..strokeJoin = StrokeJoin.round;
 
