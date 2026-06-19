@@ -12,7 +12,6 @@ import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
 import 'services/fullscreen_controller.dart';
 import 'services/progress_service.dart';
-import 'screens/kamo_journey_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,6 +103,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isParentUnlocked = false;
   bool _showFullscreenHint = false;
 
+  bool get _isCompact => MediaQuery.sizeOf(context).height < 400;
+
   void _openParentArea() {
     setState(() {
       _isParentUnlocked = true;
@@ -131,10 +132,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return ParentSafetyScreen(onBack: _closeParentArea);
     }
 
+    final compact = _isCompact;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: compact ? 16 : 32,
+            vertical: compact ? 8 : 10,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -142,27 +148,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '🎨 Sihirli Oyun Dünyası',
-                    style: TextStyle(
-                      color: Color(0xFF233238),
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '🎨 Sihirli Oyun Dünyası',
+                        style: TextStyle(
+                          color: const Color(0xFF233238),
+                          fontSize: compact ? 22 : 28,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 10),
                   Row(
                     children: [
                       IconButton.filledTonal(
                         key: const ValueKey('fullscreen-button'),
                         style: IconButton.styleFrom(
                           backgroundColor: const Color(0xFFFFF0BF),
-                          padding: const EdgeInsets.all(12),
+                          padding: EdgeInsets.all(compact ? 8 : 12),
                         ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.fullscreen_rounded,
-                          color: Color(0xFFFF9500),
-                          size: 30,
+                          color: const Color(0xFFFF9500),
+                          size: compact ? 24 : 30,
                         ),
                         onPressed: _enterFullscreen,
                       ),
@@ -171,12 +184,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         key: const ValueKey('parent-gate-button'),
                         style: IconButton.styleFrom(
                           backgroundColor: const Color(0xFFE6ECE8),
-                          padding: const EdgeInsets.all(12),
+                          padding: EdgeInsets.all(compact ? 8 : 12),
                         ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.shield_rounded,
-                          color: Color(0xFF2FA7A0),
-                          size: 28,
+                          color: const Color(0xFF2FA7A0),
+                          size: compact ? 22 : 28,
                         ),
                         onPressed: () {
                           showDialog<void>(
@@ -198,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
               if (_showFullscreenHint) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Container(
                   key: const ValueKey('fullscreen-hint'),
                   padding: const EdgeInsets.symmetric(
@@ -224,77 +237,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: 16),
-              // Kamo'nun Yolculuğu Banner
-              GestureDetector(
-                key: const ValueKey('kamo-journey-banner'),
-                onTap: () {
-                  AudioSynth.playSparkleSound();
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => const KamoJourneyScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF2FA7A0), Color(0xFF2ECC71)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF2FA7A0).withValues(alpha: 0.25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.map_rounded, color: Colors.white, size: 28),
-                      const SizedBox(width: 14),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Kamo'nun Yolculuğu",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                            Text(
-                              'Eğlenceli oyunları tamamla, yıldızları ve kupaları topla!',
-                              style: TextStyle(
-                                color: Color(0xFFE6ECE8),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 18),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               // Oyun Kartları Grid
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
+                    final compact = _isCompact;
                     return GridView.count(
                       crossAxisCount: 3,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      childAspectRatio: 1.35,
+                      crossAxisSpacing: compact ? 12 : 20,
+                      mainAxisSpacing: compact ? 12 : 20,
+                      childAspectRatio: compact ? 1.65 : 1.35,
                       physics: const BouncingScrollPhysics(),
                       children: [
                         _buildGameCard(
@@ -381,13 +334,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String title,
     required Widget gameWidget,
   }) {
+    final compact = _isCompact;
     return Material(
       color: Colors.white,
       elevation: 2,
       shadowColor: color.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: color.withValues(alpha: 0.3), width: 3),
-        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: color.withValues(alpha: 0.3), width: compact ? 2 : 3),
+        borderRadius: BorderRadius.circular(compact ? 16 : 24),
       ),
       child: InkWell(
         key: ValueKey('game-card-$key'),
@@ -398,27 +352,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
             MaterialPageRoute(builder: (context) => gameWidget),
           );
         },
-        borderRadius: BorderRadius.circular(21),
+        borderRadius: BorderRadius.circular(compact ? 13 : 21),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(compact ? 8 : 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(compact ? 8 : 16),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 48, color: color),
+                child: Icon(icon, size: compact ? 28 : 48, color: color),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: compact ? 6 : 12),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF233238),
-                  fontSize: 18,
+                style: TextStyle(
+                  color: const Color(0xFF233238),
+                  fontSize: compact ? 13 : 18,
                   fontWeight: FontWeight.w800,
                 ),
               ),

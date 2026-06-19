@@ -16,6 +16,8 @@ class MagicColorsGame extends StatefulWidget {
 
 class _MagicColorsGameState extends State<MagicColorsGame>
     with SingleTickerProviderStateMixin {
+  bool get _isCompact => MediaQuery.sizeOf(context).height < 400;
+
   // Oyun güncelleyici döngüsü
   late final AnimationController _tickerController;
   int _lastTimestamp = 0;
@@ -1199,88 +1201,87 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildMainMenu() {
+    final compact = _isCompact;
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2),
       body: Stack(
         children: [
           // Geri Dön Butonu
           Positioned(
-            top: 20,
-            left: 20,
+            top: compact ? 10 : 20,
+            left: compact ? 10 : 20,
             child: SafeArea(
               child: IconButton.filledTonal(
                 key: const ValueKey('magic-colors-back-button'),
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back_rounded, size: 28),
-                style: IconButton.styleFrom(padding: const EdgeInsets.all(12)),
+                icon: Icon(Icons.arrow_back_rounded, size: compact ? 22 : 28),
+                style: IconButton.styleFrom(padding: EdgeInsets.all(compact ? 8 : 12)),
               ),
             ),
           ),
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  '🧪 Sihirli Renk Laboratuvarı',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF233238),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: compact ? 12 : 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '🧪 Sihirli Renk Laboratuvarı',
+                    style: TextStyle(
+                      fontSize: compact ? 22 : 32,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF233238),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Bukalemun Kamo ile renklerin büyüleyici dünyasını keşfet!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF53666C),
+                  SizedBox(height: compact ? 4 : 12),
+                  Text(
+                    'Bukalemun Kamo ile renklerin büyüleyici dünyasını keşfet!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: compact ? 12 : 16,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF53666C),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                // Mod Seçenekleri
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildMenuCard(
-                      key: 'sandbox',
-                      emoji: '🎨',
-                      title: 'Serbest Laboratuvar',
-                      color: const Color(0xFFFF9500),
-                      onTap: _startSandboxMode,
-                    ),
-                    const SizedBox(width: 20),
-                    _buildMenuCard(
-                      key: 'camouflage',
-                      emoji: '🍃',
-                      title: 'Kamufle Ol!',
-                      color: const Color(0xFF4CAF50),
-                      onTap: _startCamouflageMode,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildMenuCard(
-                      key: 'flyhunt',
-                      emoji: '🦟',
-                      title: 'Sinek Avı',
-                      color: const Color(0xFF007AFF),
-                      onTap: _startFlyHuntMode,
-                    ),
-                    const SizedBox(width: 20),
-                    _buildMenuCard(
-                      key: 'coloring',
-                      emoji: '🖍️',
-                      title: 'Resim Defteri',
-                      color: const Color(0xFFFF2D55),
-                      onTap: _startColoringMode,
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(height: compact ? 12 : 32),
+                  // Mod Seçenekleri (Yan yana veya kısıtlı alanda scroll ile)
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: compact ? 12 : 20,
+                    runSpacing: compact ? 12 : 20,
+                    children: [
+                      _buildMenuCard(
+                        key: 'sandbox',
+                        emoji: '🎨',
+                        title: 'Serbest Laboratuvar',
+                        color: const Color(0xFFFF9500),
+                        onTap: _startSandboxMode,
+                      ),
+                      _buildMenuCard(
+                        key: 'camouflage',
+                        emoji: '🍃',
+                        title: 'Kamufle Ol!',
+                        color: const Color(0xFF4CAF50),
+                        onTap: _startCamouflageMode,
+                      ),
+                      _buildMenuCard(
+                        key: 'flyhunt',
+                        emoji: '🦟',
+                        title: 'Sinek Avı',
+                        color: const Color(0xFF007AFF),
+                        onTap: _startFlyHuntMode,
+                      ),
+                      _buildMenuCard(
+                        key: 'coloring',
+                        emoji: '🖍️',
+                        title: 'Resim Defteri',
+                        color: const Color(0xFFFF2D55),
+                        onTap: _startColoringMode,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -1295,12 +1296,13 @@ class _MagicColorsGameState extends State<MagicColorsGame>
     required Color color,
     required VoidCallback onTap,
   }) {
+    final compact = _isCompact;
     return Material(
       color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: color.withValues(alpha: 0.3), width: 3),
-        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: color.withValues(alpha: 0.3), width: compact ? 2 : 3),
+        borderRadius: BorderRadius.circular(compact ? 16 : 24),
       ),
       child: InkWell(
         key: ValueKey('magic-colors-mode-$key'),
@@ -1308,25 +1310,25 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           HapticFeedback.mediumImpact();
           onTap();
         },
-        borderRadius: BorderRadius.circular(21),
+        borderRadius: BorderRadius.circular(compact ? 14 : 21),
         child: Container(
-          width: 200,
-          height: 160,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          width: compact ? 150 : 200,
+          height: compact ? 100 : 160,
+          padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 12, vertical: compact ? 6 : 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 48)),
-              const SizedBox(height: 8),
+              Text(emoji, style: TextStyle(fontSize: compact ? 32 : 48)),
+              SizedBox(height: compact ? 4 : 8),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: compact ? 12 : 16,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF233238),
+                    color: const Color(0xFF233238),
                   ),
                 ),
               ),
@@ -1437,8 +1439,12 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildInteractivePanel() {
+    final compact = _isCompact;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 10 : 16,
+        vertical: compact ? 4 : 8,
+      ),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -1452,17 +1458,19 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 6),
+          SizedBox(height: compact ? 3 : 6),
           // Yönerge Kutusu
           _buildInstructionBox(),
-          const SizedBox(height: 8),
+          SizedBox(height: compact ? 4 : 8),
 
-          // Seçili Moda Göre İlgili Arayüz
+          // Seçili Moda Göre İlgili Arayüz (Taşmayı önlemek için SingleChildScrollView)
           Expanded(
-            child:
-                _currentMode == 'coloring'
-                    ? _buildColoringCanvas()
-                    : _buildLabFlaskMixing(),
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: _currentMode == 'coloring'
+                  ? _buildColoringCanvas()
+                  : _buildLabFlaskMixing(),
+            ),
           ),
         ],
       ),
@@ -1470,6 +1478,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildInstructionBox() {
+    final compact = _isCompact;
     String title = '';
     String sub = '';
     Color boxColor = const Color(0xFFFF9500);
@@ -1494,11 +1503,14 @@ class _MagicColorsGameState extends State<MagicColorsGame>
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 8 : 12,
+        vertical: compact ? 4 : 6,
+      ),
       decoration: BoxDecoration(
         color: boxColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: boxColor.withValues(alpha: 0.4), width: 2.5),
+        borderRadius: BorderRadius.circular(compact ? 12 : 16),
+        border: Border.all(color: boxColor.withValues(alpha: 0.4), width: compact ? 1.5 : 2.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1506,7 +1518,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           Text(
             title,
             style: TextStyle(
-              fontSize: 15,
+              fontSize: compact ? 12 : 15,
               fontWeight: FontWeight.w900,
               color: boxColor,
             ),
@@ -1514,10 +1526,10 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           const SizedBox(height: 2),
           Text(
             sub,
-            style: const TextStyle(
-              fontSize: 11,
+            style: TextStyle(
+              fontSize: compact ? 9 : 11,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF53666C),
+              color: const Color(0xFF53666C),
             ),
           ),
         ],
@@ -1526,7 +1538,9 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildLabFlaskMixing() {
+    final compact = _isCompact;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Yıldız Zamanlayıcı Barı (Sadece Kamufle Ol Modunda)
         if (_currentMode == 'camouflage') ...[
@@ -1538,7 +1552,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
                     value: _starTimer,
-                    minHeight: 8,
+                    minHeight: compact ? 6 : 8,
                     backgroundColor: const Color(0xFFE6ECE8),
                     color:
                         _starTimer > 0.6
@@ -1551,18 +1565,19 @@ class _MagicColorsGameState extends State<MagicColorsGame>
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: compact ? 4 : 8),
         ],
 
-        // Laboratuvar Kabı ve Karışan Renkler
-        Expanded(
+        // Laboratuvar Kabı ve Karışan Renkler (Scroll içinde Expanded olmaması için Padding & Row)
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: compact ? 6.0 : 12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Laboratuvar Kabı Görseli (Beaker)
               Container(
-                width: 90,
-                height: 100,
+                width: compact ? 65 : 90,
+                height: compact ? 70 : 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.only(
@@ -1571,7 +1586,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                     bottomLeft: Radius.circular(32),
                     bottomRight: Radius.circular(32),
                   ),
-                  border: Border.all(color: const Color(0xFF2FA7A0), width: 4),
+                  border: Border.all(color: const Color(0xFF2FA7A0), width: compact ? 3 : 4),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFF2FA7A0).withValues(alpha: 0.15),
@@ -1590,7 +1605,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                           bottomRight: Radius.circular(28),
                         ),
                         child: Container(
-                          height: 30.0 * _beakerSlots.length,
+                          height: (compact ? 20.0 : 30.0) * _beakerSlots.length,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color:
@@ -1609,19 +1624,19 @@ class _MagicColorsGameState extends State<MagicColorsGame>
 
                     // Köpürme baloncukları
                     if (_beakerSlots.isNotEmpty)
-                      const Positioned(
-                        top: 35,
-                        child: Text('🫧', style: TextStyle(fontSize: 16)),
+                      Positioned(
+                        top: compact ? 20 : 35,
+                        child: Text('🫧', style: TextStyle(fontSize: compact ? 12 : 16)),
                       ),
 
-                    const Positioned(
-                      top: 8,
+                    Positioned(
+                      top: compact ? 4 : 8,
                       child: Text(
                         'LAB',
                         style: TextStyle(
-                          color: Color(0xFF2FA7A0),
+                          color: const Color(0xFF2FA7A0),
                           fontWeight: FontWeight.w900,
-                          fontSize: 11,
+                          fontSize: compact ? 9 : 11,
                         ),
                       ),
                     ),
@@ -1629,76 +1644,77 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                 ),
               ),
 
-              const SizedBox(width: 16),
+              SizedBox(width: compact ? 8 : 16),
 
               // Slot Yuvaları ve Kontroller
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
+                  Text(
                     'Karışım Slotları:',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: compact ? 10 : 12,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF53666C),
+                      color: const Color(0xFF53666C),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: compact ? 2 : 4),
                   Row(
                     children: [
                       _buildSlotTile(0),
-                      const SizedBox(width: 8),
-                      const Text(
+                      SizedBox(width: compact ? 4 : 8),
+                      Text(
                         '+',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: compact ? 12 : 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: compact ? 4 : 8),
                       _buildSlotTile(1),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: compact ? 4 : 8),
                   Row(
                     children: [
                       ElevatedButton.icon(
                         key: const ValueKey('magic-colors-clear-button'),
                         onPressed: _beakerSlots.isEmpty ? null : _clearBeaker,
-                        icon: const Icon(Icons.delete_outline, size: 14),
-                        label: const Text(
+                        icon: Icon(Icons.delete_outline, size: compact ? 11 : 14),
+                        label: Text(
                           'Temizle',
-                          style: TextStyle(fontSize: 11),
+                          style: TextStyle(fontSize: compact ? 9 : 11),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF2D55),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: compact ? 6 : 10,
+                            vertical: compact ? 4 : 6,
                           ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: compact ? 4 : 8),
                       ElevatedButton.icon(
                         key: const ValueKey('magic-colors-mix-button'),
                         onPressed: _beakerSlots.isEmpty ? null : _mixBeaker,
-                        icon: const Icon(Icons.science, size: 14),
-                        label: const Text(
+                        icon: Icon(Icons.science, size: compact ? 11 : 14),
+                        label: Text(
                           'Karıştır!',
-                          style: TextStyle(fontSize: 11),
+                          style: TextStyle(fontSize: compact ? 9 : 11),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF4CAF50),
                           foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey[200],
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: compact ? 6 : 10,
+                            vertical: compact ? 4 : 6,
                           ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1712,6 +1728,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           ),
         ),
 
+        SizedBox(height: compact ? 4 : 8),
         // Alt Palet (Renk Tüpleri)
         _buildPaletteRow(),
       ],
@@ -1720,18 +1737,19 @@ class _MagicColorsGameState extends State<MagicColorsGame>
 
   Widget _buildSlotTile(int index) {
     final bool filled = _beakerSlots.length > index;
+    final compact = _isCompact;
     return Container(
-      width: 42,
-      height: 42,
+      width: compact ? 32 : 42,
+      height: compact ? 32 : 42,
       decoration: BoxDecoration(
         color: filled ? _beakerSlots[index]['color'] : Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(compact ? 8 : 12),
         border: Border.all(
           color:
               filled
                   ? Colors.white
                   : const Color(0xFF2FA7A0).withValues(alpha: 0.3),
-          width: 2.5,
+          width: compact ? 1.8 : 2.5,
         ),
         boxShadow: [
           if (filled)
@@ -1746,7 +1764,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
         child: Text(
           filled ? '' : '?',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: compact ? 12 : 16,
             fontWeight: FontWeight.bold,
             color: Colors.grey[400],
           ),
@@ -1756,14 +1774,18 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildPaletteRow() {
+    final compact = _isCompact;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: EdgeInsets.symmetric(
+        vertical: compact ? 4 : 6,
+        horizontal: compact ? 8 : 12,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFBF2),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(compact ? 12 : 16),
         border: Border.all(
           color: const Color(0xFFFFCC00).withValues(alpha: 0.3),
-          width: 2,
+          width: compact ? 1.5 : 2,
         ),
       ),
       child: Row(
@@ -1776,8 +1798,8 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                 child: Column(
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: compact ? 30 : 40,
+                      height: compact ? 30 : 40,
                       decoration: BoxDecoration(
                         color: e.value,
                         shape: BoxShape.circle,
@@ -1786,7 +1808,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                               e.key == 'Beyaz'
                                   ? Colors.grey[300]!
                                   : Colors.white,
-                          width: 2.5,
+                          width: compact ? 1.8 : 2.5,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -1800,10 +1822,10 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                     const SizedBox(height: 2),
                     Text(
                       e.key,
-                      style: const TextStyle(
-                        fontSize: 10,
+                      style: TextStyle(
+                        fontSize: compact ? 8 : 10,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF233238),
+                        color: const Color(0xFF233238),
                       ),
                     ),
                   ],
@@ -1815,50 +1837,52 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   Widget _buildColoringCanvas() {
+    final compact = _isCompact;
     // Resim Defteri Modunun Çizim Alanı
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          child: Center(
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Container(
-                width: 320,
-                height: 240,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFFF2D55).withValues(alpha: 0.3),
-                    width: 4,
+        SizedBox(
+          height: compact ? 150 : 240,
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Container(
+              width: 320,
+              height: 240,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: const Color(0xFFFF2D55).withValues(alpha: 0.3),
+                  width: 4,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children:
-                      _coloringParts.map((part) {
-                        return GestureDetector(
-                          onTap: () => _onColoringPartTapped(part),
-                          child: CustomPaint(
-                            painter: PartPainter(part: part),
-                            size: const Size(320, 240),
-                          ),
-                        );
-                      }).toList(),
-                ),
+                ],
+              ),
+              child: Stack(
+                children:
+                    _coloringParts.map((part) {
+                      return GestureDetector(
+                        onTap: () => _onColoringPartTapped(part),
+                        child: CustomPaint(
+                          painter: PartPainter(part: part),
+                          size: const Size(320, 240),
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
           ),
         ),
 
+        SizedBox(height: compact ? 4 : 8),
         // Alt tarafa laboratuvar karıştırma paletini küçük şekilde gömüyoruz
         Container(
-          padding: const EdgeInsets.all(6),
+          padding: EdgeInsets.all(compact ? 4 : 6),
           decoration: BoxDecoration(
             color: Colors.grey[50],
             borderRadius: BorderRadius.circular(16),
@@ -1868,14 +1892,14 @@ class _MagicColorsGameState extends State<MagicColorsGame>
             children: [
               ElevatedButton.icon(
                 onPressed: _clearBeaker,
-                icon: const Icon(Icons.delete_outline, size: 12),
-                label: const Text('Sil', style: TextStyle(fontSize: 10)),
+                icon: Icon(Icons.delete_outline, size: compact ? 10 : 12),
+                label: Text('Sil', style: TextStyle(fontSize: compact ? 9 : 10)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF2D55),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact ? 6 : 8,
+                    vertical: compact ? 3 : 4,
                   ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1885,23 +1909,23 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                 return InkWell(
                   onTap: () => _addPaintToBeaker(e.key, e.value),
                   child: Container(
-                    width: 28,
-                    height: 28,
+                    width: compact ? 22 : 28,
+                    height: compact ? 22 : 28,
                     decoration: BoxDecoration(
                       color: e.value,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(color: Colors.white, width: compact ? 1.5 : 2),
                     ),
                   ),
                 );
               }),
               IconButton.filledTonal(
                 onPressed: _mixBeaker,
-                icon: const Icon(Icons.science, size: 14),
+                icon: Icon(Icons.science, size: compact ? 12 : 14),
                 style: IconButton.styleFrom(
                   backgroundColor: const Color(0xFF4CAF50),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(compact ? 4 : 6),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),

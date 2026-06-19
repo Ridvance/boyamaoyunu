@@ -886,7 +886,37 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
   });
+
+  testWidgets('magic colors works in compact landscape layout height < 400 without overflow', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(640, 320);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.text('🧪 Sihirli Renk Laboratuvarı'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mode-sandbox')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Kırmızı')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('magic-colors-tube-Sarı')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mix-button')));
+    await tester.pump();
+
+    expect(find.text('Turuncu'), findsWidgets);
+  });
 }
+
 
 Future<void> tapColoringCanvasAt(
   WidgetTester tester,
