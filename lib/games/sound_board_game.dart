@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'dart:async';
 
@@ -29,6 +30,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
   late final AnimationController _hintController;
   String _kamoExpression = 'neutral';
   Timer? _kamoReactionTimer;
+  int _interactionCount = 0;
 
   bool get showHint => _showHint;
   String get kamoExpression => _kamoExpression;
@@ -152,6 +154,11 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
       HapticFeedback.mediumImpact();
     } else {
       HapticFeedback.heavyImpact();
+    }
+
+    _interactionCount++;
+    if (_interactionCount >= 5) {
+      ProgressService.instance.completeLevel('sounds', 0);
     }
   }
 

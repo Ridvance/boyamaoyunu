@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'package:flutter/foundation.dart'; // for Key in ChameleonFly
 import 'dart:async';
@@ -387,6 +388,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
       _isCelebrationActive = true;
       _kamoExpression = 'happy';
     });
+    ProgressService.instance.completeLevel('tracing', 1);
     _kamoReactionTimer?.cancel();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {

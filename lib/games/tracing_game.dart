@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 
 /// Şablon Tipleri
@@ -442,6 +443,7 @@ class _TracingGameState extends State<TracingGame>
       _isCompleted = true;
       _showHint = false;
       _hintController.stop();
+      ProgressService.instance.completeLevel('tracing', 0);
       _triggerSuccess();
     }
   }

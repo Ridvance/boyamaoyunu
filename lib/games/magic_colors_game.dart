@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import 'magic_colors/chameleon_painter.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 
 class MagicColorsGame extends StatefulWidget {
   const MagicColorsGame({super.key});
@@ -481,6 +482,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       if (isSuccess) {
         _setKamoExpression('happy', delay: const Duration(seconds: 3));
         _showCelebration = true;
+        ProgressService.instance.completeLevel('colors', 1);
         _celebrationTimer?.cancel();
         _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
           if (mounted) {
@@ -745,6 +747,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           _triggerCelebration();
           _setKamoExpression('happy', delay: const Duration(seconds: 3));
           _showCelebration = true;
+          ProgressService.instance.completeLevel('colors', 1);
           _celebrationTimer?.cancel();
           _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
             if (mounted) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'dart:async';
 
@@ -162,6 +163,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
 
       if (_isAllDone) {
         _isCelebrationActive = true;
+        ProgressService.instance.completeLevel('habits', 0);
         _celebrationTimer?.cancel();
         _celebrationTimer = Timer(const Duration(seconds: 3), () {
           if (mounted) {

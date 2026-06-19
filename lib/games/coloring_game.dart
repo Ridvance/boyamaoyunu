@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 
 class ColoringPart {
@@ -332,6 +333,7 @@ class _ColoringGameState extends State<ColoringGame>
       _showCelebration = true;
       if (_storyStepIndex == _storySteps.length - 1) {
         _storyCompleted = true;
+        ProgressService.instance.completeLevel('colors', 0);
       } else {
         _storyStepIndex += 1;
       }

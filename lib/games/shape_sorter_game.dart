@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'dart:async';
 
@@ -879,6 +880,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
       _kamoExpression = 'happy';
       _levelNumber++;
     });
+    ProgressService.instance.completeLevel('shapes', 0);
     _kamoReactionTimer?.cancel();
     AudioSynth.playSparkleSound();
 

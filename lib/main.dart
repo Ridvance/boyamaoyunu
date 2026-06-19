@@ -11,13 +11,17 @@ import 'games/habits_game.dart';
 import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
 import 'services/fullscreen_controller.dart';
+import 'services/progress_service.dart';
+import 'screens/kamo_journey_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+  // Initialize offline progress storage
+  await ProgressService.instance.init();
   // Preload all synthesized sounds asynchronously in the background
   AudioSynth.preloadAllSounds();
   runApp(const CocukOyunApp());
@@ -220,7 +224,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
+              // Kamo'nun Yolculuğu Banner
+              GestureDetector(
+                key: const ValueKey('kamo-journey-banner'),
+                onTap: () {
+                  AudioSynth.playSparkleSound();
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const KamoJourneyScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF2FA7A0), Color(0xFF2ECC71)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2FA7A0).withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.map_rounded, color: Colors.white, size: 28),
+                      const SizedBox(width: 14),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Kamo'nun Yolculuğu",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            Text(
+                              'Eğlenceli oyunları tamamla, yıldızları ve kupaları topla!',
+                              style: TextStyle(
+                                color: Color(0xFFE6ECE8),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 18),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               // Oyun Kartları Grid
               Expanded(
                 child: LayoutBuilder(
