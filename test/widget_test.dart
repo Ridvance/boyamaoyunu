@@ -6,6 +6,7 @@ import 'package:cocuk_oyun/games/magic_colors/chameleon_painter.dart';
 import 'package:cocuk_oyun/services/guidance_widgets.dart';
 import 'package:cocuk_oyun/games/shape_sorter_game.dart';
 import 'package:cocuk_oyun/games/sound_board_game.dart';
+import 'package:cocuk_oyun/games/habits_game.dart';
 
 void main() {
   testWidgets(
@@ -643,6 +644,178 @@ void main() {
     // Wait 700ms for Kamo happy duration (600ms) to end and return to neutral
     await tester.pump(const Duration(milliseconds: 700));
     expect(state.kamoExpression, equals('neutral'));
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('habits game inactivity triggers GhostHandHint on active button', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-habits')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Trigger activity by tapping on reset button
+    await tester.tap(find.byKey(const ValueKey('habits-reset-button')));
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('habits game task completion triggers Kamo happy expression', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-habits')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(HabitsGame));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Tap on the active action button
+    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
+    await tester.pump();
+
+    // Kamo should be happy
+    expect(state.kamoExpression, equals('happy'));
+
+    // Wait 1.3 seconds for Kamo happy duration (1.2s) to end and return to neutral
+    await tester.pump(const Duration(milliseconds: 1300));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('habits game tapping completed task triggers Kamo surprised expression and soft wrong feedback', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-habits')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(HabitsGame));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Complete the first task
+    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
+    await tester.pump();
+
+    // Wait for happy reaction to finish (1.3 seconds)
+    await tester.pump(const Duration(milliseconds: 1300));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Tap the completed progress tile (toys)
+    await tester.tap(find.byKey(const ValueKey('habit-progress-toys')));
+    await tester.pump();
+
+    // Kamo should be surprised
+    expect(state.kamoExpression, equals('surprised'));
+
+    // Wait 1.3 seconds for Kamo surprised duration (1.2s) to end and return to neutral
+    await tester.pump(const Duration(milliseconds: 1300));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('habits game all tasks complete triggers temporary celebration effect and permanent Kamo happy', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-habits')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-habits')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(HabitsGame));
+    expect(state.kamoExpression, equals('neutral'));
+    expect(state.isCelebrationActive, isFalse);
+
+    // Complete all 3 tasks
+    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('habit-action-teeth')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('habit-action-trash')));
+    await tester.pump();
+
+    // Celebration should be active and Kamo should be happy
+    expect(state.isCelebrationActive, isTrue);
+    expect(state.kamoExpression, equals('happy'));
+
+    // Wait 3.5 seconds (celebration lasts 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(state.isCelebrationActive, isFalse);
+    // Kamo should remain permanently happy
+    expect(state.kamoExpression, equals('happy'));
 
     // Pop the route
     await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);

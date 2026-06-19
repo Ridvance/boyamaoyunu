@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
+import 'dart:async';
 
 class HabitTask {
   final String id;
@@ -25,7 +28,7 @@ class HabitsGame extends StatefulWidget {
   State<HabitsGame> createState() => _HabitsGameState();
 }
 
-class _HabitsGameState extends State<HabitsGame> {
+class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
   static const List<HabitTask> _tasks = [
     HabitTask(
       id: 'toys',
@@ -56,11 +59,119 @@ class _HabitsGameState extends State<HabitsGame> {
   HabitTask get _activeTask => _tasks[_activeTaskIndex];
   bool get _isAllDone => _completedTaskIds.length == _tasks.length;
 
+  bool _showHint = false;
+  Offset _hintPosition = Offset.zero;
+  late final AnimationController _hintController;
+  final GlobalKey _actionButtonKey = GlobalKey();
+
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+
+  bool _isCelebrationActive = false;
+  Timer? _celebrationTimer;
+  late final List<StreamController<void>> _wiggleControllers;
+
+  bool get showHint => _showHint;
+  String get kamoExpression => _isAllDone ? 'happy' : _kamoExpression;
+  bool get isCelebrationActive => _isCelebrationActive;
+
+  @override
+  void initState() {
+    super.initState();
+    _wiggleControllers = List.generate(
+      _tasks.length,
+      (_) => StreamController<void>.broadcast(),
+    );
+
+    _hintController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..addListener(() {
+        if (_showHint) {
+          final startCenter = _getWidgetLocalCenter(_actionButtonKey);
+          if (startCenter != null) {
+            setState(() {
+              _hintPosition = startCenter;
+            });
+          }
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _hintController.dispose();
+    _kamoReactionTimer?.cancel();
+    _celebrationTimer?.cancel();
+    for (final controller in _wiggleControllers) {
+      controller.close();
+    }
+    super.dispose();
+  }
+
+  Offset? _getWidgetLocalCenter(GlobalKey key) {
+    final context = key.currentContext;
+    if (context == null) return null;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return null;
+
+    final globalCenter = renderBox.localToGlobal(
+      Offset(renderBox.size.width / 2, renderBox.size.height / 2),
+    );
+
+    final parentBox = this.context.findRenderObject() as RenderBox?;
+    if (parentBox == null) return null;
+    return parentBox.globalToLocal(globalCenter);
+  }
+
+  void _triggerKamoHappy() {
+    _kamoReactionTimer?.cancel();
+    setState(() {
+      _kamoExpression = 'happy';
+    });
+    _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        setState(() {
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
+  }
+
+  void _triggerKamoSurprised() {
+    _kamoReactionTimer?.cancel();
+    setState(() {
+      _kamoExpression = 'surprised';
+    });
+    _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        setState(() {
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
+  }
+
   void _completeActiveTask() {
     final task = _activeTask;
     setState(() {
       _completedTaskIds.add(task.id);
-      if (!_isAllDone) {
+      _showHint = false;
+      _hintController.stop();
+      _hintController.reset();
+
+      if (_isAllDone) {
+        _isCelebrationActive = true;
+        _celebrationTimer?.cancel();
+        _celebrationTimer = Timer(const Duration(seconds: 3), () {
+          if (mounted) {
+            setState(() {
+              _isCelebrationActive = false;
+            });
+          }
+        });
+      } else {
+        _triggerKamoHappy();
         final nextIndex = _tasks.indexWhere(
           (item) => !_completedTaskIds.contains(item.id),
         );
@@ -72,8 +183,19 @@ class _HabitsGameState extends State<HabitsGame> {
   }
 
   void _selectTask(int index) {
+    final task = _tasks[index];
+    if (_completedTaskIds.contains(task.id)) {
+      _wiggleControllers[index].add(null);
+      _triggerKamoSurprised();
+      HapticFeedback.lightImpact();
+      return;
+    }
+
     setState(() {
       _activeTaskIndex = index;
+      _showHint = false;
+      _hintController.stop();
+      _hintController.reset();
     });
     HapticFeedback.selectionClick();
   }
@@ -82,6 +204,13 @@ class _HabitsGameState extends State<HabitsGame> {
     setState(() {
       _completedTaskIds.clear();
       _activeTaskIndex = 0;
+      _showHint = false;
+      _isCelebrationActive = false;
+      _kamoExpression = 'neutral';
+      _kamoReactionTimer?.cancel();
+      _celebrationTimer?.cancel();
+      _hintController.stop();
+      _hintController.reset();
     });
     HapticFeedback.lightImpact();
   }
@@ -90,69 +219,147 @@ class _HabitsGameState extends State<HabitsGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  IconButton.filledTonal(
-                    key: const ValueKey('habits-back-button'),
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back_rounded, size: 28),
-                  ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Text(
-                      'İyi Alışkanlıklar',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFF233238),
-                      ),
-                    ),
-                  ),
-                  IconButton.filledTonal(
-                    key: const ValueKey('habits-reset-button'),
-                    onPressed: _resetTasks,
-                    icon: const Icon(Icons.refresh_rounded, size: 24),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: List.generate(_tasks.length, (index) {
-                  final task = _tasks[index];
-                  final isDone = _completedTaskIds.contains(task.id);
-                  final isActive = index == _activeTaskIndex;
-
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: _HabitProgressTile(
-                        key: ValueKey('habit-progress-${task.id}'),
-                        task: task,
-                        isDone: isDone,
-                        isActive: isActive,
-                        onTap: () => _selectTask(index),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child:
-                    _isAllDone
-                        ? const _HabitsCompletePanel()
-                        : _HabitTaskPanel(
-                          task: _activeTask,
-                          onComplete: _completeActiveTask,
+      body: InactivityDetector(
+        enabled: !_isAllDone,
+        onActivity: () {
+          if (_showHint) {
+            setState(() {
+              _showHint = false;
+              _hintController.stop();
+              _hintController.reset();
+            });
+          }
+        },
+        onInactivity: () {
+          if (!_isAllDone) {
+            setState(() {
+              _showHint = true;
+              _hintController.repeat();
+            });
+          }
+        },
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton.filledTonal(
+                          key: const ValueKey('habits-back-button'),
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back_rounded, size: 28),
                         ),
+                        const SizedBox(width: 16),
+                        const Expanded(
+                          child: Text(
+                            'İyi Alışkanlıklar',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF233238),
+                            ),
+                          ),
+                        ),
+                        IconButton.filledTonal(
+                          key: const ValueKey('habits-reset-button'),
+                          onPressed: _resetTasks,
+                          icon: const Icon(Icons.refresh_rounded, size: 24),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: List.generate(_tasks.length, (index) {
+                        final task = _tasks[index];
+                        final isDone = _completedTaskIds.contains(task.id);
+                        final isActive = index == _activeTaskIndex;
+
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: SoftWrongFeedback(
+                              triggerStream: _wiggleControllers[index].stream,
+                              child: _HabitProgressTile(
+                                key: ValueKey('habit-progress-${task.id}'),
+                                task: task,
+                                isDone: isDone,
+                                isActive: isActive,
+                                onTap: () => _selectTask(index),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: _isAllDone
+                          ? const _HabitsCompletePanel()
+                          : _HabitTaskPanel(
+                              task: _activeTask,
+                              onComplete: _completeActiveTask,
+                              actionButtonKey: _actionButtonKey,
+                              showHint: _showHint,
+                            ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+
+            if (_showHint && _hintPosition != Offset.zero)
+              GhostHandHint(
+                position: _hintPosition,
+                active: true,
+              ),
+
+            CelebrationEffect(active: _isCelebrationActive),
+
+            Positioned(
+              bottom: 16,
+              left: _isAllDone ? null : 16,
+              right: _isAllDone ? 16 : null,
+              child: IgnorePointer(
+                child: Container(
+                  width: 90,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFF2FA7A0).withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: CustomPaint(
+                      painter: ChameleonPainter(
+                        chameleonColor: const Color(0xFF2FA7A0),
+                        tongueProgress: 0.0,
+                        lookTarget: const Offset(200, 200),
+                        flies: const [],
+                        idleProgress: 0.0,
+                        isCamouflaged: false,
+                        chameleonPos: const Offset(45, 30),
+                        expression: kamoExpression,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -176,10 +383,9 @@ class _HabitProgressTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color:
-          isDone
-              ? const Color(0xFF10B981)
-              : isActive
+      color: isDone
+          ? const Color(0xFF10B981)
+          : isActive
               ? task.color
               : Colors.white,
       borderRadius: BorderRadius.circular(18),
@@ -202,8 +408,15 @@ class _HabitProgressTile extends StatelessWidget {
 class _HabitTaskPanel extends StatelessWidget {
   final HabitTask task;
   final VoidCallback onComplete;
+  final GlobalKey actionButtonKey;
+  final bool showHint;
 
-  const _HabitTaskPanel({required this.task, required this.onComplete});
+  const _HabitTaskPanel({
+    required this.task,
+    required this.onComplete,
+    required this.actionButtonKey,
+    required this.showHint,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -243,18 +456,24 @@ class _HabitTaskPanel extends StatelessWidget {
               child: Semantics(
                 button: true,
                 label: task.title,
-                child: Material(
+                child: PulseTarget(
+                  active: showHint,
                   color: task.color,
-                  borderRadius: BorderRadius.circular(32),
-                  child: InkWell(
-                    key: ValueKey('habit-action-${task.id}'),
-                    onTap: onComplete,
+                  baseSize: 160.0,
+                  child: Material(
+                    key: actionButtonKey,
+                    color: task.color,
                     borderRadius: BorderRadius.circular(32),
-                    child: Center(
-                      child: Icon(
-                        task.actionIcon,
-                        color: Colors.white,
-                        size: 160,
+                    child: InkWell(
+                      key: ValueKey('habit-action-${task.id}'),
+                      onTap: onComplete,
+                      borderRadius: BorderRadius.circular(32),
+                      child: Center(
+                        child: Icon(
+                          task.actionIcon,
+                          color: Colors.white,
+                          size: 160,
+                        ),
                       ),
                     ),
                   ),
