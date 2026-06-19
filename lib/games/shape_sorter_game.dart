@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
+import 'dart:async';
 
 // Şekil tipleri
 enum ShapeType {
@@ -655,6 +658,21 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
     Color(0xFF00D2D3), // Turkuaz
   ];
 
+  // Görsel Yönlendirme ve Kamo Değişkenleri
+  bool _showHint = false;
+  Offset _hintPosition = Offset.zero;
+  late final AnimationController _hintController;
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+  final List<StreamController<void>> _wiggleControllers = List.generate(4, (_) => StreamController<void>.broadcast());
+
+  List<ShapeItem> get leftItems => _leftItems;
+  List<ShapeItem> get rightItems => _rightItems;
+  int get matchesThisLevel => _matchesThisLevel;
+  bool get isCelebrationActive => _isCelebrationActive;
+  String get kamoExpression => _kamoExpression;
+  int get levelNumber => _levelNumber;
+
   @override
   void initState() {
     super.initState();
@@ -663,17 +681,49 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
       duration: const Duration(milliseconds: 1000),
     )..addListener(_updateConfetti);
 
+    _hintController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..addListener(() {
+      if (_showHint && _leftItems.isNotEmpty && _rightItems.isNotEmpty) {
+        final targetItem = _leftItems.cast<ShapeItem?>().firstWhere(
+          (item) => item != null && !item.isPlaced,
+          orElse: () => null,
+        );
+        if (targetItem != null) {
+          final targetSlot = _rightItems.cast<ShapeItem?>().firstWhere(
+            (slot) => slot != null && slot.type == targetItem.type,
+            orElse: () => null,
+          );
+          if (targetSlot != null) {
+            final startCenter = _getWidgetLocalCenter(targetItem.key);
+            final endCenter = _getWidgetLocalCenter(targetSlot.key);
+            if (startCenter != null && endCenter != null) {
+              setState(() {
+                _hintPosition = Offset.lerp(startCenter, endCenter, _hintController.value)!;
+              });
+            }
+          }
+        }
+      }
+    });
+
     _generateNewLevel();
   }
 
   @override
   void dispose() {
     _celebrationController.dispose();
+    _hintController.dispose();
+    _kamoReactionTimer?.cancel();
     for (var anim in _returningShapes) {
       anim.dispose();
     }
     for (var effect in _sparkles) {
       effect.dispose();
+    }
+    for (var c in _wiggleControllers) {
+      c.close();
     }
     super.dispose();
   }
@@ -719,6 +769,27 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
         _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
     final RenderBox? itemBox =
         item.key.currentContext?.findRenderObject() as RenderBox?;
+
+    // Trigger wrong feedback wiggle on the item
+    final idx = _leftItems.indexOf(item);
+    if (idx != -1) {
+      _wiggleControllers[idx].add(null);
+    }
+
+    if (!_isCelebrationActive) {
+      setState(() {
+        _kamoExpression = 'surprised';
+      });
+      _kamoReactionTimer?.cancel();
+      _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+        if (mounted) {
+          setState(() {
+            _kamoExpression = _isCelebrationActive ? 'happy' : 'neutral';
+          });
+        }
+      });
+    }
+
     if (playAreaBox == null || itemBox == null) {
       setState(() {
         item.isDragging = false;
@@ -805,8 +876,10 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
   void _startCelebration() {
     setState(() {
       _isCelebrationActive = true;
+      _kamoExpression = 'happy';
       _levelNumber++;
     });
+    _kamoReactionTimer?.cancel();
     AudioSynth.playSparkleSound();
 
     final random = Random();
@@ -837,6 +910,7 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
         _celebrationController.stop();
         setState(() {
           _isCelebrationActive = false;
+          _kamoExpression = 'neutral';
           _confetti.clear();
         });
         _generateNewLevel();
@@ -874,67 +948,84 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
   Widget _buildLeftItem(ShapeItem item) {
     final bool shouldShowShape =
         !item.isPlaced && !item.isReturning && !item.isDragging;
+    final int idx = _leftItems.indexOf(item);
+    final bool isTarget = _showHint &&
+        !_isCelebrationActive &&
+        _leftItems.firstWhere((i) => !i.isPlaced, orElse: () => _leftItems.first) == item;
 
-    return Padding(
-      padding: const EdgeInsets.all(_itemPadding),
-      child: Container(
-        key: item.key,
-        width: _itemContainerSize,
-        height: _itemContainerSize,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.6),
-            width: 2,
-          ),
+    Widget leftContent = Container(
+      key: item.key,
+      width: _itemContainerSize,
+      height: _itemContainerSize,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.6),
+          width: 2,
         ),
-        child: Center(
-          child:
-              shouldShowShape
-                  ? Draggable<ShapeType>(
-                    data: item.type,
-                    feedback: Transform.scale(
-                      scale: 1.15,
-                      child: Opacity(
-                        opacity: 0.85,
-                        child: ShapeWidget(
-                          type: item.type,
-                          color: item.color,
-                          size: _shapeSize,
-                        ),
-                      ),
-                    ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.1,
-                      child: ShapeWidget(
-                        type: item.type,
-                        color: item.color,
-                        size: _shapeSize,
-                      ),
-                    ),
-                    onDragStarted: () {
-                      setState(() {
-                        item.isDragging = true;
-                      });
-                    },
-                    onDragEnd: (details) {
-                      setState(() {
-                        item.isDragging = false;
-                      });
-                    },
-                    onDraggableCanceled: (velocity, offset) {
-                      _handleDragCancel(item, offset);
-                    },
+      ),
+      child: Center(
+        child: shouldShowShape
+            ? Draggable<ShapeType>(
+                data: item.type,
+                feedback: Transform.scale(
+                  scale: 1.15,
+                  child: Opacity(
+                    opacity: 0.85,
                     child: ShapeWidget(
                       type: item.type,
                       color: item.color,
                       size: _shapeSize,
                     ),
-                  )
-                  : Container(),
-        ),
+                  ),
+                ),
+                childWhenDragging: Opacity(
+                  opacity: 0.1,
+                  child: ShapeWidget(
+                    type: item.type,
+                    color: item.color,
+                    size: _shapeSize,
+                  ),
+                ),
+                onDragStarted: () {
+                  setState(() {
+                    item.isDragging = true;
+                  });
+                },
+                onDragEnd: (details) {
+                  setState(() {
+                    item.isDragging = false;
+                  });
+                },
+                onDraggableCanceled: (velocity, offset) {
+                  _handleDragCancel(item, offset);
+                },
+                child: PulseTarget(
+                  active: isTarget,
+                  color: item.color,
+                  baseSize: _shapeSize,
+                  child: ShapeWidget(
+                    type: item.type,
+                    color: item.color,
+                    size: _shapeSize,
+                  ),
+                ),
+              )
+            : Container(),
       ),
+    );
+
+    if (idx != -1) {
+      leftContent = SoftWrongFeedback(
+        triggerStream: _wiggleControllers[idx].stream,
+        child: leftContent,
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(_itemPadding),
+      child: leftContent,
     );
   }
 
@@ -954,6 +1045,19 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
               (left) => left.type == item.type,
             );
             leftItem.isPlaced = true;
+
+            // Kamo tepkisi
+            if (!_isCelebrationActive) {
+              _kamoExpression = 'happy';
+              _kamoReactionTimer?.cancel();
+              _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+                if (mounted) {
+                  setState(() {
+                    _kamoExpression = _isCelebrationActive ? 'happy' : 'neutral';
+                  });
+                }
+              });
+            }
           });
           AudioSynth.playRaindropSound();
 
@@ -1071,138 +1175,236 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final bool kamoOnLeft = _isKamoOnLeft();
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFFFFDF5), Color(0xFFE8F4FD)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: InactivityDetector(
+        duration: const Duration(seconds: 3),
+        onInactivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = true;
+            });
+            _hintController.repeat();
+          }
+        },
+        onActivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = false;
+            });
+            _hintController.stop();
+            _hintController.reset();
+          }
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFFFFDF5), Color(0xFFE8F4FD)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 16,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: Center(
-                  child: Container(
-                    key: const ValueKey('shape-sorter-level-badge'),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.86),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: const Color(0xFF2FA7A0),
-                        width: 3,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 16,
+                left: 0,
+                right: 0,
+                child: SafeArea(
+                  child: Center(
+                    child: Container(
+                      key: const ValueKey('shape-sorter-level-badge'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
                       ),
-                    ),
-                    child: Text(
-                      'Bölüm $_levelNumber  •  $_matchesThisLevel / ${_rightItems.length}',
-                      style: const TextStyle(
-                        color: Color(0xFF233238),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        decoration: TextDecoration.none,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.86),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFF2FA7A0),
+                          width: 3,
+                        ),
+                      ),
+                      child: Text(
+                        'Bölüm $_levelNumber  •  $_matchesThisLevel / ${_rightItems.length}',
+                        style: const TextStyle(
+                          color: Color(0xFF233238),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // Oyun Alanı (Yatay yerleşim)
-            SafeArea(
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: SizedBox(
-                    key: _playAreaKey,
-                    width: 600,
-                    height: 260,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Row(
-                          children: [
-                            // Sol Bölüm (2x2 Renkli Şekiller)
-                            Expanded(child: Center(child: _buildLeftGrid())),
+              // Oyun Alanı (Yatay yerleşim)
+              SafeArea(
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: SizedBox(
+                      key: _playAreaKey,
+                      width: 600,
+                      height: 260,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Row(
+                            children: [
+                              // Sol Bölüm (2x2 Renkli Şekiller)
+                              Expanded(child: Center(child: _buildLeftGrid())),
 
-                            // Orta İkon / Süreç Belirteci (Sevimli bir yıldız)
-                            Container(
-                              width: 80,
-                              alignment: Alignment.center,
-                              child: const Icon(
-                                Icons.star_rounded,
-                                size: 40,
-                                color: Colors.white54,
-                              ),
-                            ),
-
-                            // Sağ Bölüm (2x2 Gölgeler)
-                            Expanded(child: Center(child: _buildRightGrid())),
-                          ],
-                        ),
-
-                        // Yumuşak Geri Dönüş Animasyonu Katmanı
-                        ..._returningShapes.map((anim) {
-                          return AnimatedBuilder(
-                            animation: anim.animation,
-                            builder: (context, child) {
-                              return Positioned(
-                                left: anim.animation.value.dx,
-                                top: anim.animation.value.dy,
-                                child: IgnorePointer(
-                                  child: ShapeWidget(
-                                    type: anim.type,
-                                    color: anim.color,
-                                    size: _shapeSize,
-                                  ),
+                              // Orta İkon / Süreç Belirteci (Sevimli bir yıldız)
+                              Container(
+                                width: 80,
+                                alignment: Alignment.center,
+                                child: const Icon(
+                                  Icons.star_rounded,
+                                  size: 40,
+                                  color: Colors.white54,
                                 ),
-                              );
-                            },
-                          );
-                        }),
+                              ),
 
-                        // Parıldama (Sparkle) Efekti Katmanı
-                        if (_sparkles.isNotEmpty)
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: CustomPaint(
-                                painter: SparklePainter(_sparkles),
+                              // Sağ Bölüm (2x2 Gölgeler)
+                              Expanded(child: Center(child: _buildRightGrid())),
+                            ],
+                          ),
+
+                          // GhostHandHint
+                          if (_showHint && !_isCelebrationActive)
+                            GhostHandHint(
+                              position: _hintPosition,
+                              active: true,
+                            ),
+
+                          // Yumuşak Geri Dönüş Animasyonu Katmanı
+                          ..._returningShapes.map((anim) {
+                            return AnimatedBuilder(
+                              animation: anim.animation,
+                              builder: (context, child) {
+                                return Positioned(
+                                  left: anim.animation.value.dx,
+                                  top: anim.animation.value.dy,
+                                  child: IgnorePointer(
+                                    child: ShapeWidget(
+                                      type: anim.type,
+                                      color: anim.color,
+                                      size: _shapeSize,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }),
+
+                          // Parıldama (Sparkle) Efekti Katmanı
+                          if (_sparkles.isNotEmpty)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: CustomPaint(
+                                  painter: SparklePainter(_sparkles),
+                                ),
                               ),
                             ),
-                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Geri Butonu
+              Positioned(
+                top: 16,
+                left: 16,
+                child: SafeArea(
+                  child: CuteBackButton(onPressed: () => Navigator.pop(context)),
+                ),
+              ),
+
+              // Kutlama Konfeti Katmanı
+              if (_isCelebrationActive)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: CustomPaint(painter: ConfettiPainter(_confetti)),
+                  ),
+                ),
+
+              // Kutlama Görsel Efekti
+              if (_isCelebrationActive)
+                IgnorePointer(
+                  child: CelebrationEffect(active: _isCelebrationActive),
+                ),
+
+              // Kamo Maskot Kartı
+              Positioned(
+                bottom: 16,
+                left: kamoOnLeft ? 16 : null,
+                right: kamoOnLeft ? null : 16,
+                child: IgnorePointer(
+                  child: Container(
+                    width: 90,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFF2FA7A0).withValues(alpha: 0.5),
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
                       ],
                     ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: CustomPaint(
+                        painter: ChameleonPainter(
+                          chameleonColor: const Color(0xFF2FA7A0),
+                          tongueProgress: 0.0,
+                          lookTarget: const Offset(200, 200),
+                          flies: const [],
+                          idleProgress: 0.0,
+                          isCamouflaged: false,
+                          chameleonPos: const Offset(45, 30),
+                          expression: _kamoExpression,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-
-            // Geri Butonu
-            Positioned(
-              top: 16,
-              left: 16,
-              child: SafeArea(
-                child: CuteBackButton(onPressed: () => Navigator.pop(context)),
-              ),
-            ),
-
-            // Kutlama Konfeti Katmanı
-            if (_isCelebrationActive)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: CustomPaint(painter: ConfettiPainter(_confetti)),
-                ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Offset? _getWidgetLocalCenter(GlobalKey key) {
+    final RenderBox? playAreaBox =
+        _playAreaKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? widgetBox =
+        key.currentContext?.findRenderObject() as RenderBox?;
+    if (playAreaBox == null || widgetBox == null) return null;
+
+    final globalCenter = widgetBox.localToGlobal(
+      Offset(widgetBox.size.width / 2, widgetBox.size.height / 2),
+    );
+    return playAreaBox.globalToLocal(globalCenter);
+  }
+
+  bool _isKamoOnLeft() {
+    if (_rightItems.length > 3 && !_rightItems[3].isPlaced) {
+      return true;
+    }
+    return false;
   }
 }

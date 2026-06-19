@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cocuk_oyun/main.dart';
 import 'package:cocuk_oyun/games/magic_colors/chameleon_painter.dart';
 import 'package:cocuk_oyun/services/guidance_widgets.dart';
+import 'package:cocuk_oyun/games/shape_sorter_game.dart';
 
 void main() {
   testWidgets(
@@ -454,6 +455,128 @@ void main() {
 
     // Double tap back button to exit
     await tester.tap(backBtn);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('shape sorter game inactivity triggers GhostHandHint and PulseTarget, and interaction hides it', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-shape_sorter')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Trigger an activity by tapping the level badge to reset inactivity
+    await tester.tap(find.byKey(const ValueKey('shape-sorter-level-badge')));
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Pop the route
+    expect(find.byIcon(Icons.arrow_back_rounded), findsAtLeast(1));
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('shape sorter game drag cancel triggers Kamo surprised expression and wiggle feedback', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-shape_sorter')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final draggableFinder = find.byType(Draggable<ShapeType>);
+    expect(draggableFinder, findsWidgets);
+
+    // Cancel drag by dropping in blank space
+    final gesture = await tester.startGesture(tester.getCenter(draggableFinder.first));
+    await gesture.moveBy(const Offset(0, -100));
+    await gesture.up();
+    await tester.pump();
+
+    final chameleonFinder = find.byWidgetPredicate(
+      (widget) => widget is CustomPaint && widget.painter is ChameleonPainter,
+    );
+    expect(chameleonFinder, findsOneWidget);
+    final kamoPainter = (tester.widget<CustomPaint>(chameleonFinder).painter) as ChameleonPainter;
+    expect(kamoPainter.expression, equals('surprised'));
+
+    // Wait for the surprised expression timer to end
+    await tester.pump(const Duration(milliseconds: 1300));
+    final kamoPainterAfter = (tester.widget<CustomPaint>(chameleonFinder).painter) as ChameleonPainter;
+    expect(kamoPainterAfter.expression, equals('neutral'));
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('shape sorter game correct drop updates score and advances level', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-shape_sorter')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(ShapeSorterGame));
+    final List<dynamic> leftItems = state.leftItems;
+    final List<dynamic> rightItems = state.rightItems;
+
+    expect(state.matchesThisLevel, equals(0));
+
+    // Match all 4 shapes to trigger level completion
+    for (int i = 0; i < 4; i++) {
+      final unplacedLeft = leftItems.firstWhere((item) => !item.isPlaced);
+      final matchingRight = rightItems.firstWhere((item) => item.type == unplacedLeft.type);
+
+      final sourceFinder = find.byKey(unplacedLeft.key as Key);
+      final targetFinder = find.byKey(matchingRight.key as Key);
+
+      final gesture = await tester.startGesture(tester.getCenter(sourceFinder));
+      await gesture.moveTo(tester.getCenter(targetFinder));
+      await gesture.up();
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+
+    expect(state.isCelebrationActive, isTrue);
+    expect(state.kamoExpression, equals('happy'));
+
+    await tester.pump(const Duration(seconds: 4));
+    expect(state.isCelebrationActive, isFalse);
+    expect(state.levelNumber, equals(2));
+    expect(state.matchesThisLevel, equals(0));
+
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
   });
