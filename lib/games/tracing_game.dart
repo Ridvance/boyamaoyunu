@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
 
 /// Şablon Tipleri
 enum ShapeType { circle, star, house, square, heart, triangle, diamond, wave }
@@ -91,9 +93,14 @@ class _TracingGameState extends State<TracingGame>
   Size _canvasSize = Size.zero;
 
   // İpucu el animasyonu için durumlar
-  Timer? _hintTimer;
   bool _showHint = false;
   Offset _hintPosition = Offset.zero;
+
+  // Kamo Maskot Durumu
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+  final StreamController<void> _wrongFeedbackController = StreamController<void>.broadcast();
+  DateTime? _lastWrongFeedbackTime;
 
   // Canvas Key
   final GlobalKey _canvasKey = GlobalKey();
@@ -124,23 +131,30 @@ class _TracingGameState extends State<TracingGame>
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
 
-    // İpucu Eli Kontrolcüsü (çizgi boyu hareket)
+    // İpucu Eli Kontrolcüsü (çizgi boyu segment hareketi)
     _hintController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 3),
     )..addListener(() {
       if (_showHint && _dots.isNotEmpty) {
-        setState(() {
-          // İpucu elinin konumunu güncelle
-          final double progress = _hintController.value;
-          final int index = (progress * (_dots.length - 1)).round();
-          _hintPosition = _dots[index].position;
-        });
+        final int startIndex = _dots.indexWhere((d) => !d.isTraced);
+        if (startIndex != -1) {
+          final int remaining = _dots.length - startIndex;
+          final int segmentLength = min(25, remaining);
+          if (segmentLength > 1) {
+            setState(() {
+              final double progress = _hintController.value;
+              final int index = startIndex + (progress * (segmentLength - 1)).round();
+              _hintPosition = _dots[index].position;
+            });
+          } else {
+            setState(() {
+              _hintPosition = _dots[startIndex].position;
+            });
+          }
+        }
       }
     });
-
-    // İpucu timer'ını başlat
-    _resetHintTimer();
   }
 
   void _initTemplates() {
@@ -290,25 +304,9 @@ class _TracingGameState extends State<TracingGame>
     _particleController.dispose();
     _pulseController.dispose();
     _hintController.dispose();
-    _hintTimer?.cancel();
+    _kamoReactionTimer?.cancel();
+    _wrongFeedbackController.close();
     super.dispose();
-  }
-
-  // Kullanıcı hareketsiz kaldığında tetiklenecek ipucu zamanlayıcısı
-  void _resetHintTimer() {
-    _hintTimer?.cancel();
-    if (_isCompleted) return;
-
-    _showHint = false;
-    _hintController.stop();
-
-    _hintTimer = Timer(const Duration(seconds: 4), () {
-      if (!mounted || _isCompleted) return;
-      setState(() {
-        _showHint = true;
-        _hintController.repeat();
-      });
-    });
   }
 
   // Canvas boyutunu aldığımızda veya şablon değiştiğinde noktacıkları oluştururuz
@@ -365,7 +363,6 @@ class _TracingGameState extends State<TracingGame>
   // Parmak hareketini takip etme
   void _onPanUpdate(DragUpdateDetails details) {
     if (_isCompleted) return;
-    _resetHintTimer();
 
     final RenderBox? renderBox =
         _canvasKey.currentContext?.findRenderObject() as RenderBox?;
@@ -375,10 +372,14 @@ class _TracingGameState extends State<TracingGame>
     bool updated = false;
     // Çocukların parmakları için toleranslı mesafe (40 piksel)
     const double touchThreshold = 40.0;
+    double minDistance = double.infinity;
 
     setState(() {
       for (var dot in _dots) {
         final dist = (dot.position - localPosition).distance;
+        if (dist < minDistance) {
+          minDistance = dist;
+        }
         if (dist < touchThreshold) {
           if (!dot.isTraced) {
             dot.isTraced = true;
@@ -393,13 +394,38 @@ class _TracingGameState extends State<TracingGame>
       }
     });
 
+    // Check if the user is significantly off-path (deviation threshold 110.0 pixels)
+    if (minDistance > 110.0 && minDistance != double.infinity) {
+      final now = DateTime.now();
+      if (_lastWrongFeedbackTime == null ||
+          now.difference(_lastWrongFeedbackTime!) > const Duration(milliseconds: 1500)) {
+        _lastWrongFeedbackTime = now;
+        _triggerWrongFeedback();
+      }
+    }
+
     if (updated) {
       _checkProgress();
     }
   }
 
+  void _triggerWrongFeedback() {
+    _wrongFeedbackController.add(null);
+    HapticFeedback.lightImpact();
+    setState(() {
+      _kamoExpression = 'surprised';
+    });
+    _kamoReactionTimer?.cancel();
+    _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        setState(() {
+          _kamoExpression = _isCompleted ? 'happy' : 'neutral';
+        });
+      }
+    });
+  }
+
   void _onPanEnd(DragEndDetails details) {
-    _resetHintTimer();
     setState(() {
       for (var dot in _dots) {
         dot.scale = 1.0;
@@ -414,7 +440,6 @@ class _TracingGameState extends State<TracingGame>
 
     if (progress >= 0.98 && !_isCompleted) {
       _isCompleted = true;
-      _hintTimer?.cancel();
       _showHint = false;
       _hintController.stop();
       _triggerSuccess();
@@ -424,6 +449,11 @@ class _TracingGameState extends State<TracingGame>
   void _triggerSuccess() {
     HapticFeedback.heavyImpact();
     AudioSynth.playSparkleSound();
+
+    setState(() {
+      _kamoExpression = 'happy';
+    });
+
     // Yıldız patlaması oluşturma
     final random = Random();
     final template = _templates[_currentTemplateIndex];
@@ -466,24 +496,33 @@ class _TracingGameState extends State<TracingGame>
     setState(() {
       _currentTemplateIndex = index;
       _isCompleted = false;
+      _kamoExpression = 'neutral';
       _particles.clear();
     });
     if (_canvasSize != Size.zero) {
       _buildDots(_canvasSize);
     }
-    _resetHintTimer();
   }
 
   void _resetCurrent() {
     setState(() {
       _isCompleted = false;
+      _kamoExpression = 'neutral';
       _particles.clear();
       for (var dot in _dots) {
         dot.isTraced = false;
         dot.scale = 1.0;
       }
     });
-    _resetHintTimer();
+  }
+
+  bool _isKamoOnLeft() {
+    if (_isCompleted) return true; // Next button is on the right
+    if (_dots.isEmpty) return false;
+    final int startIndex = _dots.indexWhere((d) => !d.isTraced);
+    if (startIndex == -1) return false;
+    final double canvasWidth = _canvasSize.width > 0 ? _canvasSize.width : 500.0;
+    return _dots[startIndex].position.dx > (canvasWidth * 0.5);
   }
 
   void _nextTemplate() {
@@ -518,220 +557,286 @@ class _TracingGameState extends State<TracingGame>
     final double successButtonSize = isShortHeight ? 60 : 80;
     final double successIconSize = isShortHeight ? 32 : 46;
 
+    bool kamoOnLeft = _isKamoOnLeft();
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE8F5E9), // Hafif yeşil/mavi pastel tonları
-              Color(0xFFC8E6C9),
-            ],
+      body: InactivityDetector(
+        duration: const Duration(seconds: 3),
+        onInactivity: () {
+          if (mounted && !_isCompleted) {
+            setState(() {
+              _showHint = true;
+              _hintController.repeat();
+            });
+          }
+        },
+        onActivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = false;
+              _hintController.stop();
+              _hintController.reset();
+            });
+          }
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFE8F5E9), // Hafif yeşil/mavi pastel tonları
+                Color(0xFFC8E6C9),
+              ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              // 1. Çizim Alanı (Merkez) - FittedBox inside Center with Padding
-              Positioned.fill(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: isShortHeight ? 40.0 : 80.0,
-                      bottom: isShortHeight ? 12.0 : 32.0,
-                      left: isShortHeight ? 80.0 : 32.0,
-                      right: isShortHeight ? 80.0 : 32.0,
-                    ),
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: SizedBox(
-                        width: 500,
-                        height: 500,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final size = Size(
-                              constraints.maxWidth,
-                              constraints.maxHeight,
-                            );
-                            if (_canvasSize != size) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                if (mounted) _buildDots(size);
-                              });
-                            }
-                            return GestureDetector(
-                              key: _canvasKey,
-                              onPanStart: (details) => _resetHintTimer(),
-                              onPanUpdate: _onPanUpdate,
-                              onPanEnd: _onPanEnd,
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: CustomPaint(
-                                      size: size,
-                                      painter: TracingPainter(
-                                        dots: _dots,
-                                        particles: _particles,
-                                        themeColor: currentTemplate.themeColor,
-                                        isCompleted: _isCompleted,
-                                      ),
-                                    ),
-                                  ),
-                                  // 7. İpucu Eli (Tutorial Hand)
-                                  if (_showHint && !_isCompleted)
-                                    Positioned(
-                                      left: _hintPosition.dx - 24,
-                                      top: _hintPosition.dy - 24,
-                                      child: IgnorePointer(
-                                        child: AnimatedBuilder(
-                                          animation: _pulseController,
-                                          builder: (context, child) {
-                                            return Transform.scale(
-                                              scale:
-                                                  1.0 +
-                                                  (_pulseController.value *
-                                                      0.15),
-                                              child: child,
-                                            );
-                                          },
-                                          child: Icon(
-                                            Icons.touch_app_rounded,
-                                            size: 48,
-                                            color: currentTemplate.themeColor
-                                                .withValues(alpha: 0.8),
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withValues(
-                                                  alpha: 0.3,
-                                                ),
-                                                blurRadius: 8,
-                                                offset: const Offset(2, 2),
-                                              ),
-                                            ],
+          child: SafeArea(
+            child: Stack(
+              children: [
+                // 1. Çizim Alanı (Merkez) - FittedBox inside Center with Padding
+                Positioned.fill(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: isShortHeight ? 40.0 : 80.0,
+                        bottom: isShortHeight ? 12.0 : 32.0,
+                        left: isShortHeight ? 80.0 : 32.0,
+                        right: isShortHeight ? 80.0 : 32.0,
+                      ),
+                      child: SoftWrongFeedback(
+                        triggerStream: _wrongFeedbackController.stream,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: SizedBox(
+                            width: 500,
+                            height: 500,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final size = Size(
+                                  constraints.maxWidth,
+                                  constraints.maxHeight,
+                                );
+                                if (_canvasSize != size) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    if (mounted) _buildDots(size);
+                                  });
+                                }
+                                return GestureDetector(
+                                  key: _canvasKey,
+                                  onPanUpdate: _onPanUpdate,
+                                  onPanEnd: _onPanEnd,
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned.fill(
+                                        child: CustomPaint(
+                                          size: size,
+                                          painter: TracingPainter(
+                                            dots: _dots,
+                                            particles: _particles,
+                                            themeColor: currentTemplate.themeColor,
+                                            isCompleted: _isCompleted,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
+                                      // 7. PulseTarget & İpucu Eli (Tutorial Hand)
+                                      if (_showHint && !_isCompleted && _dots.isNotEmpty) ...[
+                                        () {
+                                          final int startIndex = _dots.indexWhere((d) => !d.isTraced);
+                                          if (startIndex != -1) {
+                                            final Offset pulsePos = _dots[startIndex].position;
+                                            return Positioned(
+                                              left: pulsePos.dx - 28,
+                                              top: pulsePos.dy - 28,
+                                              child: const IgnorePointer(
+                                                child: PulseTarget(
+                                                  active: true,
+                                                  color: Colors.amber,
+                                                  baseSize: 56.0,
+                                                  child: SizedBox(width: 56, height: 56),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        }(),
+                                        GhostHandHint(
+                                          position: _hintPosition,
+                                          active: _showHint && !_isCompleted,
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
-              // 2. İlerleme Çubuğu (Gökkuşağı / Şeker Barı) - Üst Orta
-              Positioned(
-                top: progressBarTop,
-                left: 120,
-                right: 120,
-                child: Center(
-                  child: _buildProgressBar(
-                    currentTemplate.themeColor,
-                    progressBarWidth,
-                    progressBarHeight,
-                  ),
-                ),
-              ),
-
-              // 3. Sol Üst Geri Butonu (En az 48x48 veya 68x68 dp)
-              Positioned(
-                top: iconButtonPadding,
-                left: iconButtonPadding,
-                child: _buildIconButton(
-                  icon: Icons.arrow_back_rounded,
-                  color: Colors.redAccent,
-                  size: iconButtonSize,
-                  iconSize: iconSize,
-                  onTap: () {
-                    HapticFeedback.mediumImpact();
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-
-              // 4. Sağ Üst Yenileme (Reset) Butonu
-              Positioned(
-                top: iconButtonPadding,
-                right: iconButtonPadding,
-                child: _buildIconButton(
-                  icon: Icons.refresh_rounded,
-                  color: Colors.orangeAccent,
-                  size: iconButtonSize,
-                  iconSize: iconSize,
-                  onTap: () {
-                    HapticFeedback.mediumImpact();
-                    _resetCurrent();
-                  },
-                ),
-              ),
-
-              // 5. Sol Orta - Şablon Seçim Barı (Dikey Panel) - Centered vertically
-              Positioned(
-                left: templateBarLeft,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: templateBarPaddingVertical,
-                      horizontal: templateBarPaddingHorizontal,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.85),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(_templates.length, (index) {
-                        final temp = _templates[index];
-                        final isSelected = index == _currentTemplateIndex;
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: isShortHeight ? 4.0 : 8.0,
-                          ),
-                          child: _buildTemplateSelector(
-                            temp,
-                            index,
-                            isSelected,
-                            isShortHeight,
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-
-              // 6. Başarı Durumunda Sağda Beliren Zıplayan "Sonraki" Butonu
-              if (_isCompleted)
+                // Kamo Maskot Kartı (küçük ve müdahalesiz, IgnorePointer ile korumalı)
                 Positioned(
-                  right: successButtonRight,
-                  bottom: successButtonBottom,
-                  child: ScaleTransition(
-                    scale: Tween<double>(begin: 0.9, end: 1.1).animate(
-                      CurvedAnimation(
-                        parent: _pulseController,
-                        curve: Curves.easeInOut,
+                  bottom: 16,
+                  left: kamoOnLeft ? 16 : null,
+                  right: kamoOnLeft ? null : 16,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 90,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: currentTemplate.themeColor.withOpacity(0.5),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                    ),
-                    child: _buildSuccessNextButton(
-                      successButtonSize,
-                      successIconSize,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: CustomPaint(
+                          painter: ChameleonPainter(
+                            chameleonColor: const Color(0xFF2FA7A0),
+                            tongueProgress: 0.0,
+                            lookTarget: const Offset(200, 200),
+                            flies: const [],
+                            idleProgress: 0.0,
+                            isCamouflaged: false,
+                            chameleonPos: const Offset(45, 30),
+                            expression: _kamoExpression,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-            ],
+
+                // 2. İlerleme Çubuğu (Gökkuşağı / Şeker Barı) - Üst Orta
+                Positioned(
+                  top: progressBarTop,
+                  left: 120,
+                  right: 120,
+                  child: Center(
+                    child: _buildProgressBar(
+                      currentTemplate.themeColor,
+                      progressBarWidth,
+                      progressBarHeight,
+                    ),
+                  ),
+                ),
+
+                // 3. Sol Üst Geri Butonu (En az 48x48 veya 68x68 dp)
+                Positioned(
+                  top: iconButtonPadding,
+                  left: iconButtonPadding,
+                  child: _buildIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    color: Colors.redAccent,
+                    size: iconButtonSize,
+                    iconSize: iconSize,
+                    onTap: () {
+                      HapticFeedback.mediumImpact();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+
+                // 4. Sağ Üst Yenileme (Reset) Butonu
+                Positioned(
+                  top: iconButtonPadding,
+                  right: iconButtonPadding,
+                  child: _buildIconButton(
+                    icon: Icons.refresh_rounded,
+                    color: Colors.orangeAccent,
+                    size: iconButtonSize,
+                    iconSize: iconSize,
+                    onTap: () {
+                      HapticFeedback.mediumImpact();
+                      _resetCurrent();
+                    },
+                  ),
+                ),
+
+                // 5. Sol Orta - Şablon Seçim Barı (Dikey Panel) - Centered vertically
+                Positioned(
+                  left: templateBarLeft,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: templateBarPaddingVertical,
+                        horizontal: templateBarPaddingHorizontal,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(_templates.length, (index) {
+                          final temp = _templates[index];
+                          final isSelected = index == _currentTemplateIndex;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: isShortHeight ? 4.0 : 8.0,
+                            ),
+                            child: _buildTemplateSelector(
+                              temp,
+                              index,
+                              isSelected,
+                              isShortHeight,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 6. Başarı Durumunda Sağda Beliren Zıplayan "Sonraki" Butonu
+                if (_isCompleted)
+                  Positioned(
+                    right: successButtonRight,
+                    bottom: successButtonBottom,
+                    child: ScaleTransition(
+                      scale: Tween<double>(begin: 0.9, end: 1.1).animate(
+                        CurvedAnimation(
+                          parent: _pulseController,
+                          curve: Curves.easeInOut,
+                        ),
+                      ),
+                      child: _buildSuccessNextButton(
+                        successButtonSize,
+                        successIconSize,
+                      ),
+                    ),
+                  ),
+
+                // Kutlama konfetisi (seviye/şablon tamamlandığında)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: CelebrationEffect(active: _isCompleted),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -390,6 +390,73 @@ void main() {
       await tester.pump();
     }
   });
+
+  testWidgets('tracing game inactivity triggers GhostHandHint and interaction hides it', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-tracing')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsWidgets);
+
+    // Perform an activity (e.g. tap on the reset/refresh button to hide hint)
+    await tester.tap(find.byIcon(Icons.refresh_rounded));
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('balloon pop game inactivity triggers GhostHandHint on active balloon', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-balloon_pop')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsWidgets);
+
+    // Tap on the back button to show exit tooltip, which should reset inactivity
+    final backBtn = find.byKey(const ValueKey('balloon-game-back-button'));
+    await tester.tap(backBtn);
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Double tap back button to exit
+    await tester.tap(backBtn);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
 }
 
 Future<void> tapColoringCanvasAt(

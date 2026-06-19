@@ -2,6 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
+import 'package:flutter/foundation.dart'; // for Key in ChameleonFly
+import 'dart:async';
 
 class BalloonPopGame extends StatefulWidget {
   const BalloonPopGame({super.key});
@@ -30,6 +34,14 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   // Son güncelleme zamanı
   int _lastTimestamp = 0;
 
+  // Görsel Kalite / Kamo Değişkenleri
+  bool _showHint = false;
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+  Timer? _exitTooltipTimer;
+  final StreamController<void> _wrongFeedbackController = StreamController<void>.broadcast();
+  bool _isCelebrationActive = false;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +57,9 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   @override
   void dispose() {
     _tickerController.dispose();
+    _kamoReactionTimer?.cancel();
+    _exitTooltipTimer?.cancel();
+    _wrongFeedbackController.close();
     super.dispose();
   }
 
@@ -249,6 +264,26 @@ class _BalloonPopGameState extends State<BalloonPopGame>
     // Çocuk ekranda boş yere dokunursa da hafif bir dalga efekti oluşturabiliriz
     if (!poppedAny) {
       _triggerRipple(touchPoint);
+      _triggerWrongFeedback();
+    }
+  }
+
+  void _triggerWrongFeedback() {
+    _wrongFeedbackController.add(null);
+    HapticFeedback.lightImpact();
+    // Only set Kamo to surprised if not currently celebrating or happy
+    if (_kamoExpression == 'neutral' && !_isCelebrationActive) {
+      setState(() {
+        _kamoExpression = 'surprised';
+      });
+      _kamoReactionTimer?.cancel();
+      _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+        if (mounted) {
+          setState(() {
+            _kamoExpression = _isCelebrationActive ? 'happy' : 'neutral';
+          });
+        }
+      });
     }
   }
 
@@ -319,14 +354,48 @@ class _BalloonPopGameState extends State<BalloonPopGame>
       );
     }
 
+    // Kamo Tepki Mantığı: Özel balonda veya her 5 balonda bir 1.2s sevinç
+    final bool isSpecial = balloon.isSpecial;
+    final bool isEvery5th = (_popCount % 5 == 0);
+    if ((isSpecial || isEvery5th) && !_isCelebrationActive) {
+      setState(() {
+        _kamoExpression = 'happy';
+      });
+      _kamoReactionTimer?.cancel();
+      _kamoReactionTimer = Timer(const Duration(milliseconds: 1200), () {
+        if (mounted) {
+          setState(() {
+            _kamoExpression = _isCelebrationActive ? 'happy' : 'neutral';
+          });
+        }
+      });
+    }
+
     final levelTarget = _levelTarget;
     if (_levelPopCount >= levelTarget) {
       _level++;
       _levelPopCount = 0;
       _triggerCelebration();
+      _triggerLevelCompleteCelebration();
     } else if (_popCount % 8 == 0) {
       _triggerCelebration();
     }
+  }
+
+  void _triggerLevelCompleteCelebration() {
+    setState(() {
+      _isCelebrationActive = true;
+      _kamoExpression = 'happy';
+    });
+    _kamoReactionTimer?.cancel();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _isCelebrationActive = false;
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
   }
 
   int get _levelTarget => 8 + min(_level - 1, 4) * 2;
@@ -403,13 +472,37 @@ class _BalloonPopGameState extends State<BalloonPopGame>
     setState(() {
       _showExitHint = true;
     });
-    Future.delayed(const Duration(seconds: 2), () {
+    _exitTooltipTimer?.cancel();
+    _exitTooltipTimer = Timer(const Duration(seconds: 2), () {
       if (mounted) {
         setState(() {
           _showExitHint = false;
         });
       }
     });
+  }
+
+  bool _isKamoOnLeft() {
+    if (_screenWidth <= 0 || _screenHeight <= 0) return false;
+    for (var b in _balloons) {
+      if (b.x > _screenWidth * 0.5 && b.y > _screenHeight * 0.5) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Balloon? _findTargetBalloon() {
+    if (_balloons.isEmpty) return null;
+    Balloon? target;
+    double maxY = -1.0;
+    for (var b in _balloons) {
+      if (b.y > maxY && b.y < _screenHeight - b.radius * 2 && b.y > b.radius) {
+        maxY = b.y;
+        target = b;
+      }
+    }
+    return target ?? _balloons.last;
   }
 
   @override
@@ -421,203 +514,291 @@ class _BalloonPopGameState extends State<BalloonPopGame>
     final double borderWidth = isShortScreen ? 3.0 : 4.0;
     final double buttonPadding = isShortScreen ? 12.0 : 20.0;
 
+    final Balloon? target = _showHint ? _findTargetBalloon() : null;
+    final bool kamoOnLeft = _isKamoOnLeft();
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2), // Açık, krem arka plan
-      body: Stack(
-        children: [
-          // 1. Gökyüzü ve bulut gradyan arka planı
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFBEE3F8), // Sevimli açık mavi gökyüzü
-                    Color(0xFFEBF8FF), // Alt taraflara doğru açılan gökyüzü
-                    Color(
-                      0xFFFFFBF2,
-                    ), // Uygulamanın genel arka planıyla bütünleşme
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // 2. Ana Çizim Katmanı (CustomPainter) ve Multi-touch Listener
-          Positioned.fill(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                if (!_isInitialized) {
-                  // Ekran boyutları alındıktan sonra oyunu başlat
-                  _initializeGame(constraints.maxWidth, constraints.maxHeight);
-                }
-
-                return Listener(
-                  behavior: HitTestBehavior.opaque,
-                  onPointerDown: (event) {
-                    _handleTouch(event.localPosition);
-                  },
-                  child: CustomPaint(
-                    painter: BalloonPainter(
-                      balloons: _balloons,
-                      particles: _particles,
-                      clouds: _clouds,
-                    ),
-                    size: Size.infinite,
-                  ),
-                );
-              },
-            ),
-          ),
-
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: buttonPadding,
-                  right: buttonPadding,
-                ),
-                child: Container(
-                  key: const ValueKey('balloon-score-panel'),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.88),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: const Color(0xFFFFD000),
-                      width: borderWidth,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
+      body: InactivityDetector(
+        duration: const Duration(seconds: 3),
+        onInactivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = true;
+            });
+          }
+        },
+        onActivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = false;
+            });
+          }
+        },
+        child: Stack(
+          children: [
+            // 1. Gökyüzü ve bulut gradyan arka planı
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFBEE3F8), // Sevimli açık mavi gökyüzü
+                      Color(0xFFEBF8FF), // Alt taraflara doğru açılan gökyüzü
+                      Color(0xFFFFFBF2), // Uygulamanın genel arka planıyla bütünleşme
                     ],
                   ),
-                  child: Text(
-                    'Bölüm $_level  •  Skor $_score  •  $_levelPopCount / $_levelTarget',
-                    style: const TextStyle(
-                      color: Color(0xFF233238),
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                      decoration: TextDecoration.none,
+                ),
+              ),
+            ),
+
+            // 2. Ana Çizim Katmanı (CustomPainter) ve Multi-touch Listener
+            Positioned.fill(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (!_isInitialized) {
+                    // Ekran boyutları alındıktan sonra oyunu başlat
+                    _initializeGame(constraints.maxWidth, constraints.maxHeight);
+                  }
+
+                  return Listener(
+                    behavior: HitTestBehavior.opaque,
+                    onPointerDown: (event) {
+                      _handleTouch(event.localPosition);
+                    },
+                    child: CustomPaint(
+                      painter: BalloonPainter(
+                        balloons: _balloons,
+                        particles: _particles,
+                        clouds: _clouds,
+                      ),
+                      size: Size.infinite,
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Hareketsizlik İpucu Efekti (PulseTarget ve GhostHandHint)
+            if (target != null) ...[
+              Positioned(
+                left: target.x - target.radius * 1.3,
+                top: target.y - target.radius * 1.3,
+                child: IgnorePointer(
+                  child: PulseTarget(
+                    active: true,
+                    color: target.color,
+                    baseSize: target.radius * 2.6,
+                    child: SizedBox(
+                      width: target.radius * 2.6,
+                      height: target.radius * 2.6,
+                    ),
+                  ),
+                ),
+              ),
+              GhostHandHint(
+                position: Offset(target.x, target.y),
+                active: true,
+              ),
+            ],
+
+            // Kamo Maskot Kartı (küçük, müdahalesiz, boş tıklamalarda SoftWrongFeedback ile sallanır)
+            Positioned(
+              bottom: 16,
+              left: kamoOnLeft ? 16 : null,
+              right: kamoOnLeft ? null : 16,
+              child: IgnorePointer(
+                child: SoftWrongFeedback(
+                  triggerStream: _wrongFeedbackController.stream,
+                  child: Container(
+                    width: 90,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.85),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFFFFD000).withOpacity(0.5),
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: CustomPaint(
+                        painter: ChameleonPainter(
+                          chameleonColor: const Color(0xFF2FA7A0),
+                          tongueProgress: 0.0,
+                          lookTarget: const Offset(200, 200),
+                          flies: const [],
+                          idleProgress: 0.0,
+                          isCamouflaged: false,
+                          chameleonPos: const Offset(45, 30),
+                          expression: _kamoExpression,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // 3. Çocuk Dostu Büyük Geri Dönüş Butonu (Sol Üst)
-          Positioned(
-            top: 0,
-            left: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: buttonPadding,
-                  left: buttonPadding,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      key: const ValueKey('balloon-game-back-button'),
-                      onTap: _showExitTooltip,
-                      onDoubleTap: () {
-                        HapticFeedback.mediumImpact();
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: buttonSize,
-                        height: buttonSize,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(
-                                0xFF2FA7A0,
-                              ).withValues(alpha: 0.2),
-                              blurRadius: 12,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                          border: Border.all(
-                            color: const Color(
-                              0xFF2FA7A0,
-                            ).withValues(alpha: 0.4),
-                            width: borderWidth,
-                          ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: buttonPadding,
+                    right: buttonPadding,
+                  ),
+                  child: Container(
+                    key: const ValueKey('balloon-score-panel'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.88),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: const Color(0xFFFFD000),
+                        width: borderWidth,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                        child: Center(
-                          child: Icon(
-                            Icons.arrow_back_rounded,
-                            size: iconSize,
-                            color: const Color(0xFF2FA7A0),
-                          ),
-                        ),
+                      ],
+                    ),
+                    child: Text(
+                      'Bölüm $_level  •  Skor $_score  •  $_levelPopCount / $_levelTarget',
+                      style: const TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                        decoration: TextDecoration.none,
                       ),
                     ),
-                    if (_showExitHint) ...[
-                      const SizedBox(width: 12),
-                      AnimatedOpacity(
-                        opacity: _showExitHint ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
+                  ),
+                ),
+              ),
+            ),
+
+            // 3. Çocuk Dostu Büyük Geri Dönüş Butonu (Sol Üst)
+            Positioned(
+              top: 0,
+              left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: buttonPadding,
+                    left: buttonPadding,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        key: const ValueKey('balloon-game-back-button'),
+                        onTap: _showExitTooltip,
+                        onDoubleTap: () {
+                          HapticFeedback.mediumImpact();
+                          Navigator.pop(context);
+                        },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
+                          width: buttonSize,
+                          height: buttonSize,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2FA7A0),
-                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(
-                                  0xFF2FA7A0,
-                                ).withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
+                                color: const Color(0xFF2FA7A0).withOpacity(0.2),
+                                blurRadius: 12,
+                                offset: const Offset(0, 5),
                               ),
                             ],
+                            border: Border.all(
+                              color: const Color(0xFF2FA7A0).withOpacity(0.4),
+                              width: borderWidth,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.touch_app_rounded,
-                                color: Colors.amber.shade300,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              const Text(
-                                'Çıkmak için çift dokun! 🌟',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ],
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_back_rounded,
+                              size: iconSize,
+                              color: const Color(0xFF2FA7A0),
+                            ),
                           ),
                         ),
                       ),
+                      if (_showExitHint) ...[
+                        const SizedBox(width: 12),
+                        AnimatedOpacity(
+                          opacity: _showExitHint ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2FA7A0),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF2FA7A0).withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.touch_app_rounded,
+                                  color: Colors.amber.shade300,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'Çıkmak için çift dokun! 🌟',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+
+            // Kutlama Konfeti Katmanı (seviye tamamlandığında)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CelebrationEffect(active: _isCelebrationActive),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
