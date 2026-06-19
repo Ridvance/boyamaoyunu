@@ -7,6 +7,7 @@ import 'package:cocuk_oyun/services/guidance_widgets.dart';
 import 'package:cocuk_oyun/games/shape_sorter_game.dart';
 import 'package:cocuk_oyun/games/sound_board_game.dart';
 import 'package:cocuk_oyun/games/habits_game.dart';
+import 'package:cocuk_oyun/games/learning_packs_game.dart';
 
 void main() {
   testWidgets(
@@ -819,6 +820,69 @@ void main() {
 
     // Pop the route
     await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('learning packs inactivity triggers GhostHandHint on first pack and then first activity', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-learning_packs')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-learning_packs')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(LearningPacksGame));
+    expect(state.kamoExpression, equals('neutral'));
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity on pack selection screen
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Tap first pack
+    await tester.tap(find.byKey(const ValueKey('learning-pack-first-skills')));
+    await tester.pump();
+
+    // Verify Kamo gets happy on selection
+    expect(state.kamoExpression, equals('happy'));
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait for Kamo happy reaction to end (700ms)
+    await tester.pump(const Duration(milliseconds: 800));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // We are now in detail screen. Wait 4 seconds for inactivity on activity detail screen
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Tap the first activity card
+    await tester.tap(find.byKey(const ValueKey('learning-activity-story-coloring')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Pop coloring game
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Pop the detail view to pack selection screen
+    await tester.tap(find.byKey(const ValueKey('learning-packs-back-button')));
+    await tester.pump();
+
+    // Pop learning packs screen
+    await tester.tap(find.byKey(const ValueKey('learning-packs-back-button')));
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
   });

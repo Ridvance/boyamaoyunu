@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'coloring_game.dart';
 import 'habits_game.dart';
 import 'magic_colors_game.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
+import 'dart:async';
 
 class LearningPackActivity {
   final String id;
@@ -46,7 +49,7 @@ class LearningPacksGame extends StatefulWidget {
   State<LearningPacksGame> createState() => _LearningPacksGameState();
 }
 
-class _LearningPacksGameState extends State<LearningPacksGame> {
+class _LearningPacksGameState extends State<LearningPacksGame> with TickerProviderStateMixin {
   static final List<LearningPack> _packs = [
     LearningPack(
       id: 'first-skills',
@@ -85,7 +88,91 @@ class _LearningPacksGameState extends State<LearningPacksGame> {
 
   LearningPack? _selectedPack;
 
+  bool _showHint = false;
+  Offset _hintPosition = Offset.zero;
+  late final AnimationController _hintController;
+
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+
+  final GlobalKey _firstPackKey = GlobalKey();
+  final GlobalKey _firstActivityKey = GlobalKey();
+
+  bool get showHint => _showHint;
+  String get kamoExpression => _kamoExpression;
+
+  @override
+  void initState() {
+    super.initState();
+    _hintController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..addListener(() {
+        if (_showHint) {
+          final targetKey = _selectedPack == null ? _firstPackKey : _firstActivityKey;
+          final startCenter = _getWidgetLocalCenter(targetKey);
+          if (startCenter != null) {
+            setState(() {
+              _hintPosition = startCenter;
+            });
+          }
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _hintController.dispose();
+    _kamoReactionTimer?.cancel();
+    super.dispose();
+  }
+
+  Offset? _getWidgetLocalCenter(GlobalKey key) {
+    final context = key.currentContext;
+    if (context == null) return null;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return null;
+
+    final globalCenter = renderBox.localToGlobal(
+      Offset(renderBox.size.width / 2, renderBox.size.height / 2),
+    );
+
+    final parentBox = this.context.findRenderObject() as RenderBox?;
+    if (parentBox == null) return null;
+    return parentBox.globalToLocal(globalCenter);
+  }
+
+  void _triggerKamoHappy() {
+    _kamoReactionTimer?.cancel();
+    setState(() {
+      _kamoExpression = 'happy';
+    });
+    _kamoReactionTimer = Timer(const Duration(milliseconds: 700), () {
+      if (mounted) {
+        setState(() {
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
+  }
+
+  void _selectPack(LearningPack pack) {
+    setState(() {
+      _selectedPack = pack;
+      _showHint = false;
+      _hintController.stop();
+      _hintController.reset();
+    });
+    _triggerKamoHappy();
+  }
+
   void _openActivity(LearningPackActivity activity) {
+    setState(() {
+      _showHint = false;
+      _hintController.stop();
+      _hintController.reset();
+    });
+    _triggerKamoHappy();
     Navigator.push<void>(context, MaterialPageRoute(builder: activity.builder));
   }
 
@@ -95,56 +182,133 @@ class _LearningPacksGameState extends State<LearningPacksGame> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF2),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  IconButton.filledTonal(
-                    key: const ValueKey('learning-packs-back-button'),
-                    onPressed:
-                        selectedPack == null
-                            ? () => Navigator.pop(context)
-                            : () => setState(() => _selectedPack = null),
-                    icon: Icon(
-                      selectedPack == null
-                          ? Icons.arrow_back_rounded
-                          : Icons.grid_view_rounded,
-                      size: 28,
+      body: InactivityDetector(
+        enabled: true,
+        onActivity: () {
+          if (_showHint) {
+            setState(() {
+              _showHint = false;
+              _hintController.stop();
+              _hintController.reset();
+            });
+          }
+        },
+        onInactivity: () {
+          setState(() {
+            _showHint = true;
+            _hintController.repeat();
+          });
+        },
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton.filledTonal(
+                          key: const ValueKey('learning-packs-back-button'),
+                          onPressed:
+                              selectedPack == null
+                                  ? () => Navigator.pop(context)
+                                  : () => setState(() {
+                                        _selectedPack = null;
+                                        _showHint = false;
+                                        _hintController.stop();
+                                        _hintController.reset();
+                                      }),
+                          icon: Icon(
+                            selectedPack == null
+                                ? Icons.arrow_back_rounded
+                                : Icons.grid_view_rounded,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            selectedPack?.title ?? 'Öğrenme Paketleri',
+                            style: const TextStyle(
+                              color: Color(0xFF233238),
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child:
+                          selectedPack == null
+                              ? _PackList(
+                                packs: _packs,
+                                onSelect: _selectPack,
+                                firstPackKey: _firstPackKey,
+                                showHint: _showHint,
+                              )
+                              : _PackDetail(
+                                pack: selectedPack,
+                                onActivityTap: _openActivity,
+                                firstActivityKey: _firstActivityKey,
+                                showHint: _showHint,
+                              ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (_showHint && _hintPosition != Offset.zero)
+              GhostHandHint(
+                position: _hintPosition,
+                active: true,
+              ),
+
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: IgnorePointer(
+                child: Container(
+                  width: 90,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFF2FA7A0).withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      selectedPack?.title ?? 'Öğrenme Paketleri',
-                      style: const TextStyle(
-                        color: Color(0xFF233238),
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: CustomPaint(
+                      painter: ChameleonPainter(
+                        chameleonColor: const Color(0xFF2FA7A0),
+                        tongueProgress: 0.0,
+                        lookTarget: const Offset(200, 200),
+                        flies: const [],
+                        idleProgress: 0.0,
+                        isCamouflaged: false,
+                        chameleonPos: const Offset(45, 30),
+                        expression: _kamoExpression,
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child:
-                    selectedPack == null
-                        ? _PackList(
-                          packs: _packs,
-                          onSelect:
-                              (pack) => setState(() => _selectedPack = pack),
-                        )
-                        : _PackDetail(
-                          pack: selectedPack,
-                          onActivityTap: _openActivity,
-                        ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -154,8 +318,15 @@ class _LearningPacksGameState extends State<LearningPacksGame> {
 class _PackList extends StatelessWidget {
   final List<LearningPack> packs;
   final ValueChanged<LearningPack> onSelect;
+  final GlobalKey firstPackKey;
+  final bool showHint;
 
-  const _PackList({required this.packs, required this.onSelect});
+  const _PackList({
+    required this.packs,
+    required this.onSelect,
+    required this.firstPackKey,
+    required this.showHint,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +335,9 @@ class _PackList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
         final pack = packs[index];
-        return Material(
+        final isFirst = index == 0;
+        final child = Material(
+          key: isFirst ? firstPackKey : null,
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           child: InkWell(
@@ -218,6 +391,16 @@ class _PackList extends StatelessWidget {
             ),
           ),
         );
+
+        if (isFirst) {
+          return PulseTarget(
+            active: showHint,
+            color: pack.color,
+            baseSize: 150.0,
+            child: child,
+          );
+        }
+        return child;
       },
     );
   }
@@ -226,60 +409,80 @@ class _PackList extends StatelessWidget {
 class _PackDetail extends StatelessWidget {
   final LearningPack pack;
   final ValueChanged<LearningPackActivity> onActivityTap;
+  final GlobalKey firstActivityKey;
+  final bool showHint;
 
-  const _PackDetail({required this.pack, required this.onActivityTap});
+  const _PackDetail({
+    required this.pack,
+    required this.onActivityTap,
+    required this.firstActivityKey,
+    required this.showHint,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final activities = pack.activities;
     return GridView.count(
       crossAxisCount: 3,
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
       childAspectRatio: 1.1,
-      children:
-          pack.activities.map((activity) {
-            return Material(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              child: InkWell(
-                key: ValueKey('learning-activity-${activity.id}'),
-                onTap: () => onActivityTap(activity),
-                borderRadius: BorderRadius.circular(22),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(activity.icon, color: activity.color, size: 72),
-                      const SizedBox(height: 14),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          activity.title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF233238),
-                          ),
-                        ),
+      children: List.generate(activities.length, (index) {
+        final activity = activities[index];
+        final isFirst = index == 0;
+        final child = Material(
+          key: isFirst ? firstActivityKey : null,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          child: InkWell(
+            key: ValueKey('learning-activity-${activity.id}'),
+            onTap: () => onActivityTap(activity),
+            borderRadius: BorderRadius.circular(22),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(activity.icon, color: activity.color, size: 72),
+                  const SizedBox(height: 14),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      activity.title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF233238),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        activity.skill,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF53666C),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 6),
+                  Text(
+                    activity.skill,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF53666C),
+                    ),
+                  ),
+                ],
               ),
-            );
-          }).toList(),
+            ),
+          ),
+        );
+
+        if (isFirst) {
+          return PulseTarget(
+            active: showHint,
+            color: activity.color,
+            baseSize: 180.0,
+            child: child,
+          );
+        }
+        return child;
+      }),
     );
   }
 }
