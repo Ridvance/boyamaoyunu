@@ -2,6 +2,10 @@ import 'audio_synth_stub.dart'
     if (dart.library.html) 'audio_synth_web.dart' as impl;
 
 class AudioSynth {
+  static Future<void> preloadAllSounds() {
+    return impl.preloadAllSounds();
+  }
+
   static void playXylophoneNote(int noteIndex) {
     impl.playXylophoneNote(noteIndex);
   }

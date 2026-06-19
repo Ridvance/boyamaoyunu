@@ -18,6 +18,8 @@ void main() {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+  // Preload all synthesized sounds asynchronously in the background
+  AudioSynth.preloadAllSounds();
   runApp(const CocukOyunApp());
 }
 

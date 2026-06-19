@@ -282,3 +282,8 @@ void playRaindropSound() {
     // Fail silently
   }
 }
+
+Future<void> preloadAllSounds() async {
+  // Web Audio API dynamically synthesizes sounds on-demand with zero latency.
+  // No files or assets to preload.
+}
