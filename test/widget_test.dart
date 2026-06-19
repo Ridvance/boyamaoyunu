@@ -5,6 +5,7 @@ import 'package:cocuk_oyun/main.dart';
 import 'package:cocuk_oyun/games/magic_colors/chameleon_painter.dart';
 import 'package:cocuk_oyun/services/guidance_widgets.dart';
 import 'package:cocuk_oyun/games/shape_sorter_game.dart';
+import 'package:cocuk_oyun/games/sound_board_game.dart';
 
 void main() {
   testWidgets(
@@ -576,6 +577,74 @@ void main() {
     expect(state.levelNumber, equals(2));
     expect(state.matchesThisLevel, equals(0));
 
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('sound board game inactivity triggers GhostHandHint and PulseTarget, and interaction hides it', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-sound_board')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    // Verify GhostHandHint is not visible initially
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Wait 4 seconds for inactivity timer to fire (fires at 3s)
+    await tester.pump(const Duration(seconds: 4));
+    expect(find.byType(GhostHandHint), findsOneWidget);
+
+    // Trigger an activity by tapping on the first cloud
+    await tester.tap(find.byType(CloudWidget).first);
+    await tester.pump();
+
+    // The hint should be gone
+    expect(find.byType(GhostHandHint), findsNothing);
+
+    // Pop the route
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+  });
+
+  testWidgets('sound board game key and animal tap triggers Kamo happy expression', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    await tester.tap(find.byKey(const ValueKey('game-card-sound_board')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    final dynamic state = tester.state(find.byType(SoundBoardGame));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Tap on the first animal card
+    final animalFinder = find.byType(AnimalCardWidget);
+    expect(animalFinder, findsWidgets);
+    await tester.tap(animalFinder.first);
+    await tester.pump();
+
+    // Kamo should be happy
+    expect(state.kamoExpression, equals('happy'));
+
+    // Wait 700ms for Kamo happy duration (600ms) to end and return to neutral
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(state.kamoExpression, equals('neutral'));
+
+    // Pop the route
     await tester.tap(find.byIcon(Icons.arrow_back_rounded).first);
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/guidance_widgets.dart';
+import 'magic_colors/chameleon_painter.dart';
+import 'dart:async';
 
 class SoundBoardGame extends StatefulWidget {
   const SoundBoardGame({super.key});
@@ -19,6 +22,16 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
   double _cloud1X = 100.0;
   double _cloud2X = 400.0;
   double _screenWidth = 800.0;
+
+  // Görsel Yönlendirme ve Kamo Değişkenleri
+  bool _showHint = false;
+  Offset _hintPosition = Offset.zero;
+  late final AnimationController _hintController;
+  String _kamoExpression = 'neutral';
+  Timer? _kamoReactionTimer;
+
+  bool get showHint => _showHint;
+  String get kamoExpression => _kamoExpression;
 
   @override
   void initState() {
@@ -49,12 +62,57 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
       }
     });
     _ticker.start();
+
+    _hintController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..addListener(() {
+      if (_showHint) {
+        final startCenter = _getWidgetLocalCenter(_keyKeys[0]);
+        if (startCenter != null) {
+          setState(() {
+            _hintPosition = startCenter;
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _ticker.dispose();
+    _hintController.dispose();
+    _kamoReactionTimer?.cancel();
     super.dispose();
+  }
+
+  void _triggerKamoHappy() {
+    _kamoReactionTimer?.cancel();
+    setState(() {
+      _kamoExpression = 'happy';
+    });
+    _kamoReactionTimer = Timer(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() {
+          _kamoExpression = 'neutral';
+        });
+      }
+    });
+  }
+
+  Offset? _getWidgetLocalCenter(GlobalKey key) {
+    final context = key.currentContext;
+    if (context == null) return null;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return null;
+
+    final globalCenter = renderBox.localToGlobal(
+      Offset(renderBox.size.width / 2, renderBox.size.height / 2),
+    );
+
+    final parentBox = this.context.findRenderObject() as RenderBox?;
+    if (parentBox == null) return null;
+    return parentBox.globalToLocal(globalCenter);
   }
 
   void _spawnParticles(Offset globalPosition, Color color, List<String> symbols) {
@@ -123,6 +181,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
       ][index];
 
       _playFeedback(index);
+      _triggerKamoHappy();
       _spawnParticles(
         globalPos,
         color,
@@ -183,9 +242,28 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
     final woodBarHeight = isShortHeight ? 8.0 : 16.0;
 
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
+      body: InactivityDetector(
+        duration: const Duration(seconds: 3),
+        onInactivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = true;
+            });
+            _hintController.repeat();
+          }
+        },
+        onActivity: () {
+          if (mounted) {
+            setState(() {
+              _showHint = false;
+            });
+            _hintController.stop();
+            _hintController.reset();
+          }
+        },
+        child: SafeArea(
+          child: Stack(
+            children: [
              // Clouds in the background (slower depth element)
             Positioned(
               left: _cloud1X,
@@ -241,6 +319,7 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
                             color: a.color,
                             onTap: (globalPos) {
                               _playFeedback(2); // Mid-high feedback
+                              _triggerKamoHappy();
                               AudioSynth.playAnimalSound(a.emoji);
                               _spawnParticles(globalPos, a.color, a.spawnEmojis);
                             },
@@ -358,11 +437,74 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
                 painter: ParticlePainter(_particles),
               ),
             ),
+
+            // Inactivity overlays (PulseTarget and GhostHandHint)
+            if (_showHint && _hintPosition != Offset.zero) ...[
+              Positioned(
+                left: _hintPosition.dx - 28,
+                top: _hintPosition.dy - 28,
+                child: IgnorePointer(
+                  child: PulseTarget(
+                    active: true,
+                    color: const Color(0xFFFF4B4B),
+                    baseSize: 56.0,
+                    child: const SizedBox(width: 56, height: 56),
+                  ),
+                ),
+              ),
+              GhostHandHint(
+                position: _hintPosition,
+                active: true,
+              ),
+            ],
+
+            // Kamo Maskot Kartı
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: IgnorePointer(
+                child: Container(
+                  width: 90,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFF2FA7A0).withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: CustomPaint(
+                      painter: ChameleonPainter(
+                        chameleonColor: const Color(0xFF2FA7A0),
+                        tongueProgress: 0.0,
+                        lookTarget: const Offset(200, 200),
+                        flies: const [],
+                        idleProgress: 0.0,
+                        isCamouflaged: false,
+                        chameleonPos: const Offset(45, 30),
+                        expression: _kamoExpression,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 // Particle model
