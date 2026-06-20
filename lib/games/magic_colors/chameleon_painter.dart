@@ -122,18 +122,18 @@ class ChameleonPainter extends CustomPainter {
   void _drawChameleon(Canvas canvas, Offset pos) {
     // Kamuflaj durumunda saydamlık ekle
     final double opacity = isCamouflaged ? 0.35 : 1.0;
-    final color = chameleonColor.withOpacity(opacity);
+    final color = chameleonColor.withValues(alpha: opacity);
 
     final bodyPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
 
     final detailPaint = Paint()
-      ..color = Colors.black.withOpacity(0.15 * opacity)
+      ..color = Colors.black.withValues(alpha: 0.15 * opacity)
       ..style = PaintingStyle.fill;
 
     final strokePaint = Paint()
-      ..color = Colors.black.withOpacity(0.2 * opacity)
+      ..color = Colors.black.withValues(alpha: 0.2 * opacity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
 
@@ -167,7 +167,7 @@ class ChameleonPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     canvas.drawPath(tailPath, tailPaint);
     canvas.drawPath(tailPath, Paint()
-      ..color = Colors.black.withOpacity(0.15 * opacity)
+      ..color = Colors.black.withValues(alpha: 0.15 * opacity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 18.0 + breath * 0.2
       ..strokeCap = StrokeCap.round);
@@ -234,7 +234,7 @@ class ChameleonPainter extends CustomPainter {
     // Ağız çizgisi (Expression'a göre çizilir)
     final mouthPath = Path();
     final mouthPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3 * opacity)
+      ..color = Colors.black.withValues(alpha: 0.3 * opacity)
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round;
 
@@ -261,7 +261,7 @@ class ChameleonPainter extends CustomPainter {
         Offset(pos.dx + 58, pos.dy + 22),
         7,
         Paint()
-          ..color = const Color(0xFFFF8AAE).withOpacity(0.6)
+          ..color = const Color(0xFFFF8AAE).withValues(alpha: 0.6)
           ..style = PaintingStyle.fill,
       );
     }
@@ -282,7 +282,7 @@ class ChameleonPainter extends CustomPainter {
       canvas.drawPath(
         happyEyePath,
         Paint()
-          ..color = const Color(0xFF233238).withOpacity(opacity)
+          ..color = const Color(0xFF233238).withValues(alpha: opacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4.0
           ..strokeCap = StrokeCap.round,
@@ -297,7 +297,7 @@ class ChameleonPainter extends CustomPainter {
         Offset(eyeX, eyeY),
         12,
         Paint()
-          ..color = Colors.white.withOpacity(opacity)
+          ..color = Colors.white.withValues(alpha: opacity)
           ..style = PaintingStyle.fill,
       );
 
@@ -318,7 +318,7 @@ class ChameleonPainter extends CustomPainter {
         Offset(eyeX + moveX, eyeY + moveY),
         pupilRadius,
         Paint()
-          ..color = const Color(0xFF233238).withOpacity(opacity)
+          ..color = const Color(0xFF233238).withValues(alpha: opacity)
           ..style = PaintingStyle.fill,
       );
 
@@ -327,7 +327,7 @@ class ChameleonPainter extends CustomPainter {
         Offset(eyeX + moveX - 1.0, eyeY + moveY - 1.0),
         1.0,
         Paint()
-          ..color = Colors.white.withOpacity(opacity)
+          ..color = Colors.white.withValues(alpha: opacity)
           ..style = PaintingStyle.fill,
       );
     }
@@ -337,15 +337,15 @@ class ChameleonPainter extends CustomPainter {
     for (var fly in flies) {
       final double fOpacity = isCamouflaged ? 0.3 : 1.0;
       final bodyPaint = Paint()
-        ..color = fly.color.withOpacity(fOpacity)
+        ..color = fly.color.withValues(alpha: fOpacity)
         ..style = PaintingStyle.fill;
 
       final wingPaint = Paint()
-        ..color = Colors.white.withOpacity(0.7 * fOpacity)
+        ..color = Colors.white.withValues(alpha: 0.7 * fOpacity)
         ..style = PaintingStyle.fill;
 
       final strokePaint = Paint()
-        ..color = Colors.black.withOpacity(0.3 * fOpacity)
+        ..color = Colors.black.withValues(alpha: 0.3 * fOpacity)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5;
 
@@ -356,7 +356,7 @@ class ChameleonPainter extends CustomPainter {
 
       // 1. İnce bacaklar
       final legPaint = Paint()
-        ..color = Colors.black.withOpacity(0.4 * fOpacity)
+        ..color = Colors.black.withValues(alpha: 0.4 * fOpacity)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5;
       canvas.drawLine(const Offset(-4, 4), const Offset(-8, 8), legPaint);
@@ -369,8 +369,8 @@ class ChameleonPainter extends CustomPainter {
       canvas.drawOval(const Rect.fromLTWH(-10, -8, 20, 16), strokePaint);
 
       // Siyah sevimli gözler
-      canvas.drawCircle(const Offset(8, -3), 2.5, Paint()..color = Colors.black.withOpacity(fOpacity));
-      canvas.drawCircle(const Offset(8, 3), 2.5, Paint()..color = Colors.black.withOpacity(fOpacity));
+      canvas.drawCircle(const Offset(8, -3), 2.5, Paint()..color = Colors.black.withValues(alpha: fOpacity));
+      canvas.drawCircle(const Offset(8, 3), 2.5, Paint()..color = Colors.black.withValues(alpha: fOpacity));
 
       // 3. Kanatlar (Uçma animasyonu wingState'e göre döner)
       canvas.save();
@@ -415,7 +415,7 @@ class ChameleonPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawCircle(currentTip, 10.0, tipPaint);
     canvas.drawCircle(currentTip, 10.0, Paint()
-      ..color = Colors.black.withOpacity(0.15)
+      ..color = Colors.black.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0);
   }

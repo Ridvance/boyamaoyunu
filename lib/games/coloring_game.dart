@@ -1547,7 +1547,7 @@ class ColoringPainter extends CustomPainter {
 
       final highlightPaint =
           Paint()
-            ..color = const Color(0xFFFFD13B).withOpacity(glowOpacity)
+            ..color = const Color(0xFFFFD13B).withValues(alpha: glowOpacity)
             ..style = PaintingStyle.stroke
             ..strokeWidth = glowWidth
             ..strokeCap = StrokeCap.round

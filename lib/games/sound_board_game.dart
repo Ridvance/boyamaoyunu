@@ -568,7 +568,7 @@ class ParticlePainter extends CustomPainter {
         text: p.text,
         style: TextStyle(
           fontSize: p.size,
-          color: p.color.withOpacity(p.opacity),
+          color: p.color.withValues(alpha: p.opacity),
           fontFamily: 'EmojiOne', // Fallback safety
         ),
       );
@@ -696,10 +696,10 @@ class _AnimalCardWidgetState extends State<AnimalCardWidget> with SingleTickerPr
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: widget.color.withOpacity(0.8), width: borderWidth),
+                  border: Border.all(color: widget.color.withValues(alpha: 0.8), width: borderWidth),
                   boxShadow: [
                     BoxShadow(
-                      color: widget.color.withOpacity(0.3),
+                      color: widget.color.withValues(alpha: 0.3),
                       blurRadius: isShortHeight ? 6 : 10,
                       offset: Offset(0, isShortHeight ? 3 : 6),
                     ),
@@ -798,7 +798,7 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                                   blurRadius: isShortHeight ? 3 : 5,
                                 ),
                                 BoxShadow(
-                                  color: widget.color.withOpacity(0.4),
+                                  color: widget.color.withValues(alpha: 0.4),
                                   offset: const Offset(0, 2),
                                   blurRadius: isShortHeight ? 4 : 8,
                                 ),
@@ -807,9 +807,9 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            widget.color.withOpacity(0.85),
+                            widget.color.withValues(alpha: 0.85),
                             widget.color,
-                            widget.color.withOpacity(0.95),
+                            widget.color.withValues(alpha: 0.95),
                           ],
                         ),
                       ),
@@ -850,7 +850,7 @@ class _XylophoneKeyWidgetState extends State<XylophoneKeyWidget> with SingleTick
                           if (isPressed)
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.25),
+                                color: Colors.white.withValues(alpha: 0.25),
                                 borderRadius: BorderRadius.circular(isShortHeight ? 10 : 20),
                               ),
                             ),

@@ -5,7 +5,6 @@ import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
-import 'package:flutter/foundation.dart'; // for Key in ChameleonFly
 import 'dart:async';
 
 class BalloonPopGame extends StatefulWidget {
@@ -618,15 +617,15 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                     width: 90,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: const Color(0xFFFFD000).withOpacity(0.5),
+                        color: const Color(0xFFFFD000).withValues(alpha: 0.5),
                         width: 2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 6,
                           offset: const Offset(0, 3),
                         ),
@@ -668,7 +667,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.88),
+                      color: Colors.white.withValues(alpha: 0.88),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: const Color(0xFFFFD000),
@@ -676,7 +675,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -724,13 +723,13 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2FA7A0).withOpacity(0.2),
+                                color: const Color(0xFF2FA7A0).withValues(alpha: 0.2),
                                 blurRadius: 12,
                                 offset: const Offset(0, 5),
                               ),
                             ],
                             border: Border.all(
-                              color: const Color(0xFF2FA7A0).withOpacity(0.4),
+                              color: const Color(0xFF2FA7A0).withValues(alpha: 0.4),
                               width: borderWidth,
                             ),
                           ),
@@ -758,7 +757,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF2FA7A0).withOpacity(0.3),
+                                  color: const Color(0xFF2FA7A0).withValues(alpha: 0.3),
                                   blurRadius: 8,
                                   offset: const Offset(0, 3),
                                 ),

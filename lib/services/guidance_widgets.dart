@@ -74,7 +74,7 @@ class _PulseTargetState extends State<PulseTarget> with SingleTickerProviderStat
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: widget.color.withOpacity((1.0 - _controller.value) * 0.6),
+                    color: widget.color.withValues(alpha: (1.0 - _controller.value) * 0.6),
                     width: 3.5,
                   ),
                 ),
@@ -88,7 +88,7 @@ class _PulseTargetState extends State<PulseTarget> with SingleTickerProviderStat
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: widget.color.withOpacity((1.0 - ((_controller.value + 0.5) % 1.0)) * 0.4),
+                    color: widget.color.withValues(alpha: (1.0 - ((_controller.value + 0.5) % 1.0)) * 0.4),
                     width: 2.0,
                   ),
                 ),
@@ -176,7 +176,7 @@ class _GhostHandHintState extends State<GhostHandHint> with SingleTickerProvider
                     height: 52,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFFFCC00).withOpacity((1.0 - _controller.value) * 0.45),
+                      color: const Color(0xFFFFCC00).withValues(alpha: (1.0 - _controller.value) * 0.45),
                     ),
                   ),
                   const Icon(
@@ -490,7 +490,7 @@ class _CelebrationPainter extends CustomPainter {
 
     for (var p in particles) {
       final paint = Paint()
-        ..color = p.color.withOpacity(p.life)
+        ..color = p.color.withValues(alpha: p.life)
         ..style = PaintingStyle.fill;
 
       if (!p.isStar) {

@@ -689,15 +689,15 @@ class _TracingGameState extends State<TracingGame>
                       width: 90,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
+                        color: Colors.white.withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: currentTemplate.themeColor.withOpacity(0.5),
+                          color: currentTemplate.themeColor.withValues(alpha: 0.5),
                           width: 2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -780,11 +780,11 @@ class _TracingGameState extends State<TracingGame>
                         horizontal: templateBarPaddingHorizontal,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
+                        color: Colors.white.withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
