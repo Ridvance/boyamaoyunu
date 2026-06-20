@@ -10,4 +10,12 @@ class FullscreenController {
   static Future<bool> toggleImmersiveMode() {
     return impl.toggleImmersiveMode();
   }
+
+  static bool isStandaloneMode() {
+    return impl.isStandaloneMode();
+  }
+
+  static String getInstallHintMessage() {
+    return impl.getInstallHintMessage();
+  }
 }

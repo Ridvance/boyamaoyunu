@@ -5,3 +5,11 @@ Future<bool> enterImmersiveMode() async {
 Future<bool> toggleImmersiveMode() async {
   return false;
 }
+
+bool isStandaloneMode() {
+  return false;
+}
+
+String getInstallHintMessage() {
+  return '';
+}

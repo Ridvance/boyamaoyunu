@@ -44,6 +44,23 @@ void main() {
     },
   );
 
+  testWidgets('fullscreen button does not show PWA hint on native platforms', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    expect(find.byKey(const ValueKey('fullscreen-hint')), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('fullscreen-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('fullscreen-hint')), findsNothing);
+  });
+
   testWidgets('opens parent safety screen through the math parent gate', (
     WidgetTester tester,
   ) async {

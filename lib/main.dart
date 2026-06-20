@@ -13,6 +13,7 @@ import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
 import 'services/fullscreen_controller.dart';
 import 'services/progress_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
@@ -124,7 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final didEnter = await FullscreenController.toggleImmersiveMode();
     if (!mounted) return;
     setState(() {
-      _showFullscreenHint = !didEnter;
+      _showFullscreenHint = !didEnter && !FullscreenController.isStandaloneMode();
     });
   }
 
@@ -212,7 +213,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-              if (_showFullscreenHint) ...[
+              if (_showFullscreenHint && kIsWeb) ...[
                 const SizedBox(height: 6),
                 Container(
                   key: const ValueKey('fullscreen-hint'),
@@ -228,10 +229,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 2,
                     ),
                   ),
-                  child: const Text(
-                    'Tam ekran için Chrome menüsünden "Ana ekrana ekle" ile aç.',
+                  child: Text(
+                    FullscreenController.getInstallHintMessage(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0xFF6A5200),
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
