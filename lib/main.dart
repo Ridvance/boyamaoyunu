@@ -12,6 +12,7 @@ import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
 import 'services/fullscreen_controller.dart';
 import 'services/progress_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -589,6 +590,26 @@ class ParentSafetyScreen extends StatelessWidget {
 
   final VoidCallback onBack;
 
+  Future<void> _launchPrivacyPolicy(BuildContext context) async {
+    final url = Uri.parse('https://ridvance.github.io/boyamaoyunu/privacy.html');
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Could not launch URL';
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gizlilik politikası açılamadı.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -652,6 +673,26 @@ class ParentSafetyScreen extends StatelessWidget {
                       icon: Icons.no_photography_rounded,
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton.icon(
+                  onPressed: () => _launchPrivacyPolicy(context),
+                  icon: const Icon(
+                    Icons.privacy_tip_outlined,
+                    size: 18,
+                    color: Color(0xFF556B73),
+                  ),
+                  label: const Text(
+                    'Gizlilik Politikası',
+                    style: TextStyle(
+                      color: Color(0xFF556B73),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ),
             ],
