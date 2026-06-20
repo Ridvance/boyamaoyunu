@@ -37,4 +37,4 @@ Gelecekte gizlilik politikamızda yapılabilecek güncellemeler bu sayfada yayı
 
 ## 10. İletişim
 Gizlilik politikamız hakkında sorularınız veya geri bildirimleriniz için bizimle aşağıdaki e-posta adresinden iletişime geçebilirsiniz:
-E-posta: [Destek e-postası buraya eklenecek]
+E-posta: ninnicecom@gmail.com
