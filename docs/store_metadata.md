@@ -9,6 +9,7 @@
 * **Android package/applicationId:** `com.ridvance.cocuk_oyun` (Mevcut değer korunacak)
 * **iOS bundle identifier:** `com.ridvance.cocukOyun` (Mevcut değer korunacak)
 * **Pubspec package name:** `cocuk_oyun` (Mevcut değer korunacak)
+* **Privacy Policy URL:** `https://ridvance.github.io/boyamaoyunu/privacy.html`
 
 ---
 
