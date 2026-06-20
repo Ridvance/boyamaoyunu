@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'games/coloring_game.dart';
@@ -197,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             context: context,
                             barrierDismissible: false,
                             builder:
-                                (context) => MultiFingerParentGate(
+                                (context) => MathParentGateDialog(
                                   onUnlocked: () {
                                     Navigator.of(context).pop();
                                     AudioSynth.playSparkleSound();
@@ -385,62 +386,78 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-// Gelişmiş Çoklu Dokunmatik Ebeveyn Kilidi
-class MultiFingerParentGate extends StatefulWidget {
-  const MultiFingerParentGate({required this.onUnlocked, super.key});
+// Matematik Sorulu Ebeveyn Doğrulama Kilidi
+class MathParentGateDialog extends StatefulWidget {
+  const MathParentGateDialog({required this.onUnlocked, super.key});
 
   final VoidCallback onUnlocked;
 
   @override
-  State<MultiFingerParentGate> createState() => _MultiFingerParentGateState();
+  State<MathParentGateDialog> createState() => _MathParentGateDialogState();
 }
 
-class _MultiFingerParentGateState extends State<MultiFingerParentGate> {
-  final Map<int, Offset> _pointerPositions = {};
-  Timer? _unlockTimer;
-  double _progress = 0.0;
-  static const int requiredFingers = 3;
-  static const int durationSeconds = 3;
+class _MathParentGateDialogState extends State<MathParentGateDialog> {
+  late String _question;
+  late int _correctAnswer;
+  late List<int> _options;
+  final _random = math.Random();
+  String? _errorMessage;
 
   @override
-  void dispose() {
-    _unlockTimer?.cancel();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _generateQuestion();
   }
 
-  void _checkPointers() {
-    if (_pointerPositions.length == requiredFingers) {
-      _startUnlockTimer();
-    } else {
-      _cancelUnlockTimer();
+  void _generateQuestion() {
+    _errorMessage = null;
+    final type = _random.nextInt(3); // 0: +, 1: -, 2: *
+    int a, b;
+    switch (type) {
+      case 0: // +
+        a = _random.nextInt(9) + 1; // 1-9
+        b = _random.nextInt(9) + 1; // 1-9
+        _question = '$a + $b = ?';
+        _correctAnswer = a + b;
+        break;
+      case 1: // -
+        a = _random.nextInt(9) + 10; // 10-18
+        b = _random.nextInt(9) + 1;  // 1-9
+        _question = '$a - $b = ?';
+        _correctAnswer = a - b;
+        break;
+      case 2: // *
+      default:
+        a = _random.nextInt(4) + 2; // 2-5
+        b = _random.nextInt(4) + 2; // 2-5
+        _question = '$a × $b = ?';
+        _correctAnswer = a * b;
+        break;
     }
-  }
 
-  void _startUnlockTimer() {
-    _unlockTimer?.cancel();
-    _progress = 0.0;
-    const tickDuration = Duration(milliseconds: 100);
-    final totalTicks = (durationSeconds * 1000) ~/ tickDuration.inMilliseconds;
-    int currentTick = 0;
-
-    _unlockTimer = Timer.periodic(tickDuration, (timer) {
-      setState(() {
-        currentTick++;
-        _progress = currentTick / totalTicks;
-      });
-
-      if (currentTick >= totalTicks) {
-        timer.cancel();
-        widget.onUnlocked();
+    final Set<int> wrongAnswers = {};
+    while (wrongAnswers.length < 2) {
+      final offset = _random.nextInt(5) + 1;
+      final sign = _random.nextBool() ? 1 : -1;
+      final wrongVal = _correctAnswer + (offset * sign);
+      if (wrongVal != _correctAnswer && wrongVal > 0) {
+        wrongAnswers.add(wrongVal);
       }
-    });
+    }
+
+    _options = [_correctAnswer, ...wrongAnswers];
+    _options.shuffle(_random);
   }
 
-  void _cancelUnlockTimer() {
-    _unlockTimer?.cancel();
-    setState(() {
-      _progress = 0.0;
-    });
+  void _handleOptionSelected(int selectedValue) {
+    if (selectedValue == _correctAnswer) {
+      widget.onUnlocked();
+    } else {
+      setState(() {
+        _generateQuestion();
+        _errorMessage = 'Tekrar deneyin.';
+      });
+    }
   }
 
   @override
@@ -450,130 +467,118 @@ class _MultiFingerParentGateState extends State<MultiFingerParentGate> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       child: Center(
         child: Container(
-          width: 500,
+          width: 480,
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: const Color(0xFFFFFBF2),
             borderRadius: BorderRadius.circular(32),
             border: Border.all(color: const Color(0xFF2FA7A0), width: 4),
           ),
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              // İçerik ve Listener
-              Listener(
-                behavior: HitTestBehavior.opaque,
-                onPointerDown: (event) {
-                  setState(() {
-                    _pointerPositions[event.pointer] = event.localPosition;
-                  });
-                  _checkPointers();
-                },
-                onPointerMove: (event) {
-                  setState(() {
-                    _pointerPositions[event.pointer] = event.localPosition;
-                  });
-                },
-                onPointerUp: (event) {
-                  setState(() {
-                    _pointerPositions.remove(event.pointer);
-                  });
-                  _checkPointers();
-                },
-                onPointerCancel: (event) {
-                  setState(() {
-                    _pointerPositions.remove(event.pointer);
-                  });
-                  _checkPointers();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Icon(
-                        Icons.lock_person_rounded,
-                        size: 54,
-                        color: Color(0xFF2FA7A0),
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Ebeveyn Doğrulaması',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF233238),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Açmak için ekranın ortasına 3 parmağınızla birden dokunun ve 3 saniye basılı tutun.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF53666C),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      // İlerleme Çubuğu veya Durum
-                      Center(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: CircularProgressIndicator(
-                                value: _progress,
-                                strokeWidth: 8,
-                                backgroundColor: const Color(0xFFE6ECE8),
-                                color: const Color(0xFF6BCB77),
-                              ),
-                            ),
-                            Text(
-                              '${_pointerPositions.length} / $requiredFingers',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF233238),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Icon(
+                    Icons.lock_person_rounded,
+                    size: 54,
+                    color: Color(0xFF2FA7A0),
                   ),
-                ),
-              ),
-              // Kapatma Butonu (Sağ üst)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
-              // Dokunulan noktalarda görsel daire çizme
-              ..._pointerPositions.values.map(
-                (pos) => Positioned(
-                  left: pos.dx - 35,
-                  top: pos.dy - 35,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2FA7A0).withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFF2FA7A0),
-                          width: 3,
-                        ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Ebeveyn Doğrulaması',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF233238),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Devam etmek için lütfen işlemin sonucunu seçin.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF53666C),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE6ECE8),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      _question,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2,
                       ),
                     ),
                   ),
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: () {
+                      int wrongIndex = 0;
+                      return _options.map((option) {
+                        final isCorrect = option == _correctAnswer;
+                        return SizedBox(
+                          width: 110,
+                          height: 50,
+                          child: ElevatedButton(
+                            key: ValueKey(isCorrect
+                                ? 'parent-gate-option-correct'
+                                : 'parent-gate-option-wrong-${wrongIndex++}'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2FA7A0),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 2,
+                            ),
+                            onPressed: () => _handleOptionSelected(option),
+                            child: Text(
+                              option.toString(),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList();
+                    }(),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: -12,
+                right: -12,
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded, size: 28),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
             ],

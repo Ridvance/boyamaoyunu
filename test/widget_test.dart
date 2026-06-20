@@ -44,7 +44,7 @@ void main() {
     },
   );
 
-  testWidgets('opens parent safety screen through the multi-finger gate', (
+  testWidgets('opens parent safety screen through the math parent gate', (
     WidgetTester tester,
   ) async {
     tester.view.physicalSize = const Size(1200, 800);
@@ -59,27 +59,17 @@ void main() {
 
     expect(find.text('Ebeveyn Doğrulaması'), findsOneWidget);
 
-    // Simulate touching screen with 3 fingers simultaneously
-    final gesture1 = await tester.startGesture(
-      const Offset(500, 350),
-      pointer: 1,
-    );
-    final gesture2 = await tester.startGesture(
-      const Offset(600, 350),
-      pointer: 2,
-    );
-    final gesture3 = await tester.startGesture(
-      const Offset(700, 350),
-      pointer: 3,
-    );
+    // Verify wrong answer logic
+    // Tap a wrong answer button (wrong-0)
+    await tester.tap(find.byKey(const ValueKey('parent-gate-option-wrong-0')));
+    await tester.pumpAndSettle();
 
-    // Pump and wait for 3 seconds timer
-    await tester.pump(const Duration(seconds: 4));
+    // Verify we are still on the dialog (ParentSafetyScreen not opened)
+    expect(find.text('Ebeveyn Kontrol Paneli'), findsNothing);
+    expect(find.text('Tekrar deneyin.'), findsOneWidget);
 
-    // Lift fingers up
-    await gesture1.up();
-    await gesture2.up();
-    await gesture3.up();
+    // Tap the correct answer button
+    await tester.tap(find.byKey(const ValueKey('parent-gate-option-correct')));
     await tester.pumpAndSettle();
 
     // Verify parent screen is opened
