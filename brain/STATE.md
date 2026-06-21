@@ -10,9 +10,9 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: COMPLETE.
-- Aktif Faz: Phase 2K - Store Release Blockers And Platform Baseline.
-- Faz durumu: Tamamlandı; Phase 2L aktif edilmedi.
+- Action State: READY.
+- Aktif Faz: Phase 2L - Unified Progress Journey And Parent Controls.
+- Faz durumu: Active.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -38,7 +38,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-Phase 2K tamamlandı. Kullanıcı talimatı gereği Phase 2L'ye otomatik geçme; yeni faz aktivasyonunu bekle.
+`brain/CURRENT_PHASE.md` içindeki Phase 2L scope locked prompt'u uygula; birleşik yerel ilerleme ve ebeveyn kontrolleri dışına çıkma.
 
 ## Son Doğrulama
 
