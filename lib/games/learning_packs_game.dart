@@ -4,6 +4,8 @@ import 'habits_game.dart';
 import 'magic_colors_game.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
+import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'dart:async';
 
@@ -11,6 +13,7 @@ class LearningPackActivity {
   final String id;
   final String title;
   final String skill;
+  final int progressIndex;
   final IconData icon;
   final Color color;
   final WidgetBuilder builder;
@@ -19,10 +22,158 @@ class LearningPackActivity {
     required this.id,
     required this.title,
     required this.skill,
+    required this.progressIndex,
     required this.icon,
     required this.color,
     required this.builder,
   });
+}
+
+class PackMiniStep {
+  final String label;
+  final IconData icon;
+
+  const PackMiniStep({required this.label, required this.icon});
+}
+
+class PackMiniActivityScreen extends StatefulWidget {
+  const PackMiniActivityScreen({
+    required this.activityId,
+    required this.title,
+    required this.color,
+    required this.steps,
+    super.key,
+  });
+
+  final String activityId;
+  final String title;
+  final Color color;
+  final List<PackMiniStep> steps;
+
+  @override
+  State<PackMiniActivityScreen> createState() => _PackMiniActivityScreenState();
+}
+
+class _PackMiniActivityScreenState extends State<PackMiniActivityScreen> {
+  int _stepIndex = 0;
+  bool _isComplete = false;
+
+  void _completeStep() {
+    AppHaptics.mediumImpact();
+    AudioSynth.playRaindropSound();
+    if (_stepIndex == widget.steps.length - 1) {
+      setState(() => _isComplete = true);
+      AudioSynth.playSparkleSound();
+      return;
+    }
+    setState(() => _stepIndex += 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFBF2),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () => Navigator.pop(context, false),
+                    icon: const Icon(Icons.arrow_back_rounded),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        color: Color(0xFF233238),
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(widget.steps.length, (index) {
+                  final isDone = index < _stepIndex || _isComplete;
+                  final isActive = index == _stepIndex && !_isComplete;
+                  return Container(
+                    key: ValueKey('pack-mini-progress-${widget.activityId}-$index'),
+                    width: 64,
+                    height: 12,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: isDone || isActive
+                          ? widget.color
+                          : const Color(0xFFE6ECE8),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: _isComplete
+                    ? Center(
+                        child: FilledButton.icon(
+                          key: ValueKey('pack-mini-complete-${widget.activityId}'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: widget.color,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 20,
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context, true),
+                          icon: const Icon(Icons.emoji_events_rounded, size: 40),
+                          label: const Text(
+                            'Tamamladım',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Semantics(
+                          button: true,
+                          label: widget.steps[_stepIndex].label,
+                          child: Material(
+                            color: widget.color,
+                            borderRadius: BorderRadius.circular(36),
+                            child: InkWell(
+                              key: ValueKey(
+                                'pack-mini-step-${widget.activityId}-$_stepIndex',
+                              ),
+                              onTap: _completeStep,
+                              borderRadius: BorderRadius.circular(36),
+                              child: SizedBox(
+                                width: 300,
+                                height: 260,
+                                child: Icon(
+                                  widget.steps[_stepIndex].icon,
+                                  color: Colors.white,
+                                  size: 150,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class LearningPack {
@@ -63,6 +214,7 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
           id: 'story-coloring',
           title: 'Hikayeli Boyama',
           skill: 'Görsel takip',
+          progressIndex: 0,
           icon: Icons.brush_rounded,
           color: const Color(0xFFFF4B4B),
           builder: (_) => const ColoringGame(),
@@ -71,6 +223,7 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
           id: 'color-mix',
           title: 'Renk Karışımı',
           skill: 'Renk sonucu',
+          progressIndex: 1,
           icon: Icons.science_rounded,
           color: const Color(0xFFFF9500),
           builder: (_) => const MagicColorsGame(),
@@ -79,9 +232,136 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
           id: 'habits',
           title: 'İyi Alışkanlıklar',
           skill: 'Günlük görev',
+          progressIndex: 2,
           icon: Icons.volunteer_activism_rounded,
           color: const Color(0xFF2FA7A0),
           builder: (_) => const HabitsGame(),
+        ),
+        LearningPackActivity(
+          id: 'star-trail',
+          title: 'Yıldız Yolu',
+          skill: 'Sıralı dikkat',
+          progressIndex: 3,
+          icon: Icons.route_rounded,
+          color: const Color(0xFF8B5CF6),
+          builder: (_) => const PackMiniActivityScreen(
+            activityId: 'star-trail',
+            title: 'Yıldız Yolu',
+            color: Color(0xFF8B5CF6),
+            steps: [
+              PackMiniStep(label: 'Başla', icon: Icons.play_arrow_rounded),
+              PackMiniStep(label: 'Devam et', icon: Icons.route_rounded),
+              PackMiniStep(label: 'Yıldıza ulaş', icon: Icons.star_rounded),
+            ],
+          ),
+        ),
+      ],
+    ),
+    LearningPack(
+      id: 'colors-shapes',
+      title: 'Renk ve Şekil',
+      focus: 'Renk sonucu, sıra ve görsel eşleme',
+      icon: Icons.palette_rounded,
+      color: const Color(0xFFFF9500),
+      activities: [
+        LearningPackActivity(
+          id: 'color-mix-practice',
+          title: 'Renk Deneyi',
+          skill: 'Renk sonucu',
+          progressIndex: 4,
+          icon: Icons.science_rounded,
+          color: const Color(0xFFFF9500),
+          builder: (_) => const MagicColorsGame(),
+        ),
+        LearningPackActivity(
+          id: 'color-sequence',
+          title: 'Renk Sırası',
+          skill: 'Sıralı dikkat',
+          progressIndex: 5,
+          icon: Icons.format_color_fill_rounded,
+          color: const Color(0xFFFF4B4B),
+          builder: (_) => const PackMiniActivityScreen(
+            activityId: 'color-sequence',
+            title: 'Renk Sırası',
+            color: Color(0xFFFF4B4B),
+            steps: [
+              PackMiniStep(label: 'Kırmızı', icon: Icons.circle_rounded),
+              PackMiniStep(label: 'Sarı', icon: Icons.wb_sunny_rounded),
+              PackMiniStep(label: 'Mavi', icon: Icons.water_drop_rounded),
+            ],
+          ),
+        ),
+        LearningPackActivity(
+          id: 'shape-path',
+          title: 'Şekil Yolu',
+          skill: 'Görsel ayırt etme',
+          progressIndex: 6,
+          icon: Icons.category_rounded,
+          color: const Color(0xFF2B86FF),
+          builder: (_) => const PackMiniActivityScreen(
+            activityId: 'shape-path',
+            title: 'Şekil Yolu',
+            color: Color(0xFF2B86FF),
+            steps: [
+              PackMiniStep(label: 'Daire', icon: Icons.circle_outlined),
+              PackMiniStep(label: 'Kare', icon: Icons.square_outlined),
+              PackMiniStep(label: 'Yıldız', icon: Icons.star_outline_rounded),
+            ],
+          ),
+        ),
+      ],
+    ),
+    LearningPack(
+      id: 'daily-heroes',
+      title: 'Günlük Kahramanlar',
+      focus: 'Öz bakım, düzen ve yardımlaşma',
+      icon: Icons.volunteer_activism_rounded,
+      color: const Color(0xFF2FA7A0),
+      activities: [
+        LearningPackActivity(
+          id: 'habits-practice',
+          title: 'Alışkanlık Görevleri',
+          skill: 'Günlük sorumluluk',
+          progressIndex: 7,
+          icon: Icons.volunteer_activism_rounded,
+          color: const Color(0xFF2FA7A0),
+          builder: (_) => const HabitsGame(),
+        ),
+        LearningPackActivity(
+          id: 'morning-order',
+          title: 'Sabah Sırası',
+          skill: 'Günlük sıralama',
+          progressIndex: 8,
+          icon: Icons.wb_sunny_rounded,
+          color: const Color(0xFFF59E0B),
+          builder: (_) => const PackMiniActivityScreen(
+            activityId: 'morning-order',
+            title: 'Sabah Sırası',
+            color: Color(0xFFF59E0B),
+            steps: [
+              PackMiniStep(label: 'Uyan', icon: Icons.bed_rounded),
+              PackMiniStep(label: 'Temizlen', icon: Icons.brush_rounded),
+              PackMiniStep(label: 'Hazırlan', icon: Icons.checkroom_rounded),
+            ],
+          ),
+        ),
+        LearningPackActivity(
+          id: 'helping-hands',
+          title: 'Yardım Eden Eller',
+          skill: 'Yardımlaşma sırası',
+          progressIndex: 9,
+          icon: Icons.back_hand_rounded,
+          color: const Color(0xFFEC4899),
+          builder: (_) => const PackMiniActivityScreen(
+            activityId: 'helping-hands',
+            title: 'Yardım Eden Eller',
+            color: Color(0xFFEC4899),
+            steps: [
+              PackMiniStep(label: 'Fark et', icon: Icons.visibility_rounded),
+              PackMiniStep(label: 'Yardım et', icon: Icons.back_hand_rounded),
+              PackMiniStep(label: 'Birlikte bitir', icon: Icons.groups_rounded),
+            ],
+          ),
         ),
       ],
     ),
@@ -174,15 +454,23 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
       _hintController.reset();
     });
     _triggerKamoHappy();
-    await Navigator.push<void>(context, MaterialPageRoute(builder: activity.builder));
-    if (!mounted || !_isActivityCompleted(activity.id)) return;
-    final activityIndex = _selectedPack?.activities.indexOf(activity) ?? -1;
-    if (activityIndex >= 0) {
+    final completedInline = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: activity.builder),
+    );
+    if (!mounted || (completedInline != true && !_isActivityCompleted(activity.id))) {
+      return;
+    }
+    if (!ProgressService.instance.isLevelCompleted(
+      ProgressChapters.learningPacks,
+      activity.progressIndex,
+    )) {
       await ProgressService.instance.completeLevel(
         ProgressChapters.learningPacks,
-        activityIndex,
+        activity.progressIndex,
         stars: 1,
       );
+      if (mounted) setState(() {});
     }
   }
 
@@ -192,10 +480,10 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
         ProgressChapters.coloring,
         0,
       ),
-      'color-mix' => ProgressService.instance.getCompletedCount(
+      'color-mix' || 'color-mix-practice' => ProgressService.instance.getCompletedCount(
         ProgressChapters.magicColors,
       ) > 0,
-      'habits' => ProgressService.instance.isLevelCompleted(
+      'habits' || 'habits-practice' => ProgressService.instance.isLevelCompleted(
         ProgressChapters.habits,
         0,
       ),
@@ -265,6 +553,25 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
                             ),
                           ),
                         ),
+                        if (selectedPack != null)
+                          Container(
+                            key: const ValueKey('learning-pack-progress'),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: selectedPack.color.withValues(alpha: 0.14),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              '${selectedPack.activities.where((activity) => ProgressService.instance.isLevelCompleted(ProgressChapters.learningPacks, activity.progressIndex)).length} / ${selectedPack.activities.length}',
+                              style: TextStyle(
+                                color: selectedPack.color,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -280,6 +587,11 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
                               : _PackDetail(
                                 pack: selectedPack,
                                 onActivityTap: _openActivity,
+                                isActivityCompleted: (activity) =>
+                                    ProgressService.instance.isLevelCompleted(
+                                      ProgressChapters.learningPacks,
+                                      activity.progressIndex,
+                                    ),
                                 firstActivityKey: _firstActivityKey,
                                 showHint: _showHint,
                               ),
@@ -411,6 +723,15 @@ class _PackList extends StatelessWidget {
                             color: Color(0xFF53666C),
                           ),
                         ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '${pack.activities.length} etkinlik',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                            color: pack.color,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -443,12 +764,14 @@ class _PackList extends StatelessWidget {
 class _PackDetail extends StatelessWidget {
   final LearningPack pack;
   final ValueChanged<LearningPackActivity> onActivityTap;
+  final bool Function(LearningPackActivity) isActivityCompleted;
   final GlobalKey firstActivityKey;
   final bool showHint;
 
   const _PackDetail({
     required this.pack,
     required this.onActivityTap,
+    required this.isActivityCompleted,
     required this.firstActivityKey,
     required this.showHint,
   });
@@ -463,6 +786,7 @@ class _PackDetail extends StatelessWidget {
       childAspectRatio: 1.1,
       children: List.generate(activities.length, (index) {
         final activity = activities[index];
+        final isDone = isActivityCompleted(activity);
         final isFirst = index == 0;
         final child = Material(
           key: isFirst ? firstActivityKey : null,
@@ -477,7 +801,12 @@ class _PackDetail extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(activity.icon, color: activity.color, size: 72),
+                  Icon(
+                    isDone ? Icons.check_circle_rounded : activity.icon,
+                    key: ValueKey('learning-activity-status-${activity.id}'),
+                    color: isDone ? const Color(0xFF10B981) : activity.color,
+                    size: 72,
+                  ),
                   const SizedBox(height: 14),
                   FittedBox(
                     fit: BoxFit.scaleDown,

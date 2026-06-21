@@ -9,6 +9,7 @@ import 'dart:async';
 class HabitTask {
   final String id;
   final String title;
+  final String category;
   final IconData sceneIcon;
   final IconData actionIcon;
   final Color color;
@@ -16,6 +17,7 @@ class HabitTask {
   const HabitTask({
     required this.id,
     required this.title,
+    required this.category,
     required this.sceneIcon,
     required this.actionIcon,
     required this.color,
@@ -34,6 +36,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
     HabitTask(
       id: 'toys',
       title: 'Oyuncakları Topla',
+      category: 'Düzen',
       sceneIcon: Icons.toys_rounded,
       actionIcon: Icons.inventory_2_rounded,
       color: Color(0xFF2B86FF),
@@ -41,6 +44,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
     HabitTask(
       id: 'teeth',
       title: 'Dişleri Fırçala',
+      category: 'Öz Bakım',
       sceneIcon: Icons.sentiment_satisfied_alt_rounded,
       actionIcon: Icons.brush_rounded,
       color: Color(0xFF2FA7A0),
@@ -48,9 +52,50 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
     HabitTask(
       id: 'trash',
       title: 'Çöpü Kutusuna At',
+      category: 'Temizlik',
       sceneIcon: Icons.recycling_rounded,
       actionIcon: Icons.delete_rounded,
       color: Color(0xFFFF8E2B),
+    ),
+    HabitTask(
+      id: 'hands',
+      title: 'Ellerini Yıka',
+      category: 'Öz Bakım',
+      sceneIcon: Icons.back_hand_rounded,
+      actionIcon: Icons.water_drop_rounded,
+      color: Color(0xFF06B6D4),
+    ),
+    HabitTask(
+      id: 'bed',
+      title: 'Yatağını Topla',
+      category: 'Düzen',
+      sceneIcon: Icons.bed_rounded,
+      actionIcon: Icons.check_circle_rounded,
+      color: Color(0xFF8B5CF6),
+    ),
+    HabitTask(
+      id: 'table',
+      title: 'Sofraya Yardım Et',
+      category: 'Yardım',
+      sceneIcon: Icons.table_restaurant_rounded,
+      actionIcon: Icons.volunteer_activism_rounded,
+      color: Color(0xFFEC4899),
+    ),
+    HabitTask(
+      id: 'flowers',
+      title: 'Çiçekleri Sula',
+      category: 'Yardım',
+      sceneIcon: Icons.local_florist_rounded,
+      actionIcon: Icons.water_drop_rounded,
+      color: Color(0xFF10B981),
+    ),
+    HabitTask(
+      id: 'laundry',
+      title: 'Kirliyi Sepete At',
+      category: 'Temizlik',
+      sceneIcon: Icons.checkroom_rounded,
+      actionIcon: Icons.local_laundry_service_rounded,
+      color: Color(0xFFF59E0B),
     ),
   ];
 
@@ -451,13 +496,39 @@ class _HabitTaskPanel extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: Icon(
-                  task.sceneIcon,
-                  color: task.color.withValues(alpha: 0.88),
-                  size: 190,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: task.color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      task.category,
+                      key: ValueKey('habit-category-${task.id}'),
+                      style: TextStyle(
+                        color: task.color,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Icon(
+                        task.sceneIcon,
+                        color: task.color.withValues(alpha: 0.88),
+                        size: 190,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const Icon(

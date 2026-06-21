@@ -75,3 +75,12 @@ Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değe
 - Çocuk ilerleme rozetleri ve ebeveyn özet/ayar/sıfırlama widget testleri: PASS.
 - Kısa yatay ekran taşma regresyonu: PASS.
 - Gerçek cihaz restart smoke Phase 2P cihaz matrisinde ayrıca doğrulanacak.
+
+## Son Otomatik Doğrulama - Phase 2M
+
+- `git diff --check`: PASS.
+- `flutter analyze`: PASS, sorun yok.
+- `flutter test --reporter expanded`: PASS, 34 test.
+- Sekiz alışkanlık görevi/dört kategori tamamlama testi: PASS.
+- Üç paket ve paket içi mikro etkinlik kalıcı ilerleme testi: PASS.
+- Mevcut inactivity, kutlama ve kompakt yatay ekran regresyonları: PASS.

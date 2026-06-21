@@ -305,7 +305,7 @@ void main() {
     expect(find.text('Turuncu'), findsWidgets);
   });
 
-  testWidgets('habits game completes three daily habit tasks', (
+  testWidgets('habits game completes eight tasks across four categories', (
     WidgetTester tester,
   ) async {
     tester.view.physicalSize = const Size(1200, 800);
@@ -324,12 +324,31 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pump();
 
-    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('habit-action-teeth')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('habit-action-trash')));
-    await tester.pump();
+    const taskIds = [
+      'toys', 'teeth', 'trash', 'hands', 'bed', 'table', 'flowers', 'laundry',
+    ];
+    const categories = {
+      'toys': 'Düzen',
+      'teeth': 'Öz Bakım',
+      'trash': 'Temizlik',
+      'hands': 'Öz Bakım',
+      'bed': 'Düzen',
+      'table': 'Yardım',
+      'flowers': 'Yardım',
+      'laundry': 'Temizlik',
+    };
+    for (final taskId in taskIds) {
+      expect(
+        find.byKey(ValueKey('habit-progress-$taskId')),
+        findsOneWidget,
+      );
+      final categoryText = tester.widget<Text>(
+        find.byKey(ValueKey('habit-category-$taskId')),
+      );
+      expect(categoryText.data, categories[taskId]);
+      await tester.tap(find.byKey(ValueKey('habit-action-$taskId')));
+      await tester.pump();
+    }
 
     expect(find.byKey(const ValueKey('habits-complete-panel')), findsOneWidget);
   });
@@ -374,6 +393,62 @@ void main() {
     await tester.pump();
 
     expect(find.byKey(const ValueKey('habit-action-toys')), findsOneWidget);
+  });
+
+  testWidgets('learning packs exposes three packs and completes an inline activity', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    await ProgressService.instance.init();
+    await AppSettingsService.instance.init();
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('game-card-learning_packs')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('game-card-learning_packs')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('learning-pack-first-skills')), findsOneWidget);
+    expect(find.byKey(const ValueKey('learning-pack-colors-shapes')), findsOneWidget);
+    expect(find.byKey(const ValueKey('learning-pack-daily-heroes')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('learning-pack-colors-shapes')));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('learning-activity-color-mix-practice')), findsOneWidget);
+    expect(find.byKey(const ValueKey('learning-activity-color-sequence')), findsOneWidget);
+    expect(find.byKey(const ValueKey('learning-activity-shape-path')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('learning-activity-color-sequence')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    for (var index = 0; index < 3; index++) {
+      await tester.tap(
+        find.byKey(ValueKey('pack-mini-step-color-sequence-$index')),
+      );
+      await tester.pump();
+    }
+    await tester.tap(
+      find.byKey(const ValueKey('pack-mini-complete-color-sequence')),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.text('1 / 3'), findsOneWidget);
+    expect(
+      ProgressService.instance.isLevelCompleted(
+        ProgressChapters.learningPacks,
+        5,
+      ),
+      isTrue,
+    );
   });
 
   testWidgets('coloring game inactivity triggers GhostHandHint and interaction hides it', (
@@ -877,13 +952,14 @@ void main() {
     expect(state.kamoExpression, equals('neutral'));
     expect(state.isCelebrationActive, isFalse);
 
-    // Complete all 3 tasks
-    await tester.tap(find.byKey(const ValueKey('habit-action-toys')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('habit-action-teeth')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('habit-action-trash')));
-    await tester.pump();
+    // Complete all 8 tasks
+    const taskIds = [
+      'toys', 'teeth', 'trash', 'hands', 'bed', 'table', 'flowers', 'laundry',
+    ];
+    for (final taskId in taskIds) {
+      await tester.tap(find.byKey(ValueKey('habit-action-$taskId')));
+      await tester.pump();
+    }
 
     // Celebration should be active and Kamo should be happy
     expect(state.isCelebrationActive, isTrue);

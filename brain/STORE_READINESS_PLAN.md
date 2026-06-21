@@ -4,7 +4,7 @@
 
 ## Karar
 
-Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. Birleşik kalıcı ilerleme ve ebeveyn kontrolleri tamamlandı; sıradaki ürün sınırı bazı modların içerik derinliğidir.
+Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. Birleşik ilerleme, ebeveyn kontrolleri, alışkanlık ve öğrenme paketi derinliği tamamlandı; sıradaki ürün sınırı çekirdek oyun içerik dengesidir.
 
 ## Denetim Kanıtı
 

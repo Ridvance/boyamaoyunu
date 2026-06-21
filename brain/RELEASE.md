@@ -44,7 +44,7 @@ git diff --check
 - Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`.
 - AAB SHA-256: `e44e45c921f6c002e37508adc959c09080ecb0671f01b12414f4c9cc1f0d84db`.
 - iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.5 MB.
-- Otomatik test: 33 PASS; `flutter analyze`: PASS.
+- Otomatik test: 34 PASS; `flutter analyze`: PASS.
 
 ## Mağaza Politikası Notu
 
