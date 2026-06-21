@@ -4,56 +4,52 @@
 
 ## Active Phase
 
-Phase 2L - Unified Progress Journey And Parent Controls
+Phase 2M - Habits And Learning Pack Depth
 
 ## Durum
 
-Completed. Phase 2M aktif edilmedi.
+Active.
 
 ## Neden Bu Faz
 
-Phase 2K yayın engelleri kapandı. Mevcut `SharedPreferences` ilerleme altyapısı oyunlar arasında tutarlı kimlik, yıldız, çocuk yolculuğu ve ebeveyn kontrolü sunmuyor. Mağaza kapalı testinden önce ilerleme davranışı birleştirilmeli ve ebeveyn tarafından yönetilebilir olmalı.
+Phase 2L ile ilerleme ve ebeveyn kontrolleri tamamlandı. İyi Alışkanlıklar yalnız 3 görev, Öğrenme Paketleri yalnız 1 paket sunduğu için ilk sürümde tekrar oynanabilirlik ve paket farklılığı yetersiz. Yeni ana oyun eklemeden bu iki alan derinleştirilmeli.
 
 ## Scope
 
-- Her oyun için benzersiz chapter/level kimlikleri kullan.
-- Tamamlanan bölüm ve yıldızları restart sonrası koru.
-- Çocuk ana ekranında sade görsel ilerleme göster.
-- Ebeveyn alanına ilerleme özeti ekle.
-- Ebeveyn kapısı arkasında bilinçli/onaylı ilerleme sıfırlama ekle.
-- Kalıcı ses ve titreşim kontrolleri ekle.
+- İyi Alışkanlıklar görevlerini 6-8 görsel mikro göreve çıkar.
+- Görevleri temizlik, düzen, öz bakım ve yardım başlıklarına dağıt.
+- Öğrenme Paketlerini en az 3 ayırt edilebilir pakete çıkar.
+- Her pakette 3-4 etkinlik ve farklı kazanım/etkinlik sırası sun.
+- Paketlerin yalnız mevcut oyun kartlarına tekrar yönlendirme hissini azalt.
 
 ## Scope Dışı
 
-- Hesap veya bulut senkronizasyonu.
-- Analitik ve liderlik tablosu.
-- Ceza/puan ekonomisi veya satın alma.
-- Yeni oyun, level veya içerik genişletme.
-- Büyük navigasyon ya da görsel yeniden tasarım.
+- Resmî müfredat uyumu iddiası.
+- Öğretmen paneli veya canlı içerik indirme.
+- Metin ağırlıklı dersler.
+- Yeni ana oyun, ödeme veya reklam.
+- Phase 2N çekirdek oyun içerik dengesi.
 
 ## Beklenen Dosya Etki Alanı
 
-- `lib/services/progress_service.dart`
-- Ses/titreşim tercih servisi
-- `lib/main.dart`
-- Mevcut oyun tamamlama noktaları
-- `test/progress_service_test.dart`
-- `test/widget_test.dart`
+- `lib/games/habits_game.dart`
+- `lib/games/learning_packs_game.dart`
+- İlgili widget testleri
 - `brain/*`
 
 ## Exit Criteria
 
-- Tüm oyunlar doğru ve çakışmayan ilerleme anahtarları kullanır.
-- Tamamlanma ve yıldızlar uygulama yeniden başlatıldığında korunur.
-- Çocuk ana ekranında sade ilerleme görünür.
-- Ebeveyn ilerleme özetini görür ve onay sonrası sıfırlayabilir.
-- Ses/titreşim tercihleri kalıcıdır.
+- En az 6 alışkanlık görevi oynanır.
+- Görevler dört davranış başlığına dağılır.
+- En az 3 farklı öğrenme paketi vardır.
+- Her pakette 3-4 etkinlik vardır ve paket sıraları/kazanımları farklıdır.
+- Paket içi ilerleme görünürdür.
 - `flutter analyze`, `flutter test` ve `git diff --check` temiz geçer.
 
 ## Scope Locked Prompt
 
 ```text
-Sadece yerel ve birleşik ilerleme sistemini uygula: tüm oyunlara benzersiz chapter/level kimliği ver, tamamlanma ve yıldızları restart sonrası koru, çocuk ana ekranında sade görsel ilerleme göster, ebeveyn alanına ilerleme özeti, onaylı sıfırlama ve ses/titreşim kontrolleri ekle. Hesap, bulut, analitik, liderlik tablosu, ödeme veya içerik genişletme ekleme.
+Sadece İyi Alışkanlıklar ve Öğrenme Paketleri derinliğini artır: alışkanlıkları 6-8 görsel mikro göreve, öğrenme alanını en az 3 ayırt edilebilir ve her biri 3-4 etkinlikli pakete çıkar. Resmî müfredat iddiası, öğretmen paneli, canlı içerik, yeni ana oyun, ödeme veya metin ağırlıklı ders ekleme.
 ```
 
 ## Test
@@ -63,14 +59,3 @@ flutter analyze
 flutter test
 git diff --check
 ```
-
-## Tamamlanma Kanıtı
-
-- Sekiz ana oyun için benzersiz chapter kimlikleri tanımlandı.
-- Tamamlanan seviyeler ve 1-3 yıldız `SharedPreferences` ile kalıcı.
-- Depolama yeniden başlatma testi tamamlanma/yıldız kalıcılığını doğruluyor.
-- Çocuk ana ekranında her oyun kartı için tamamlanma ve yıldız rozeti var.
-- Ebeveyn panelinde özet, ikinci onaylı sıfırlama ve kalıcı ses/titreşim kontrolleri var.
-- `flutter analyze`: PASS.
-- `flutter test`: PASS, 33 test.
-- `git diff --check`: PASS.

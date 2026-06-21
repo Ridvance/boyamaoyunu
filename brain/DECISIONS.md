@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-21 - Phase 2M Aktivasyonu
+- **Karar:** Phase 2L tamamlandıktan sonra kullanıcının `Devam` talimatıyla Phase 2M aktif edildi.
+- **Neden:** Onaylı mağaza hazırlık sırasında sıradaki iş, en sığ iki içerik alanını derinleştirmektir.
+- **Etki:** Yalnız `HabitsGame` ve `LearningPacksGame` içeriği/testleri değişecek; Phase 2N kapsamına geçilmeyecek.
+- **Geri alma yolu:** Phase 2M değişikliklerini revert et ve `CURRENT_PHASE.md` dosyasını Phase 2L tamamlandı durumuna döndür.
+
 ### 2026-05-21 - CEO Manuel Departman Gecisi: Research
 - **Karar:** Durum manuel olarak Research moduna gecirildi.
 - **Neden:** CEO'nun yonlendirmesi veya risk tercihi (Override).

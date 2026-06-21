@@ -209,7 +209,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `lib/games/habits_game.dart`, `lib/games/learning_packs_game.dart`, içerik modelleri, ilgili testler.
 - Çıkış kriterleri: En az 6 alışkanlık görevi ve 3 ayırt edilebilir öğrenme paketi oynanır; paketler farklı kazanım ve etkinlik sırası sunar.
 - Test: Widget testleri, manuel 4-5 yaş okunabilirlik smoke, `flutter analyze`, `flutter test`.
-- Durum: pending.
+- Durum: active.
 
 ### Phase 2N - Core Game Content Balance
 - Amaç: Level sayısını rastgele şişirmeden çekirdek oyunların ilk oturum ve tekrar oynama derinliğini dengelemek.
