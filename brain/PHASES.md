@@ -189,7 +189,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `lib/games/balloon_pop_game.dart`, `test/*`, `ios/Podfile`, `ios/Runner.xcodeproj/project.pbxproj`, `lib/main.dart`, Android/iOS ad yapılandırmaları, `web/privacy.html`, `brain/*`.
 - Çıkış kriterleri: Balon ilerlemesi doğru chapter'a yazılır; `flutter analyze` ve `flutter test` temizdir; imzalı Android AAB üretilir; iOS release build `--no-codesign` ile tamamlanır; ürün adı tutarlıdır.
 - Test: `flutter analyze`, `flutter test`, `flutter build appbundle --release`, `flutter build ios --release --no-codesign`, `git diff --check`.
-- Durum: active.
+- Durum: completed.
+- Sonuç: Balon ilerleme anahtarı ve regresyon testi tamamlandı; iOS hedefi 13.0'a hizalandı; Android AAB ve iOS no-codesign release build geçti; kanonik ad `Ninnice Çocuk Oyunları` olarak hizalandı.
 
 ### Phase 2L - Unified Progress Journey And Parent Controls
 - Amaç: Oyunlar arasındaki ilerlemeyi tutarlı, kalıcı ve çocuk/ebeveyn için anlaşılır hale getirmek.

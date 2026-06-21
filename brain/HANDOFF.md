@@ -4,36 +4,30 @@
 
 ## Son Durum
 
-- Son mod: Planning / Handoff.
-- Son yapılan: Genel mağaza hazırlık denetimi tamamlandı ve öneriler Phase 2K-2P olarak planlandı.
+- Son mod: Execution / Handoff.
+- Son yapılan: Phase 2K yayın engelleri kapatıldı.
 - Aktif faz: Phase 2K - Store Release Blockers And Platform Baseline.
-- Action State: READY.
-- Kod değişikliği: Bu planlama işinde uygulama kodu değiştirilmedi.
+- Action State: COMPLETE.
+- Faz durumu: Phase 2K tamamlandı; Phase 2L aktif edilmedi.
 
 ## Kanıt
 
 - `flutter analyze`: PASS.
-- `flutter test --reporter expanded`: 28 PASS.
+- `flutter test --reporter expanded`: 29 PASS.
 - Android imzalı AAB: PASS, 23.5 MB, target SDK 35.
-- iOS release build: FAIL; iOS 12 hedefi, `audioplayers_darwin` iOS 13 ister.
+- iOS release build: PASS; minimum hedef 13.0, no-codesign Runner.app 26.5 MB.
 - Web release build: PASS; CupertinoIcons font uyarısı var.
-- Bilinen ürün bug'ı: `balloon_pop_game.dart` Balon tamamlamasını `tracing` chapter'ına yazıyor.
+- Balon tamamlaması `balloon` chapter'ına yazılıyor ve regresyon testi mevcut.
+- Kanonik ad Android, iOS, Flutter, web ve gizlilik yüzeylerinde `Ninnice Çocuk Oyunları`.
 - Görsel audit: Uygulama içi tarayıcı bu oturumda kullanılamadığı için ekran görüntülü QA yapılmadı.
 
 ## Sıradaki İş
 
-Phase 2K'yı sırayla uygula:
-
-1. Balon ilerleme anahtarını düzelt ve regresyon testi yaz.
-2. iOS minimum target'ı 13.0 veya bağımlılığın istediği güvenli seviyeye hizala.
-3. `pod install` ve iOS no-codesign release build doğrula.
-4. Android AAB regresyon build'i al.
-5. Kanonik ürün adını yüzeylerde hizala.
-6. Test, commit ve push yap; Phase 2K tamamlanmadan Phase 2L'ye geçme.
+Phase 2K tamamlandı. Kullanıcı onayı olmadan Phase 2L'yi aktif etme.
 
 ## Git Uyarısı
 
-Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi. Bu commit korunmalı; reset/revert yapılmamalı. Planlama commit'i push edildiğinde bu commit de normal sıra içinde origin'e gidebilir.
+Kullanıcıya ait `3907fe7` commit'i korundu. Phase 2K başlarken `master` ile `origin/master` hizalıydı; reset/revert yapılmadı.
 
 ## Yeni Pencere Devam Promptu
 
@@ -50,25 +44,12 @@ Brain yapısına göre devam et. Önce şu dosyaları sırayla oku:
 7. brain/RELEASE.md
 8. brain/HANDOFF.md
 
-Aktif faz: Phase 2K - Store Release Blockers And Platform Baseline.
-
-Sadece CURRENT_PHASE içindeki scope locked prompt'u uygula. Önce git durumunu kontrol et; kullanıcıya ait mevcut değişiklikleri/commitleri koru. Balon Patlatma ilerlemesinin yanlışlıkla `tracing` chapter'ına yazılması için fix ve regresyon testi yap. Sonra iOS minimum deployment target'ı `audioplayers_darwin` ile uyumlu hale getir ve hem Android AAB hem iOS no-codesign release build'i doğrula. Kanonik ürün adını Android, iOS, Flutter ve gizlilik yüzeylerinde hizala. Yeni level, yeni oyun, ilerleme ekranı, mağaza görseli, ödeme/reklam veya büyük refactor ekleme.
+Phase 2K - Store Release Blockers And Platform Baseline tamamlandı. Phase 2L henüz aktif değil; kullanıcı onayı olmadan yeni faza geçme.
 
 Bilinen baseline:
 - flutter analyze: PASS
-- flutter test: 28 PASS
+- flutter test: 29 PASS
 - Android AAB: PASS, 23.5 MB, target SDK 35
-- iOS build: FAIL; iOS 12 < audioplayers_darwin iOS 13
-- Yerel master planlama öncesi origin/master'dan `3907fe7` ile 1 commit ilerideydi; bunu koru.
-
-İş sonunda:
-- flutter analyze
-- flutter test
-- flutter build appbundle --release
-- flutter build ios --release --no-codesign
-- git diff --check
-- brain/STATE.md, brain/RELEASE.md ve gerekirse CURRENT_PHASE.md güncelle
-- commit ve push yap
-
-Phase 2K tamamlanmadan Phase 2L'ye geçme.
+- iOS no-codesign build: PASS, deployment target 13.0
+- Kanonik ad: Ninnice Çocuk Oyunları
 ```

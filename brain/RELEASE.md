@@ -4,7 +4,7 @@
 
 ## Ürün
 
-- Çalışma adı: Ninnice Çocuk; Phase 2K içinde kanonik ad kesinleştirilecek.
+- Kanonik ürün adı: Ninnice Çocuk Oyunları.
 - Kod sürümü: `1.0.0+1`.
 - Aktif Faz: Phase 2K - Store Release Blockers And Platform Baseline.
 - Yayın kararı: `NO-GO PUBLIC`, Android kapalı teste yakın.
@@ -13,13 +13,13 @@
 
 | Platform | Durum | Kanıt / Eksik |
 |---|---|---|
-| Android | READY FOR INTERNAL/CLOSED TEST AFTER 2K | İmzalı AAB üretildi, 23.5 MB, target SDK 35. Balon ilerleme bug'ı ve marka tutarlılığı kapatılmalı. |
-| iOS | BLOCKED | Deployment target 12.0; `audioplayers_darwin` en az iOS 13 istiyor. Build ve signing/archive doğrulanmalı. |
+| Android | BUILD READY | İmzalı AAB üretildi, 23.5 MB, target SDK 35. Kapalı test ve cihaz QA bekliyor. |
+| iOS | NO-CODESIGN BUILD READY | Deployment target 13.0; CocoaPods ve release build başarılı. İmzalı archive/TestFlight ve cihaz QA bekliyor. |
 | Web/PWA | BUILD PASS | Release build başarılı; gerçek cihaz Chrome/Safari QA gerekli. |
 
 ## Public Release Kapıları
 
-- [ ] Phase 2K platform/build engelleri tamamlandı.
+- [x] Phase 2K platform/build engelleri tamamlandı.
 - [ ] Phase 2L ilerleme ve ebeveyn kontrolleri tamamlandı.
 - [ ] Phase 2M/2N içerik dengesi tamamlandı.
 - [ ] Phase 2O mağaza metadata ve görselleri tamamlandı.
@@ -42,9 +42,9 @@ git diff --check
 ## Son Build Kanıtı
 
 - Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`.
-- AAB SHA-256: `78c913180f87a2018a64987438aa3f0ef7c341efffdcb5d1ebbe20769d478c3c`.
-- iOS release: FAIL, minimum deployment target uyuşmazlığı.
-- Otomatik test: 28 PASS.
+- AAB SHA-256: `e44e45c921f6c002e37508adc959c09080ecb0671f01b12414f4c9cc1f0d84db`.
+- iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.5 MB.
+- Otomatik test: 29 PASS; `flutter analyze`: PASS.
 
 ## Mağaza Politikası Notu
 

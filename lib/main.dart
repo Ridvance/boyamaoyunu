@@ -36,7 +36,7 @@ class CocukOyunApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Çocuk Oyun',
+      title: 'Ninnice Çocuk Oyunları',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF2FA7A0),

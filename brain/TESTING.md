@@ -53,3 +53,13 @@ flutter build ios --release --no-codesign
 ## Go/No-Go
 
 Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değerlendirilmiş ve `brain/RELEASE.md` içinde `GO` kararı yazılmış olmalı.
+
+## Son Otomatik Doğrulama - Phase 2K
+
+- `git diff --check`: PASS.
+- `flutter analyze`: PASS, sorun yok.
+- `flutter test --reporter expanded`: PASS, 29 test.
+- Balon ilerleme regresyonu: `balloon` seviye 1 kaydedildi, mevcut `tracing` kaydı değişmedi.
+- `flutter build appbundle --release`: PASS, 23.5 MB.
+- `flutter build ios --release --no-codesign`: PASS, 26.5 MB.
+- Gerçek iOS imzalı archive/TestFlight ve cihaz matrisi sonraki release kapılarında bekliyor.

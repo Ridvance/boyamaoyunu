@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cocuk_oyun/services/progress_service.dart';
+import 'package:cocuk_oyun/games/balloon_pop_game.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -37,5 +38,17 @@ void main() {
       expect(ProgressService.instance.isLevelCompleted('colors', 0), isFalse);
       expect(ProgressService.instance.isLevelCompleted('shapes', 0), isFalse);
     });
+
+    test(
+      'balloon completion records balloon progress without changing tracing',
+      () async {
+        await ProgressService.instance.completeLevel('tracing', 0);
+
+        await recordBalloonLevelCompletion();
+
+        expect(ProgressService.instance.getCompletedLevels('balloon'), [1]);
+        expect(ProgressService.instance.getCompletedLevels('tracing'), [0]);
+      },
+    );
   });
 }

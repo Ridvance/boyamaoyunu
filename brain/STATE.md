@@ -5,26 +5,26 @@
 
 ## Aktif Gerçeklik
 
-Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. 2026-06-21 denetiminde `flutter analyze` temiz, 28 test başarılı ve imzalı Android AAB üretimi başarılıdır. iOS release build, minimum iOS hedefi 12.0 iken `audioplayers_darwin` en az 13.0 istediği için blokelidir.
+Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2K sonunda `flutter analyze` temiz, 29 test başarılı, imzalı Android AAB ve iOS no-codesign release build başarılıdır.
 
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: READY.
+- Action State: COMPLETE.
 - Aktif Faz: Phase 2K - Store Release Blockers And Platform Baseline.
-- Öncelik: Yeni içerikten önce yayın engellerini ve veri tutarlılığı hatasını kapatmak.
+- Faz durumu: Tamamlandı; Phase 2L aktif edilmedi.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
 
 - Android AAB: başarılı, yaklaşık 23.5 MB, target SDK 35, min SDK 21.
 - Android signing: upload keystore ile çalışıyor.
-- iOS build: blokeli; deployment target 13.0 veya üstüne hizalanmalı.
-- Bilinen bug: Balon Patlatma bölüm tamamlaması `tracing` ilerlemesine yazılıyor.
+- iOS minimum hedefi Podfile ve Xcode yapılandırmalarında 13.0; no-codesign release build başarılı.
+- Balon Patlatma bölüm tamamlaması `balloon` ilerlemesine yazılıyor; `tracing` kaydının değişmediği regresyon testiyle doğrulandı.
 - İlerleme: `SharedPreferences` altyapısı var; oyunlar arasında kimlik ve görünür yolculuk tutarsız.
 - İçerik: 7 boyama, 8 çiz takip, 12 eşleştirme şekli, 4 Renk Laboratuvarı modu, 3 alışkanlık görevi, 1 öğrenme paketi.
 - Mağaza materyali: ekran görüntüsü, feature graphic, metadata paketi ve gerçek cihaz görsel QA eksik.
-- Marka: `Çocuk Oyun`, `Ninnice Çocuk`, `Ninnice Çocuk Oyunları` adları hizalanmalı.
+- Kanonik marka: `Ninnice Çocuk Oyunları`; Android, iOS, Flutter, web ve gizlilik yüzeyleri hizalı.
 - Git: Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi; bu commit korunmalıdır.
 
 ## Onaylı Sıra
@@ -38,14 +38,14 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-`brain/CURRENT_PHASE.md` içindeki Phase 2K scope locked prompt'u uygula. Önce Balon ilerleme bug'ı ve testi; sonra iOS 13 platform hizalaması/build; ardından kanonik ürün adı ve release dokümanları.
+Phase 2K tamamlandı. Kullanıcı talimatı gereği Phase 2L'ye otomatik geçme; yeni faz aktivasyonunu bekle.
 
 ## Son Doğrulama
 
 ```text
 flutter analyze: PASS
-flutter test: PASS (28)
-flutter build appbundle --release: PASS
-flutter build ios --release --no-codesign: FAIL (iOS 12 < audioplayers_darwin iOS 13)
-flutter build web --release: PASS, CupertinoIcons font uyarısı mevcut
+flutter test: PASS (29)
+flutter build appbundle --release: PASS (23.5 MB)
+flutter build ios --release --no-codesign: PASS (Runner.app 26.5 MB)
+git diff --check: PASS
 ```

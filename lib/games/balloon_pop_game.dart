@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,7 +6,12 @@ import '../services/audio_synth.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
-import 'dart:async';
+
+const String balloonProgressChapterId = 'balloon';
+
+Future<void> recordBalloonLevelCompletion() {
+  return ProgressService.instance.completeLevel(balloonProgressChapterId, 1);
+}
 
 class BalloonPopGame extends StatefulWidget {
   const BalloonPopGame({super.key});
@@ -387,7 +393,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
       _isCelebrationActive = true;
       _kamoExpression = 'happy';
     });
-    ProgressService.instance.completeLevel('tracing', 1);
+    recordBalloonLevelCompletion();
     _kamoReactionTimer?.cancel();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {

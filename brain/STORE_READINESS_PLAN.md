@@ -4,21 +4,21 @@
 
 ## Karar
 
-Uygulama prototip seviyesini geçti. Android kapalı test yayınına yakındır; App Store build engeli nedeniyle herkese açık iki mağaza yayınına henüz hazır değildir. İçerik sayısı ilk sürüm için temel çeşitlilik sağlar, ancak kalıcı ilerleme ve bazı modların derinliği ürün bütünlüğünü sınırlamaktadır.
+Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. İçerik sayısı ilk sürüm için temel çeşitlilik sağlar, ancak kalıcı ilerleme ve bazı modların derinliği ürün bütünlüğünü sınırlamaktadır.
 
 ## Denetim Kanıtı
 
 - `flutter analyze`: temiz.
-- `flutter test --reporter expanded`: 28 test geçti.
+- `flutter test --reporter expanded`: 29 test geçti.
 - Android release AAB: başarılı, yaklaşık 23.5 MB.
 - Android release manifest: `targetSdkVersion=35`, `minSdkVersion=21`.
 - Android release signing: `key.properties` ve upload keystore mevcut; imzalı AAB üretildi.
-- iOS release build: başarısız; proje iOS 12, `audioplayers_darwin` en az iOS 13 istiyor.
-- Balon Patlatma ilerleme bug'ı: `completeLevel('tracing', 1)` yanlış chapter kullanıyor.
+- iOS release no-codesign build: başarılı; minimum hedef 13.0.
+- Balon Patlatma ilerlemesi `balloon` chapter'ına yazılıyor ve regresyon testiyle korunuyor.
 - İçerik tabanı: 7 boyama sayfası, 8 çiz takip şablonu, 12 şekil, 4 Renk Laboratuvarı modu, 3 alışkanlık görevi, 1 öğrenme paketi.
 - Kalıcı ilerleme altyapısı mevcut fakat oyunların gerçek bölüm derinliğini tutarlı göstermiyor.
 - Mağaza ekran görüntüsü, feature graphic, açıklama paketi ve destek materyalleri repo içinde hazır değil.
-- Ürün adı `Çocuk Oyun`, `Ninnice Çocuk` ve `Ninnice Çocuk Oyunları` olarak farklı yüzeylerde değişiyor.
+- Kanonik ürün adı Android, iOS, Flutter, web ve gizlilik yüzeylerinde `Ninnice Çocuk Oyunları` olarak hizalandı.
 - Uygulama içi audit tarayıcısı bu oturumda kullanılamadığı için ekran görüntüsüne dayalı tam görsel QA tamamlanmadı.
 - Yerel `master`, `origin/master` üzerinde `3907fe7` commit'iyle 1 commit ilerideydi; yeni çalışma bu commit'i korumalıdır.
 
