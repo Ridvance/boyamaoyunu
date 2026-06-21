@@ -705,16 +705,23 @@ class _TracingGameState extends State<TracingGame>
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(14),
-                        child: CustomPaint(
-                          painter: ChameleonPainter(
-                            chameleonColor: const Color(0xFF2FA7A0),
-                            tongueProgress: 0.0,
-                            lookTarget: const Offset(200, 200),
-                            flies: const [],
-                            idleProgress: 0.0,
-                            isCamouflaged: false,
-                            chameleonPos: const Offset(45, 30),
-                            expression: _kamoExpression,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: SizedBox(
+                            width: 300,
+                            height: 200,
+                            child: CustomPaint(
+                              painter: ChameleonPainter(
+                                chameleonColor: const Color(0xFF2FA7A0),
+                                tongueProgress: 0.0,
+                                lookTarget: const Offset(200, 200),
+                                flies: const [],
+                                idleProgress: 0.0,
+                                isCamouflaged: false,
+                                chameleonPos: const Offset(150, 80),
+                                expression: _kamoExpression,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -771,8 +778,8 @@ class _TracingGameState extends State<TracingGame>
                 // 5. Sol Orta - Şablon Seçim Barı (Dikey Panel) - Centered vertically
                 Positioned(
                   left: templateBarLeft,
-                  top: 0,
-                  bottom: 0,
+                  top: isShortHeight ? 64 : 96,
+                  bottom: isShortHeight ? 104 : 112,
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -790,23 +797,25 @@ class _TracingGameState extends State<TracingGame>
                           ),
                         ],
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(_templates.length, (index) {
-                          final temp = _templates[index];
-                          final isSelected = index == _currentTemplateIndex;
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: isShortHeight ? 4.0 : 8.0,
-                            ),
-                            child: _buildTemplateSelector(
-                              temp,
-                              index,
-                              isSelected,
-                              isShortHeight,
-                            ),
-                          );
-                        }),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(_templates.length, (index) {
+                            final temp = _templates[index];
+                            final isSelected = index == _currentTemplateIndex;
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: isShortHeight ? 4.0 : 8.0,
+                              ),
+                              child: _buildTemplateSelector(
+                                temp,
+                                index,
+                                isSelected,
+                                isShortHeight,
+                              ),
+                            );
+                          }),
+                        ),
                       ),
                     ),
                   ),

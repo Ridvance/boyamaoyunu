@@ -345,16 +345,23 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
-                    child: CustomPaint(
-                      painter: ChameleonPainter(
-                        chameleonColor: const Color(0xFF2FA7A0),
-                        tongueProgress: 0.0,
-                        lookTarget: const Offset(200, 200),
-                        flies: const [],
-                        idleProgress: 0.0,
-                        isCamouflaged: false,
-                        chameleonPos: const Offset(45, 30),
-                        expression: kamoExpression,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: SizedBox(
+                        width: 300,
+                        height: 200,
+                        child: CustomPaint(
+                          painter: ChameleonPainter(
+                            chameleonColor: const Color(0xFF2FA7A0),
+                            tongueProgress: 0.0,
+                            lookTarget: const Offset(200, 200),
+                            flies: const [],
+                            idleProgress: 0.0,
+                            isCamouflaged: false,
+                            chameleonPos: const Offset(150, 80),
+                            expression: kamoExpression,
+                          ),
+                        ),
                       ),
                     ),
                   ),
