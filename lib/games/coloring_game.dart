@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
@@ -227,7 +228,7 @@ class _ColoringGameState extends State<ColoringGame>
         _storyCompleted = false;
       }
     });
-    HapticFeedback.vibrate();
+    AppHaptics.vibrate();
     AudioSynth.playSparkleSound();
 
     // Trigger cleanup fireworks
@@ -260,7 +261,7 @@ class _ColoringGameState extends State<ColoringGame>
           setState(() {
             part.color = _selectedColor;
           });
-          HapticFeedback.mediumImpact();
+          AppHaptics.mediumImpact();
           AudioSynth.playRaindropSound();
           // Use bright colors for particle explosion even if eraser (white) is used
           final explosionColor =
@@ -277,7 +278,7 @@ class _ColoringGameState extends State<ColoringGame>
           if (allColored &&
               !_celebratedTemplates.contains(_selectedTemplateIndex)) {
             _celebratedTemplates.add(_selectedTemplateIndex);
-            HapticFeedback.heavyImpact();
+            AppHaptics.heavyImpact();
             AudioSynth.playSparkleSound();
 
             Future.delayed(const Duration(milliseconds: 150), () {
@@ -333,7 +334,11 @@ class _ColoringGameState extends State<ColoringGame>
       _showCelebration = true;
       if (_storyStepIndex == _storySteps.length - 1) {
         _storyCompleted = true;
-        ProgressService.instance.completeLevel('colors', 0);
+        ProgressService.instance.completeLevel(
+          ProgressChapters.coloring,
+          0,
+          stars: 3,
+        );
       } else {
         _storyStepIndex += 1;
       }
@@ -348,7 +353,7 @@ class _ColoringGameState extends State<ColoringGame>
       }
     });
 
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavyImpact();
     AudioSynth.playSparkleSound();
     _spawnParticles(localPosition, step.accentColor);
   }
@@ -414,7 +419,7 @@ class _ColoringGameState extends State<ColoringGame>
           _selectedTemplateIndex = index;
           _resetStoryProgressForSelectedTemplate();
         });
-        HapticFeedback.selectionClick();
+        AppHaptics.selectionClick();
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -745,7 +750,7 @@ class _ColoringGameState extends State<ColoringGame>
                                   setState(() {
                                     _selectedColor = color;
                                   });
-                                  HapticFeedback.selectionClick();
+                                  AppHaptics.selectionClick();
                                 },
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 150),

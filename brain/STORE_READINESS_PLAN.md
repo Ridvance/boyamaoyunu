@@ -4,7 +4,7 @@
 
 ## Karar
 
-Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. İçerik sayısı ilk sürüm için temel çeşitlilik sağlar, ancak kalıcı ilerleme ve bazı modların derinliği ürün bütünlüğünü sınırlamaktadır.
+Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. Birleşik kalıcı ilerleme ve ebeveyn kontrolleri tamamlandı; sıradaki ürün sınırı bazı modların içerik derinliğidir.
 
 ## Denetim Kanıtı
 
@@ -15,6 +15,7 @@ Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign rele
 - Android release signing: `key.properties` ve upload keystore mevcut; imzalı AAB üretildi.
 - iOS release no-codesign build: başarılı; minimum hedef 13.0.
 - Balon Patlatma ilerlemesi `balloon` chapter'ına yazılıyor ve regresyon testiyle korunuyor.
+- Sekiz chapter kimliği benzersiz; tamamlanma/yıldız, çocuk rozetleri ve ebeveyn kontrolleri Phase 2L'de tamamlandı.
 - İçerik tabanı: 7 boyama sayfası, 8 çiz takip şablonu, 12 şekil, 4 Renk Laboratuvarı modu, 3 alışkanlık görevi, 1 öğrenme paketi.
 - Kalıcı ilerleme altyapısı mevcut fakat oyunların gerçek bölüm derinliğini tutarlı göstermiyor.
 - Mağaza ekran görüntüsü, feature graphic, açıklama paketi ve destek materyalleri repo içinde hazır değil.

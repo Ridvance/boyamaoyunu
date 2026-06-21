@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 
-const String balloonProgressChapterId = 'balloon';
+const String balloonProgressChapterId = ProgressChapters.balloon;
 
-Future<void> recordBalloonLevelCompletion() {
-  return ProgressService.instance.completeLevel(balloonProgressChapterId, 1);
+Future<void> recordBalloonLevelCompletion({int levelIndex = 1}) {
+  return ProgressService.instance.completeLevel(
+    balloonProgressChapterId,
+    levelIndex,
+    stars: 3,
+  );
 }
 
 class BalloonPopGame extends StatefulWidget {
@@ -276,7 +280,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
 
   void _triggerWrongFeedback() {
     _wrongFeedbackController.add(null);
-    HapticFeedback.lightImpact();
+    AppHaptics.lightImpact();
     // Only set Kamo to surprised if not currently celebrating or happy
     if (_kamoExpression == 'neutral' && !_isCelebrationActive) {
       setState(() {
@@ -301,10 +305,10 @@ class _BalloonPopGameState extends State<BalloonPopGame>
 
     // Dokunsal Geri Bildirim (Haptic Feedback) - Çocuklar için çok tatmin edicidir
     if (balloon.isSpecial) {
-      HapticFeedback.heavyImpact();
+      AppHaptics.heavyImpact();
       AudioSynth.playSparkleSound();
     } else {
-      HapticFeedback.mediumImpact();
+      AppHaptics.mediumImpact();
       AudioSynth.playRaindropSound();
     }
 
@@ -393,7 +397,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
       _isCelebrationActive = true;
       _kamoExpression = 'happy';
     });
-    recordBalloonLevelCompletion();
+    recordBalloonLevelCompletion(levelIndex: _level - 1);
     _kamoReactionTimer?.cancel();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
@@ -470,7 +474,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
     }
 
     // Konfeti patlamasında daha güçlü bir titreşim verelim
-    HapticFeedback.lightImpact();
+    AppHaptics.lightImpact();
     AudioSynth.playSparkleSound();
   }
 
@@ -725,7 +729,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                         key: const ValueKey('balloon-game-back-button'),
                         onTap: _showExitTooltip,
                         onDoubleTap: () {
-                          HapticFeedback.mediumImpact();
+                          AppHaptics.mediumImpact();
                           Navigator.pop(context);
                         },
                         child: Container(

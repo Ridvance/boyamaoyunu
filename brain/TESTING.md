@@ -63,3 +63,15 @@ Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değe
 - `flutter build appbundle --release`: PASS, 23.5 MB.
 - `flutter build ios --release --no-codesign`: PASS, 26.5 MB.
 - Gerçek iOS imzalı archive/TestFlight ve cihaz matrisi sonraki release kapılarında bekliyor.
+
+## Son Otomatik Doğrulama - Phase 2L
+
+- `git diff --check`: PASS.
+- `flutter analyze`: PASS, sorun yok.
+- `flutter test --reporter expanded`: PASS, 33 test.
+- Chapter kimlik benzersizliği: PASS, 8/8 benzersiz.
+- Tamamlanma ve yıldız depolama yeniden başlatma testi: PASS.
+- Ses/titreşim tercih kalıcılığı: PASS.
+- Çocuk ilerleme rozetleri ve ebeveyn özet/ayar/sıfırlama widget testleri: PASS.
+- Kısa yatay ekran taşma regresyonu: PASS.
+- Gerçek cihaz restart smoke Phase 2P cihaz matrisinde ayrıca doğrulanacak.

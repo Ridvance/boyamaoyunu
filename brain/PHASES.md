@@ -199,7 +199,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `lib/services/progress_service.dart`, `lib/main.dart`, ilgili oyun tamamlama noktaları, `test/progress_service_test.dart`, `test/widget_test.dart`.
 - Çıkış kriterleri: Tüm oyunlar doğru ve çakışmayan ilerleme anahtarları kullanır; uygulama kapanıp açıldığında ilerleme korunur; ebeveyn ilerlemeyi görebilir ve bilinçli olarak sıfırlayabilir.
 - Test: Progress unit testleri, dashboard/parent widget testleri, `flutter analyze`, `flutter test`, gerçek cihaz restart smoke.
-- Durum: active.
+- Durum: completed.
+- Sonuç: Sekiz benzersiz chapter, kalıcı tamamlanma/yıldız, çocuk kart rozetleri, ebeveyn özeti, onaylı sıfırlama ve kalıcı ses/titreşim kontrolleri eklendi.
 
 ### Phase 2M - Habits And Learning Pack Depth
 - Amaç: En sığ iki alanı, tekrar oynanabilir ve mağaza açıklamasında anlamlı biçimde sunulabilir içerik paketlerine dönüştürmek.

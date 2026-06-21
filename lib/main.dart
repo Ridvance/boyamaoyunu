@@ -11,6 +11,7 @@ import 'games/magic_colors_game.dart';
 import 'games/habits_game.dart';
 import 'games/learning_packs_game.dart';
 import 'services/audio_synth.dart';
+import 'services/app_settings_service.dart';
 import 'services/fullscreen_controller.dart';
 import 'services/progress_service.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +25,7 @@ void main() async {
   ]);
   // Initialize offline progress storage
   await ProgressService.instance.init();
+  await AppSettingsService.instance.init();
   // Preload all synthesized sounds asynchronously in the background
   AudioSynth.preloadAllSounds();
   runApp(const CocukOyunApp());
@@ -256,6 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'coloring',
+                          chapterId: ProgressChapters.coloring,
                           icon: Icons.brush_rounded,
                           color: const Color(0xFFFF4B4B),
                           title: 'Boyama Kitabı',
@@ -264,6 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'tracing',
+                          chapterId: ProgressChapters.tracing,
                           icon: Icons.gesture_rounded,
                           color: const Color(0xFF2B86FF),
                           title: 'Çizgi Takip',
@@ -272,6 +276,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'balloon_pop',
+                          chapterId: ProgressChapters.balloon,
                           icon: Icons.bubble_chart_rounded,
                           color: const Color(0xFFFFD000),
                           title: 'Balon Patlatma',
@@ -280,6 +285,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'shape_sorter',
+                          chapterId: ProgressChapters.shapes,
                           icon: Icons.category_rounded,
                           color: const Color(0xFF2ECC71),
                           title: 'Şekil Eşleştirme',
@@ -288,6 +294,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'sound_board',
+                          chapterId: ProgressChapters.sounds,
                           icon: Icons.music_note_rounded,
                           color: const Color(0xFFFF8E2B),
                           title: 'Müzik Kutusu',
@@ -296,6 +303,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'magic_colors',
+                          chapterId: ProgressChapters.magicColors,
                           icon: Icons.science_rounded,
                           color: const Color(0xFFFF9500),
                           title: 'Renk Laboratuvarı',
@@ -304,6 +312,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'habits',
+                          chapterId: ProgressChapters.habits,
                           icon: Icons.volunteer_activism_rounded,
                           color: const Color(0xFF2FA7A0),
                           title: 'İyi Alışkanlıklar',
@@ -312,6 +321,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         _buildGameCard(
                           context: context,
                           key: 'learning_packs',
+                          chapterId: ProgressChapters.learningPacks,
                           icon: Icons.school_rounded,
                           color: const Color(0xFF8B5CF6),
                           title: 'Öğrenme Paketleri',
@@ -332,6 +342,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildGameCard({
     required BuildContext context,
     required String key,
+    required String chapterId,
     required IconData icon,
     required Color color,
     required String title,
@@ -348,12 +359,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       child: InkWell(
         key: ValueKey('game-card-$key'),
-        onTap: () {
+        onTap: () async {
           AudioSynth.playSparkleSound();
-          Navigator.push<void>(
+          await Navigator.push<void>(
             context,
             MaterialPageRoute(builder: (context) => gameWidget),
           );
+          if (mounted) setState(() {});
         },
         borderRadius: BorderRadius.circular(compact ? 13 : 21),
         child: Padding(
@@ -362,21 +374,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(compact ? 8 : 16),
+                padding: EdgeInsets.all(compact ? 5 : 16),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: compact ? 28 : 48, color: color),
+                child: Icon(icon, size: compact ? 22 : 48, color: color),
               ),
-              SizedBox(height: compact ? 6 : 12),
+              SizedBox(height: compact ? 3 : 12),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: const Color(0xFF233238),
-                  fontSize: compact ? 13 : 18,
+                  fontSize: compact ? 12 : 18,
                   fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: compact ? 1 : 6),
+              Container(
+                key: ValueKey('game-progress-$key'),
+                padding: EdgeInsets.symmetric(
+                  horizontal: compact ? 7 : 10,
+                  vertical: compact ? 1 : 4,
+                ),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  '${ProgressService.instance.getCompletedCount(chapterId)} tamamlandı  •  ${ProgressService.instance.getTotalStars(chapterId)} ⭐',
+                  style: TextStyle(
+                    color: color.withValues(alpha: 0.9),
+                    fontSize: compact ? 8 : 11,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ],
@@ -591,10 +623,16 @@ class _MathParentGateDialogState extends State<MathParentGateDialog> {
 }
 
 // Ebeveyn Güvenlik Ekranı
-class ParentSafetyScreen extends StatelessWidget {
+class ParentSafetyScreen extends StatefulWidget {
   const ParentSafetyScreen({required this.onBack, super.key});
 
   final VoidCallback onBack;
+
+  @override
+  State<ParentSafetyScreen> createState() => _ParentSafetyScreenState();
+}
+
+class _ParentSafetyScreenState extends State<ParentSafetyScreen> {
 
   Future<void> _launchPrivacyPolicy(BuildContext context) async {
     final url = Uri.parse('https://ridvance.github.io/boyamaoyunu/privacy.html');
@@ -616,6 +654,32 @@ class ParentSafetyScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _confirmResetProgress() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('İlerleme sıfırlansın mı?'),
+        content: const Text(
+          'Tamamlanan bölümler ve yıldızlar silinecek. Bu işlem geri alınamaz.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            key: const ValueKey('confirm-reset-progress'),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Sıfırla'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ProgressService.instance.resetAllProgress();
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -630,7 +694,7 @@ class ParentSafetyScreen extends StatelessWidget {
                   IconButton.filledTonal(
                     key: const ValueKey('parent-back-button'),
                     tooltip: 'Geri',
-                    onPressed: onBack,
+                    onPressed: widget.onBack,
                     icon: const Icon(Icons.arrow_back_rounded, size: 24),
                   ),
                   const SizedBox(width: 16),
@@ -647,6 +711,70 @@ class ParentSafetyScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: const Color(0xFF2FA7A0), width: 2),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        key: const ValueKey('parent-progress-summary'),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'İlerleme Özeti',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF233238),
+                            ),
+                          ),
+                          Text(
+                            '${ProgressService.instance.totalCompletedCount} bölüm  •  ${ProgressService.instance.totalStars} yıldız',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF53666C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _ParentSettingSwitch(
+                      key: const ValueKey('sound-toggle'),
+                      label: 'Ses',
+                      icon: Icons.volume_up_rounded,
+                      value: AppSettingsService.instance.soundEnabled,
+                      onChanged: (value) async {
+                        await AppSettingsService.instance.setSoundEnabled(value);
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    _ParentSettingSwitch(
+                      key: const ValueKey('haptics-toggle'),
+                      label: 'Titreşim',
+                      icon: Icons.vibration_rounded,
+                      value: AppSettingsService.instance.hapticsEnabled,
+                      onChanged: (value) async {
+                        await AppSettingsService.instance.setHapticsEnabled(value);
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    OutlinedButton.icon(
+                      key: const ValueKey('reset-progress-button'),
+                      onPressed: _confirmResetProgress,
+                      icon: const Icon(Icons.restart_alt_rounded),
+                      label: const Text('İlerlemeyi Sıfırla'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,
@@ -705,6 +833,34 @@ class ParentSafetyScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ParentSettingSwitch extends StatelessWidget {
+  const _ParentSettingSwitch({
+    required this.label,
+    required this.icon,
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: const Color(0xFF2FA7A0)),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w800)),
+        Switch(value: value, onChanged: onChanged),
+      ],
     );
   }
 }

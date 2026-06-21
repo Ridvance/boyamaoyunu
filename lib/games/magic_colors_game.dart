@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
@@ -17,6 +17,13 @@ class MagicColorsGame extends StatefulWidget {
 class _MagicColorsGameState extends State<MagicColorsGame>
     with SingleTickerProviderStateMixin {
   bool get _isCompact => MediaQuery.sizeOf(context).height < 400;
+  int get _progressLevelForCurrentMode => switch (_currentMode) {
+    'sandbox' => 0,
+    'camouflage' => 1,
+    'flyhunt' => 2,
+    'coloring' => 3,
+    _ => 0,
+  };
 
   // Oyun güncelleyici döngüsü
   late final AnimationController _tickerController;
@@ -383,7 +390,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   void _addPaintToBeaker(String name, Color color) {
     if (_beakerSlots.length >= 2) {
       // En fazla 2 slot
-      HapticFeedback.lightImpact();
+      AppHaptics.lightImpact();
       return;
     }
 
@@ -401,11 +408,11 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       final requiredBases = _getRequiredBaseColors(targetColorName);
       if (requiredBases.isNotEmpty && !requiredBases.contains(name)) {
         _wrongFeedbackController.add(null);
-        HapticFeedback.lightImpact();
+        AppHaptics.lightImpact();
       }
     }
 
-    HapticFeedback.mediumImpact();
+    AppHaptics.mediumImpact();
     AudioSynth.playRaindropSound();
 
     setState(() {
@@ -416,7 +423,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   }
 
   void _clearBeaker() {
-    HapticFeedback.lightImpact();
+    AppHaptics.lightImpact();
     setState(() {
       _beakerSlots.clear();
       _mixedColor = Colors.transparent;
@@ -428,7 +435,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   void _mixBeaker() {
     if (_beakerSlots.isEmpty) return;
 
-    HapticFeedback.mediumImpact();
+    AppHaptics.mediumImpact();
     AudioSynth.playSparkleSound();
 
     setState(() {
@@ -484,7 +491,11 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       if (isSuccess) {
         _setKamoExpression('happy', delay: const Duration(seconds: 3));
         _showCelebration = true;
-        ProgressService.instance.completeLevel('colors', 1);
+        ProgressService.instance.completeLevel(
+          ProgressChapters.magicColors,
+          _progressLevelForCurrentMode,
+          stars: _currentMode == 'sandbox' ? 1 : 3,
+        );
         _celebrationTimer?.cancel();
         _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
           if (mounted) {
@@ -704,7 +715,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   void _onFlyTapped(ChameleonFly fly) {
     if (_isEating || _isCamouflaged) return;
 
-    HapticFeedback.mediumImpact();
+    AppHaptics.mediumImpact();
     // Kamo'nun dili hedefe kilitlenir
     setState(() {
       _isEating = true;
@@ -749,7 +760,11 @@ class _MagicColorsGameState extends State<MagicColorsGame>
           _triggerCelebration();
           _setKamoExpression('happy', delay: const Duration(seconds: 3));
           _showCelebration = true;
-          ProgressService.instance.completeLevel('colors', 1);
+          ProgressService.instance.completeLevel(
+            ProgressChapters.magicColors,
+            2,
+            stars: 3,
+          );
           _celebrationTimer?.cancel();
           _celebrationTimer = Timer(const Duration(milliseconds: 2500), () {
             if (mounted) {
@@ -897,7 +912,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
     if (_coloringCompleted) return;
 
     if (_chameleonColorName == part.targetColorName) {
-      HapticFeedback.mediumImpact();
+      AppHaptics.mediumImpact();
       AudioSynth.playSparkleSound();
       setState(() {
         part.currentColor = _chameleonColor;
@@ -930,7 +945,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       });
     } else {
       // Yanlış renkle boyama denemesi
-      HapticFeedback.lightImpact();
+      AppHaptics.lightImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -1017,7 +1032,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
                   GestureDetector(
                     key: const ValueKey('magic-colors-back-button'),
                     onTap: () {
-                      HapticFeedback.mediumImpact();
+                      AppHaptics.mediumImpact();
                       if (_currentMode != 'menu') {
                         setState(() {
                           _currentMode = 'menu';
@@ -1307,7 +1322,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       child: InkWell(
         key: ValueKey('magic-colors-mode-$key'),
         onTap: () {
-          HapticFeedback.mediumImpact();
+          AppHaptics.mediumImpact();
           onTap();
         },
         borderRadius: BorderRadius.circular(compact ? 14 : 21),

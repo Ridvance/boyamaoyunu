@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cocuk_oyun/main.dart';
 import 'package:cocuk_oyun/games/magic_colors/chameleon_painter.dart';
@@ -8,6 +9,8 @@ import 'package:cocuk_oyun/games/shape_sorter_game.dart';
 import 'package:cocuk_oyun/games/sound_board_game.dart';
 import 'package:cocuk_oyun/games/habits_game.dart';
 import 'package:cocuk_oyun/games/learning_packs_game.dart';
+import 'package:cocuk_oyun/services/app_settings_service.dart';
+import 'package:cocuk_oyun/services/progress_service.dart';
 
 void main() {
   testWidgets(
@@ -43,6 +46,73 @@ void main() {
       expect(find.byKey(const ValueKey('parent-gate-button')), findsOneWidget);
     },
   );
+
+  testWidgets('dashboard shows persisted progress for each game', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'journey_completed_coloring': ['0'],
+      'journey_stars_coloring_0': 3,
+    });
+    await ProgressService.instance.init();
+    await AppSettingsService.instance.init();
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+
+    expect(find.byKey(const ValueKey('game-progress-coloring')), findsOneWidget);
+    expect(find.text('1 tamamlandı  •  3 ⭐'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('game-progress-learning_packs')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('parent controls persist preferences and confirm progress reset', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'journey_completed_coloring': ['0'],
+      'journey_stars_coloring_0': 3,
+    });
+    await ProgressService.instance.init();
+    await AppSettingsService.instance.init();
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+    await tester.tap(find.byKey(const ValueKey('parent-gate-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('parent-gate-option-correct')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('parent-progress-summary')), findsOneWidget);
+    expect(find.text('1 bölüm  •  3 yıldız'), findsOneWidget);
+
+    await tester.tap(find.descendant(
+      of: find.byKey(const ValueKey('sound-toggle')),
+      matching: find.byType(Switch),
+    ));
+    await tester.tap(find.descendant(
+      of: find.byKey(const ValueKey('haptics-toggle')),
+      matching: find.byType(Switch),
+    ));
+    await tester.pumpAndSettle();
+    expect(AppSettingsService.instance.soundEnabled, isFalse);
+    expect(AppSettingsService.instance.hapticsEnabled, isFalse);
+
+    await tester.tap(find.byKey(const ValueKey('reset-progress-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('İlerleme sıfırlansın mı?'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('confirm-reset-progress')));
+    await tester.pumpAndSettle();
+
+    expect(ProgressService.instance.totalCompletedCount, 0);
+    expect(find.text('0 bölüm  •  0 yıldız'), findsOneWidget);
+  });
 
   testWidgets('fullscreen button does not show PWA hint on native platforms', (
     WidgetTester tester,

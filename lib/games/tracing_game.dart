@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
@@ -386,7 +386,7 @@ class _TracingGameState extends State<TracingGame>
             dot.isTraced = true;
             updated = true;
             // Küçük titreşim/tıklama hissi
-            HapticFeedback.selectionClick();
+            AppHaptics.selectionClick();
           }
           dot.scale = 1.6; // Parmağa yakın noktalar büyür
         } else {
@@ -412,7 +412,7 @@ class _TracingGameState extends State<TracingGame>
 
   void _triggerWrongFeedback() {
     _wrongFeedbackController.add(null);
-    HapticFeedback.lightImpact();
+    AppHaptics.lightImpact();
     setState(() {
       _kamoExpression = 'surprised';
     });
@@ -443,13 +443,17 @@ class _TracingGameState extends State<TracingGame>
       _isCompleted = true;
       _showHint = false;
       _hintController.stop();
-      ProgressService.instance.completeLevel('tracing', 0);
+      ProgressService.instance.completeLevel(
+        ProgressChapters.tracing,
+        _currentTemplateIndex,
+        stars: 3,
+      );
       _triggerSuccess();
     }
   }
 
   void _triggerSuccess() {
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavyImpact();
     AudioSynth.playSparkleSound();
 
     setState(() {
@@ -753,7 +757,7 @@ class _TracingGameState extends State<TracingGame>
                     size: iconButtonSize,
                     iconSize: iconSize,
                     onTap: () {
-                      HapticFeedback.mediumImpact();
+                      AppHaptics.mediumImpact();
                       Navigator.pop(context);
                     },
                   ),
@@ -769,7 +773,7 @@ class _TracingGameState extends State<TracingGame>
                     size: iconButtonSize,
                     iconSize: iconSize,
                     onTap: () {
-                      HapticFeedback.mediumImpact();
+                      AppHaptics.mediumImpact();
                       _resetCurrent();
                     },
                   ),
@@ -900,7 +904,7 @@ class _TracingGameState extends State<TracingGame>
             : (isShortHeight ? 20.0 : 28.0);
     return GestureDetector(
       onTap: () {
-        HapticFeedback.lightImpact();
+        AppHaptics.lightImpact();
         _selectTemplate(index);
       },
       child: AnimatedContainer(
@@ -978,7 +982,7 @@ class _TracingGameState extends State<TracingGame>
   Widget _buildSuccessNextButton(double size, double iconSize) {
     return GestureDetector(
       onTap: () {
-        HapticFeedback.mediumImpact();
+        AppHaptics.mediumImpact();
         _nextTemplate();
       },
       child: Container(

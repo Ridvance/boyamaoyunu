@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
@@ -145,20 +145,24 @@ class _SoundBoardGameState extends State<SoundBoardGame> with TickerProviderStat
   }
 
   void _playFeedback(int noteIndex) {
-    SystemSound.play(SystemSoundType.click);
+    AppSounds.systemClick();
     AudioSynth.playXylophoneNote(noteIndex);
     // Mimic musical pitch scale using haptics
     if (noteIndex < 3) {
-      HapticFeedback.lightImpact();
+      AppHaptics.lightImpact();
     } else if (noteIndex < 6) {
-      HapticFeedback.mediumImpact();
+      AppHaptics.mediumImpact();
     } else {
-      HapticFeedback.heavyImpact();
+      AppHaptics.heavyImpact();
     }
 
     _interactionCount++;
     if (_interactionCount >= 5) {
-      ProgressService.instance.completeLevel('sounds', 0);
+      ProgressService.instance.completeLevel(
+        ProgressChapters.sounds,
+        0,
+        stars: 1,
+      );
     }
   }
 
@@ -1032,8 +1036,8 @@ class _CircularBackButtonState extends State<CircularBackButton> with SingleTick
     return Listener(
       onPointerDown: (_) {
         _controller.forward();
-        SystemSound.play(SystemSoundType.click);
-        HapticFeedback.mediumImpact();
+        AppSounds.systemClick();
+        AppHaptics.mediumImpact();
       },
       onPointerUp: (_) {
         _controller.reverse();

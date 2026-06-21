@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/audio_synth.dart';
+import '../services/app_settings_service.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
@@ -163,7 +163,11 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
 
       if (_isAllDone) {
         _isCelebrationActive = true;
-        ProgressService.instance.completeLevel('habits', 0);
+        ProgressService.instance.completeLevel(
+          ProgressChapters.habits,
+          0,
+          stars: 3,
+        );
         _celebrationTimer?.cancel();
         _celebrationTimer = Timer(const Duration(seconds: 3), () {
           if (mounted) {
@@ -180,7 +184,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
         _activeTaskIndex = nextIndex == -1 ? _activeTaskIndex : nextIndex;
       }
     });
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavyImpact();
     AudioSynth.playSparkleSound();
   }
 
@@ -189,7 +193,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
     if (_completedTaskIds.contains(task.id)) {
       _wiggleControllers[index].add(null);
       _triggerKamoSurprised();
-      HapticFeedback.lightImpact();
+      AppHaptics.lightImpact();
       return;
     }
 
@@ -199,7 +203,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
       _hintController.stop();
       _hintController.reset();
     });
-    HapticFeedback.selectionClick();
+    AppHaptics.selectionClick();
   }
 
   void _resetTasks() {
@@ -214,7 +218,7 @@ class _HabitsGameState extends State<HabitsGame> with TickerProviderStateMixin {
       _hintController.stop();
       _hintController.reset();
     });
-    HapticFeedback.lightImpact();
+    AppHaptics.lightImpact();
   }
 
   @override

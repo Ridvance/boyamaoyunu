@@ -20,7 +20,7 @@
 ## Public Release Kapıları
 
 - [x] Phase 2K platform/build engelleri tamamlandı.
-- [ ] Phase 2L ilerleme ve ebeveyn kontrolleri tamamlandı.
+- [x] Phase 2L ilerleme ve ebeveyn kontrolleri tamamlandı.
 - [ ] Phase 2M/2N içerik dengesi tamamlandı.
 - [ ] Phase 2O mağaza metadata ve görselleri tamamlandı.
 - [ ] Gizlilik ve çocuk hedef kitle beyanları gerçek davranışla eşleşiyor.
@@ -44,7 +44,7 @@ git diff --check
 - Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`.
 - AAB SHA-256: `e44e45c921f6c002e37508adc959c09080ecb0671f01b12414f4c9cc1f0d84db`.
 - iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.5 MB.
-- Otomatik test: 29 PASS; `flutter analyze`: PASS.
+- Otomatik test: 33 PASS; `flutter analyze`: PASS.
 
 ## Mağaza Politikası Notu
 

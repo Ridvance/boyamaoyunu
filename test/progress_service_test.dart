@@ -18,14 +18,28 @@ void main() {
     });
 
     test('completeLevel updates state and persists', () async {
-      await ProgressService.instance.completeLevel('colors', 0);
-      expect(ProgressService.instance.isLevelCompleted('colors', 0), isTrue);
-      expect(ProgressService.instance.getCompletedCount('colors'), 1);
+      await ProgressService.instance.completeLevel(
+        ProgressChapters.coloring,
+        0,
+        stars: 2,
+      );
+      expect(
+        ProgressService.instance.isLevelCompleted(ProgressChapters.coloring, 0),
+        isTrue,
+      );
+      expect(ProgressService.instance.getStars(ProgressChapters.coloring, 0), 2);
 
-      // Verify second level complete
-      await ProgressService.instance.completeLevel('colors', 1);
-      expect(ProgressService.instance.getCompletedLevels('colors'), [0, 1]);
-      expect(ProgressService.instance.getCompletedCount('colors'), 2);
+      await ProgressService.instance.completeLevel(
+        ProgressChapters.coloring,
+        0,
+        stars: 3,
+      );
+      await ProgressService.instance.init();
+      expect(
+        ProgressService.instance.getCompletedLevels(ProgressChapters.coloring),
+        [0],
+      );
+      expect(ProgressService.instance.getTotalStars(ProgressChapters.coloring), 3);
     });
 
     test('resetAllProgress clears saved levels', () async {
@@ -37,6 +51,11 @@ void main() {
       await ProgressService.instance.resetAllProgress();
       expect(ProgressService.instance.isLevelCompleted('colors', 0), isFalse);
       expect(ProgressService.instance.isLevelCompleted('shapes', 0), isFalse);
+      expect(ProgressService.instance.getStars('colors', 0), 0);
+    });
+
+    test('chapter identifiers are unique', () {
+      expect(ProgressChapters.all.toSet().length, ProgressChapters.all.length);
     });
 
     test(

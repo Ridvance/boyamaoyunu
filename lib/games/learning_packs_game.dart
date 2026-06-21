@@ -3,6 +3,7 @@ import 'coloring_game.dart';
 import 'habits_game.dart';
 import 'magic_colors_game.dart';
 import '../services/guidance_widgets.dart';
+import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 import 'dart:async';
 
@@ -166,14 +167,40 @@ class _LearningPacksGameState extends State<LearningPacksGame> with TickerProvid
     _triggerKamoHappy();
   }
 
-  void _openActivity(LearningPackActivity activity) {
+  Future<void> _openActivity(LearningPackActivity activity) async {
     setState(() {
       _showHint = false;
       _hintController.stop();
       _hintController.reset();
     });
     _triggerKamoHappy();
-    Navigator.push<void>(context, MaterialPageRoute(builder: activity.builder));
+    await Navigator.push<void>(context, MaterialPageRoute(builder: activity.builder));
+    if (!mounted || !_isActivityCompleted(activity.id)) return;
+    final activityIndex = _selectedPack?.activities.indexOf(activity) ?? -1;
+    if (activityIndex >= 0) {
+      await ProgressService.instance.completeLevel(
+        ProgressChapters.learningPacks,
+        activityIndex,
+        stars: 1,
+      );
+    }
+  }
+
+  bool _isActivityCompleted(String activityId) {
+    return switch (activityId) {
+      'story-coloring' => ProgressService.instance.isLevelCompleted(
+        ProgressChapters.coloring,
+        0,
+      ),
+      'color-mix' => ProgressService.instance.getCompletedCount(
+        ProgressChapters.magicColors,
+      ) > 0,
+      'habits' => ProgressService.instance.isLevelCompleted(
+        ProgressChapters.habits,
+        0,
+      ),
+      _ => false,
+    };
   }
 
   @override

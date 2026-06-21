@@ -5,14 +5,14 @@
 
 ## Aktif Gerçeklik
 
-Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2K sonunda `flutter analyze` temiz, 29 test başarılı, imzalı Android AAB ve iOS no-codesign release build başarılıdır.
+Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2L sonunda birleşik yerel ilerleme, yıldızlar ve ebeveyn kontrolleri tamamlandı; `flutter analyze` temiz ve 33 test başarılıdır.
 
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: READY.
+- Action State: COMPLETE.
 - Aktif Faz: Phase 2L - Unified Progress Journey And Parent Controls.
-- Faz durumu: Active.
+- Faz durumu: Tamamlandı; Phase 2M aktif edilmedi.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -21,7 +21,8 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 - Android signing: upload keystore ile çalışıyor.
 - iOS minimum hedefi Podfile ve Xcode yapılandırmalarında 13.0; no-codesign release build başarılı.
 - Balon Patlatma bölüm tamamlaması `balloon` ilerlemesine yazılıyor; `tracing` kaydının değişmediği regresyon testiyle doğrulandı.
-- İlerleme: `SharedPreferences` altyapısı var; oyunlar arasında kimlik ve görünür yolculuk tutarsız.
+- İlerleme: Sekiz benzersiz chapter, kalıcı tamamlanma/yıldız, çocuk kart rozetleri ve ebeveyn özeti mevcut.
+- Ebeveyn kontrolleri: İkinci onaylı ilerleme sıfırlama ile kalıcı ses/titreşim tercihleri mevcut.
 - İçerik: 7 boyama, 8 çiz takip, 12 eşleştirme şekli, 4 Renk Laboratuvarı modu, 3 alışkanlık görevi, 1 öğrenme paketi.
 - Mağaza materyali: ekran görüntüsü, feature graphic, metadata paketi ve gerçek cihaz görsel QA eksik.
 - Kanonik marka: `Ninnice Çocuk Oyunları`; Android, iOS, Flutter, web ve gizlilik yüzeyleri hizalı.
@@ -38,13 +39,13 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-`brain/CURRENT_PHASE.md` içindeki Phase 2L scope locked prompt'u uygula; birleşik yerel ilerleme ve ebeveyn kontrolleri dışına çıkma.
+Phase 2L tamamlandı. Kullanıcı onayı olmadan Phase 2M'yi aktif etme.
 
 ## Son Doğrulama
 
 ```text
 flutter analyze: PASS
-flutter test: PASS (29)
+flutter test: PASS (33)
 flutter build appbundle --release: PASS (23.5 MB)
 flutter build ios --release --no-codesign: PASS (Runner.app 26.5 MB)
 git diff --check: PASS

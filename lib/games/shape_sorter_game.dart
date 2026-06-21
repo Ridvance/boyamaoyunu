@@ -880,7 +880,11 @@ class _ShapeSorterGameState extends State<ShapeSorterGame>
       _kamoExpression = 'happy';
       _levelNumber++;
     });
-    ProgressService.instance.completeLevel('shapes', 0);
+    ProgressService.instance.completeLevel(
+      ProgressChapters.shapes,
+      _levelNumber - 2,
+      stars: 3,
+    );
     _kamoReactionTimer?.cancel();
     AudioSynth.playSparkleSound();
 
