@@ -1,61 +1,74 @@
 # HANDOFF.md - Devir Teslim
 
-> Son güncelleme: 2026-05-20
-> Rol: Yarım kalan işi bir sonraki agent'a güvenli şekilde devretmek.
+> Son güncelleme: 2026-06-21
 
 ## Son Durum
 
-- Son mod/uzman pozisyonu: Research/Validation Architect ve Handoff Coordinator.
-- Son yapılan: 2026-05-20 template güncellemesi işlendi; Action State ve proactive advancement kuralları eklendi. Çocuk boyama pazarı için hızlı rakip sprint'i `brain/VALIDATION.md` içine işlendi. Öncesinde çizim repaint bug'ı düzeltildi; APK ve web çıktısı güncellenmişti.
-- Yarım kalan: APK gerçek cihazda çocuk/ebeveyn gözleminde test edilecek; karakter/isim adayları saha gözlemiyle ayrıca doğrulanacak.
-- Blocker durumu: İlk SLC kararı netleşti; karakter/ad kararı hala saha doğrulaması gerektiriyor.
-- Sonraki güvenli adım: Masaüstündeki APK veya güncel web çıktısıyla `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullanarak 2-5 gözlem sonucunu toplamak.
-- Sıradaki mod/uzman pozisyonu: Review Engineer.
-- Sıradaki micro phase veya karar işi: Playtest bulgularını analiz edip düzeltme micro phase'i mi, Phase 2C renk karışımı mini oyunu mu seçilecek kararını vermek.
-- Kullanıcıdan beklenen karar: Playtest sonuçları geldikten sonra düzeltme fazına mı geçilecek, yoksa içerik yenileme fazına mı geçilecek?
+- Son mod: Planning / Handoff.
+- Son yapılan: Genel mağaza hazırlık denetimi tamamlandı ve öneriler Phase 2K-2P olarak planlandı.
+- Aktif faz: Phase 2K - Store Release Blockers And Platform Baseline.
+- Action State: READY.
+- Kod değişikliği: Bu planlama işinde uygulama kodu değiştirilmedi.
 
-## Next Work Handoff
+## Kanıt
 
-- Tamamlanan iş: İlk boyama SLC, ebeveyn güvenlik kabuğu, çizim repaint fix'i, web build güncellemesi, renk karışımı mini oyun planı ve hızlı research sprint.
-- Değişen dosyalar/kararlar: `lib/main.dart`, `test/widget_test.dart`, `brain/STATE.md`, `brain/VALIDATION.md`, `brain/PHASES.md`, `brain/IDEA_POOL.md`, `brain/PROMPTS/phase-02C-color-mix-learning-mini-game.md`.
-- Doğrulama/test sonucu: Son kod fix'i için `flutter test`, `flutter analyze`, `git diff --check` temiz; web build `gh-pages` branch'ine pushlandı. Bu template/research güncellemesi için `git diff --check` çalıştırılacak.
-- Güncellenen Brain dosyaları: `STATE.md`, `PLANNING.md`, `VALIDATION.md`, `HANDOFF.md`, `SOURCES.md`.
-- Sıradaki mod: Review Mode.
-- Uzman pozisyonu: Review Engineer ve Handoff Coordinator.
-- Sıradaki micro phase / karar işi: Phase 2A playtest gözlem notlarını toplamak; sonra düzeltme micro phase'i mi yoksa Phase 2C renk karışımı mini oyunu mu seçilecek kararını vermek.
-- Action State: `WAITING_USER_DATA`.
-- Agent şimdi yapabilir mi: Kod tarafında hayır; aktif faz gerçek cihaz/çocuk gözlemi bekliyor. Agent sadece checklist veya analiz yapabilir.
-- Kullanıcı "devam" derse yapılacak net işlem: Playtest verisi yoksa gözlem checklist'i tekrar sunulur; playtest verisi verilirse bulgular analiz edilir ve sıradaki micro phase önerilir.
-- Okunacak dosyalar: `brain/STATE.md`, `brain/RULES.md`, `brain/CURRENT_PHASE.md`, `brain/FIELD_RESEARCH.md`, `brain/VALIDATION.md`.
-- Scope locked prompt: Mevcut boyama SLC'sini gerçek cihaz/çocuk testi için değerlendir; gözlem sonucu olmadan yeni özellik kodlama.
-- Scope dışı uyarısı: Renk karışımı mini oyunu, ödeme, reklam, fotoğraf AI ve içerik mağazası Phase 2A scope'u dışındadır.
-- Kullanıcıdan beklenen karar: Playtest yapılacak mı; yapılırsa bulgulara göre önce düzeltme mi, yoksa renk karışımı mini oyunu mu?
+- `flutter analyze`: PASS.
+- `flutter test --reporter expanded`: 28 PASS.
+- Android imzalı AAB: PASS, 23.5 MB, target SDK 35.
+- iOS release build: FAIL; iOS 12 hedefi, `audioplayers_darwin` iOS 13 ister.
+- Web release build: PASS; CupertinoIcons font uyarısı var.
+- Bilinen ürün bug'ı: `balloon_pop_game.dart` Balon tamamlamasını `tracing` chapter'ına yazıyor.
+- Görsel audit: Uygulama içi tarayıcı bu oturumda kullanılamadığı için ekran görüntülü QA yapılmadı.
 
-## Yeni Sohbet Devam Promptu
+## Sıradaki İş
+
+Phase 2K'yı sırayla uygula:
+
+1. Balon ilerleme anahtarını düzelt ve regresyon testi yaz.
+2. iOS minimum target'ı 13.0 veya bağımlılığın istediği güvenli seviyeye hizala.
+3. `pod install` ve iOS no-codesign release build doğrula.
+4. Android AAB regresyon build'i al.
+5. Kanonik ürün adını yüzeylerde hizala.
+6. Test, commit ve push yap; Phase 2K tamamlanmadan Phase 2L'ye geçme.
+
+## Git Uyarısı
+
+Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi. Bu commit korunmalı; reset/revert yapılmamalı. Planlama commit'i push edildiğinde bu commit de normal sıra içinde origin'e gidebilir.
+
+## Yeni Pencere Devam Promptu
 
 ```text
 Repo: /Users/ridvan/Documents/Çocuk Oyun
 
-Önce şu dosyaları oku:
+Brain yapısına göre devam et. Önce şu dosyaları sırayla oku:
 1. brain/STATE.md
 2. brain/RULES.md
 3. brain/CURRENT_PHASE.md
+4. brain/STORE_READINESS_PLAN.md
+5. brain/PHASES.md
+6. brain/TESTING.md
+7. brain/RELEASE.md
+8. brain/HANDOFF.md
 
-Aktif faz:
-Phase 2A - Child Playtest Feedback Loop
+Aktif faz: Phase 2K - Store Release Blockers And Platform Baseline.
 
-Son yapılan:
-İlk oynanabilir boyama SLC ve ebeveyn güvenlik kabuğu yapıldı. Ana ekranda 3 sayfa var; çizim, renk, silgi, temizle, geri dön ve ebeveyn güvenlik alanı çalışıyor. Çizim repaint bug'ı düzeltildi; parmak hareket ederken çizgi başka UI aksiyonu beklemeden görünür. Phase 2A playtest gözlem formu `brain/FIELD_RESEARCH.md` içine eklendi. Release APK üretildi ve masaüstüne `cocuk-oyun-playtest-release.apk` adıyla kopyalandı. Web/HTML çıktısı `gh-pages` branch'ine push edildi.
+Sadece CURRENT_PHASE içindeki scope locked prompt'u uygula. Önce git durumunu kontrol et; kullanıcıya ait mevcut değişiklikleri/commitleri koru. Balon Patlatma ilerlemesinin yanlışlıkla `tracing` chapter'ına yazılması için fix ve regresyon testi yap. Sonra iOS minimum deployment target'ı `audioplayers_darwin` ile uyumlu hale getir ve hem Android AAB hem iOS no-codesign release build'i doğrula. Kanonik ürün adını Android, iOS, Flutter ve gizlilik yüzeylerinde hizala. Yeni level, yeni oyun, ilerleme ekranı, mağaza görseli, ödeme/reklam veya büyük refactor ekleme.
 
-Sıradaki güvenli adım:
-GitHub Pages ayarında kaynak branch'i `gh-pages` root olarak kontrol et. Ardından masaüstündeki APK ile gerçek cihaz/çocuk testine geç. Test sırasında `brain/FIELD_RESEARCH.md` içindeki Phase 2A formunu kullan.
+Bilinen baseline:
+- flutter analyze: PASS
+- flutter test: 28 PASS
+- Android AAB: PASS, 23.5 MB, target SDK 35
+- iOS build: FAIL; iOS 12 < audioplayers_darwin iOS 13
+- Yerel master planlama öncesi origin/master'dan `3907fe7` ile 1 commit ilerideydi; bunu koru.
 
-Test durumu:
-`flutter test`, `flutter analyze`, `flutter build apk --release` ve `flutter build web --release --base-href /boyamaoyunu/` temiz geçti. Repaint fix'i sonrası `flutter test`, `flutter analyze` ve `git diff --check` temiz geçti. Hızlı research/template güncellemesinde kod değişmedi; `git diff --check` yeterli.
+İş sonunda:
+- flutter analyze
+- flutter test
+- flutter build appbundle --release
+- flutter build ios --release --no-codesign
+- git diff --check
+- brain/STATE.md, brain/RELEASE.md ve gerekirse CURRENT_PHASE.md güncelle
+- commit ve push yap
 
-Kurallar:
-- Türkçe yaz.
-- CURRENT_PHASE dışına çıkma.
-- Kod değiştirirsen ilgili testi çalıştır.
-- Yeni fikir gelirse aktif işi bırakma; planlamanın neresine koyacağını sor.
+Phase 2K tamamlanmadan Phase 2L'ye geçme.
 ```

@@ -1,6 +1,6 @@
 # ROADMAP.md - Yön Haritası
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-21
 > Rol: Onaylanmış yönü yakın, orta ve uzak vade olarak tutar; günlük iş değildir.
 
 ## Kullanma Kuralı
@@ -12,19 +12,28 @@
 
 ## Yakın Vade
 
+### Mağaza Hazırlık Hattı
+- Phase 2K: Android/iOS build engelleri, ilerleme bug'ı ve marka tutarlılığı.
+- Phase 2L: Birleşik ilerleme yolculuğu ve ebeveyn kontrolleri.
+- Phase 2M: Alışkanlıklar ve öğrenme paketlerinde derinlik.
+- Phase 2N: Çekirdek oyun içerik dengesi.
+- Phase 2O: Mağaza metadata, çocuk/gizlilik beyanları ve görsel varlıklar.
+- Phase 2P: Gerçek cihaz QA, kapalı test ve Go/No-Go.
+- Durum: active; ayrıntı `brain/STORE_READINESS_PLAN.md`.
+
 ### SLC 0 - Reklamsız Boyama Çekirdeği
 - Kaynak: 2026-05-19 kullanıcı konuşmaları.
 - Neden: En dar ama tamamlanmış çocuk değeri; aileye güven veren ilk deneyim.
 - Kapsam: Çocuk ana ekranı, saha doğrulamalı karakter/tema, basit boyama ekranı, 3-5 güvenli görsel, renk paleti, silgi, temizle, geri dön.
 - Gerekli kapı: SLC Gate, çocuk/ebeveyn saha doğrulaması.
-- Durum: planlanıyor.
+- Durum: completed; mağaza hazırlık hattına devredildi.
 
 ### Çocuk/ebeveyn geri bildirim döngüsü
 - Kaynak: 2026-05-19 kullanıcı konuşmaları.
 - Neden: AI ve internet varsayımı yerine gerçek çocuk çekiciliğini ölçmek.
 - Kapsam: Karakter/isim seçenekleri, kısa gözlem formu, 2-5 çocuk testi.
 - Gerekli kapı: Field validation.
-- Durum: planlanıyor.
+- Durum: Phase 2P içinde güncel ürünle uygulanacak.
 
 ### Ticari hızlı tarama
 - Kaynak: Güncel template research/commercial validation kapısı.
@@ -39,6 +48,11 @@
 - Daha fazla boyama paketi.
 - Türkçe/İngilizce metin altyapısı.
 - Ebeveyn alanı ve güvenlik ayrımı.
+
+### Soft Launch Sonrası İyileştirme
+- Kapalı testte kanıtlanan sürtünmeleri dar fix fazlarıyla çöz.
+- İçerik ekleme kararını kullanım gözlemi ve tekrar isteğine göre ver.
+- Çocuk verisi toplamadan manuel geri bildirim ve mağaza yorumlarıyla ilerle.
 
 ### Ücretli paket denemesi
 - Ücretli paket veya tek seferlik satın alma denemesi.

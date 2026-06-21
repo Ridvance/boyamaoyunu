@@ -1,6 +1,6 @@
 # PHASES.md - Küçük Faz Rotası
 
-> Son güncelleme: 2026-06-05
+> Son güncelleme: 2026-06-21
 
 ## Faz Kullanma Kuralı
 
@@ -91,7 +91,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Çıkış kriterleri: 2-5 çocuk/ebeveyn gözlem notu veya gözlem yapılamadıysa net blocker; başarı/başarısızlık sinyalleri; sonraki micro phase kararı.
 - Test: Gerçek cihazda oynatma.
 - Scope Locked Prompt: Mevcut boyama SLC'sini gerçek cihaz/çocuk testi için değerlendir; kod değiştirme; gözlem sonucu olmadan yeni özellik uygulama.
-- Durum: active.
+- Durum: pending; Phase 2P kapalı test fazı içinde güncel ürünle yürütülecek.
 
 ### Phase 2B - Content Refresh System
 - Amaç: Yeni boyama alanı ve küçük içerik paketlerini düzenli eklenebilir yapmak.
@@ -161,7 +161,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `lib/games/magic_colors_game.dart`, `test/widget_test.dart`, gerekirse `brain/STATE.md`.
 - Çıkış kriterleri: Sinek Avı çocuk için hedefi daha görünür ve tekrar denenebilir hale gelir; mevcut renk karışımı modu bozulmaz.
 - Test: `flutter test`, ilgili dosyalar için `dart analyze`, manuel smoke.
-- Durum: pending.
+- Durum: deferred; Phase 2N içerik dengeleme fazına dahil edildi.
 
 ### Phase 2I - Coloring And Drawing Creative Tools
 - Amaç: Boyama deneyimini tam serbest çizim karmaşasına girmeden kontrollü yaratıcılıkla geliştirmek.
@@ -181,6 +181,60 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Test: `flutter test`, değişen dosyalar için `dart analyze`, `git diff --check`, web build smoke.
 - Durum: completed.
 - Sonuç: Mevcut oyunlara yeni içerik/bölüm göstergeleri eklendi; çiz takip erken bitirme eşiği sıkılaştırıldı; balon skor/bölüm paneli eklendi; boyama kitabına çiçek ve roket sayfaları eklendi; fullscreen düğmesi toggle davranışına geçti.
+
+### Phase 2K - Store Release Blockers And Platform Baseline
+- Amaç: Android ve iOS mağaza paketlerinin üretimini engelleyen veya ilerleme verisini bozan kritik sorunları kapatmak.
+- Scope: Balon Patlatma ilerleme anahtarını düzelt; iOS deployment target'ı bağımlılıklarla uyumlu en az 13.0 yap; CocoaPods ve iOS release build'i doğrula; ürün adını Android, iOS, Flutter ve gizlilik sayfasında tek kanonik adla hizala; release belgelerini güncelle.
+- Scope dışı: Yeni oyun/level, ana ekran yeniden tasarımı, mağazaya yükleme, ödeme/reklam, geniş dependency upgrade.
+- Beklenen dosya etki alanı: `lib/games/balloon_pop_game.dart`, `test/*`, `ios/Podfile`, `ios/Runner.xcodeproj/project.pbxproj`, `lib/main.dart`, Android/iOS ad yapılandırmaları, `web/privacy.html`, `brain/*`.
+- Çıkış kriterleri: Balon ilerlemesi doğru chapter'a yazılır; `flutter analyze` ve `flutter test` temizdir; imzalı Android AAB üretilir; iOS release build `--no-codesign` ile tamamlanır; ürün adı tutarlıdır.
+- Test: `flutter analyze`, `flutter test`, `flutter build appbundle --release`, `flutter build ios --release --no-codesign`, `git diff --check`.
+- Durum: active.
+
+### Phase 2L - Unified Progress Journey And Parent Controls
+- Amaç: Oyunlar arasındaki ilerlemeyi tutarlı, kalıcı ve çocuk/ebeveyn için anlaşılır hale getirmek.
+- Scope: Her oyun için benzersiz chapter/level kimlikleri; tamamlanan bölüm ve yıldızların kalıcı kaydı; çocuk ana ekranında sade görsel ilerleme; ebeveyn alanında özet, ilerlemeyi sıfırlama ve ses/titreşim kontrolleri.
+- Scope dışı: Hesap, bulut senkronizasyonu, analitik, liderlik tablosu, ceza ekonomisi veya satın alma.
+- Beklenen dosya etki alanı: `lib/services/progress_service.dart`, `lib/main.dart`, ilgili oyun tamamlama noktaları, `test/progress_service_test.dart`, `test/widget_test.dart`.
+- Çıkış kriterleri: Tüm oyunlar doğru ve çakışmayan ilerleme anahtarları kullanır; uygulama kapanıp açıldığında ilerleme korunur; ebeveyn ilerlemeyi görebilir ve bilinçli olarak sıfırlayabilir.
+- Test: Progress unit testleri, dashboard/parent widget testleri, `flutter analyze`, `flutter test`, gerçek cihaz restart smoke.
+- Durum: pending.
+
+### Phase 2M - Habits And Learning Pack Depth
+- Amaç: En sığ iki alanı, tekrar oynanabilir ve mağaza açıklamasında anlamlı biçimde sunulabilir içerik paketlerine dönüştürmek.
+- Scope: İyi Alışkanlıklar görevlerini 3'ten 6-8'e çıkar; görevleri temizlik, düzen, öz bakım ve yardım başlıklarına dağıt; Öğrenme Paketlerini en az 3 pakete çıkar ve her pakette 3-4 etkinlik sun; mevcut oyunları yalnızca linkleyen tekrar hissini azalt.
+- Scope dışı: Resmî müfredat iddiası, öğretmen paneli, canlı içerik indirme, metin ağırlıklı dersler.
+- Beklenen dosya etki alanı: `lib/games/habits_game.dart`, `lib/games/learning_packs_game.dart`, içerik modelleri, ilgili testler.
+- Çıkış kriterleri: En az 6 alışkanlık görevi ve 3 ayırt edilebilir öğrenme paketi oynanır; paketler farklı kazanım ve etkinlik sırası sunar.
+- Test: Widget testleri, manuel 4-5 yaş okunabilirlik smoke, `flutter analyze`, `flutter test`.
+- Durum: pending.
+
+### Phase 2N - Core Game Content Balance
+- Amaç: Level sayısını rastgele şişirmeden çekirdek oyunların ilk oturum ve tekrar oynama derinliğini dengelemek.
+- Scope: Boyamayı 10-12 sayfaya; çiz takibi en az 10 farklı şekil/yola çıkar; Balon Patlatma'ya hedef renk, özel balon ve süre/rahat mod gibi ayırt edilebilir bölüm varyasyonları ekle; Sinek Avı V2 hedef kartı, doğru/yanlış geri bildirim ve rozet döngüsünü tamamla; mevcut 12 şekil eşleştirme içeriğini kalite açısından koru.
+- Scope dışı: Yeni ana oyun, sınırsız içerik üretimi, AI/fotoğraf, karmaşık ekonomi, rekabetçi skor tablosu.
+- Beklenen dosya etki alanı: `lib/games/coloring_game.dart`, `lib/games/tracing_game.dart`, `lib/games/balloon_pop_game.dart`, `lib/games/magic_colors_game.dart`, ilgili testler.
+- Çıkış kriterleri: İlk kullanımda en az 20-30 dakikalık çeşitli içerik vardır; bölüm farkları yalnız hız artışı değildir; tüm yeni içerik ilerleme sistemiyle uyumludur.
+- Test: İlgili widget/unit testleri, compact landscape smoke, `flutter analyze`, `flutter test`.
+- Durum: pending.
+
+### Phase 2O - Store Listing, Compliance And Release Assets
+- Amaç: Google Play ve App Store gönderimi için gerekli mağaza metadatasını, çocuk/gizlilik beyanlarını ve görsel materyalleri hazırlamak.
+- Scope: Kanonik ürün adı ve kısa/uzun açıklama; destek ve gizlilik URL'leri; Google Play hedef kitle/Families ve Data Safety cevap taslağı; Apple Kids Category yaş aralığı ve App Privacy cevap taslağı; güncel ikon kırpımı; telefon/tablet yatay ekran görüntüleri; Google Play feature graphic; sürüm notları ve release checklist.
+- Scope dışı: Yanlış uyumluluk garantisi, mağaza hesabında kullanıcı adına nihai beyan gönderme, ücretlendirme kararı, reklam/analitik ekleme.
+- Beklenen dosya etki alanı: `brain/RELEASE.md`, `brain/VALIDATION.md`, `docs/store/*`, ikon ve mağaza görsel varlıkları, gerekirse `web/privacy.html`.
+- Çıkış kriterleri: Her iki mağaza için eksiksiz metadata paketi vardır; gizlilik metni gerçek uygulama davranışıyla eşleşir; ekran görüntüleri gerçek release build'den alınmıştır.
+- Test: Bağlantı kontrolü, asset boyut kontrolü, metadata tutarlılık incelemesi, gerçek cihaz görsel QA.
+- Durum: pending.
+
+### Phase 2P - Real Device QA And Closed Test Gate
+- Amaç: Herkese açık yayından önce gerçek cihaz ve çocuk/ebeveyn gözlemiyle kararlılık ve anlaşılabilirliği doğrulamak.
+- Scope: En az 2 Android telefon, 1 Android tablet, 1 iPhone ve mümkünse 1 iPad; küçük ekran yatay kullanım; ses/titreşim; offline açılış; uygulama restart sonrası ilerleme; ebeveyn kapısı/dış link; 10-20 kişilik Google Play kapalı test; 2-5 çocuk/ebeveyn gözlemi.
+- Scope dışı: Test bulgusu olmadan yeni özellik genişletme, herkese açık mağaza yayını, analitik SDK ekleme.
+- Beklenen dosya etki alanı: `brain/FIELD_RESEARCH.md`, `brain/TESTING.md`, `brain/RELEASE.md`, yalnız bulguların gerektirdiği dar fix dosyaları.
+- Çıkış kriterleri: P0/P1 hata yoktur; kritik akışlar cihaz matrisinde geçer; çocuk hedefi yardımsız anlayabilir; mağaza kapalı test geri bildirimi değerlendirilmiştir; Go/No-Go kararı yazılmıştır.
+- Test: Cihaz matrisi, çocuk/ebeveyn gözlem formu, Android closed testing, iOS TestFlight smoke, final AAB/archive doğrulaması.
+- Durum: pending.
 
 ## Phase 3 - Differentiator
 

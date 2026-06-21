@@ -1,21 +1,55 @@
 # TESTING.md - Test ve Doğrulama
 
-> Son güncelleme: 2026-05-19
-> Rol: Projede hangi değişiklikte hangi doğrulamanın çalışacağını açıklar.
+> Son güncelleme: 2026-06-21
 
-## Genel Komutlar
+## Her Kod Değişikliğinde
 
-- Markdown/whitespace: `git diff --check`
-- Kod yokken: yalnızca `git diff --check`
-- Flutter kurulursa: `flutter test`
-- APK istenirse: release APK masaüstüne çıkarılır, gereksiz büyük olmayan çıktı tercih edilir.
+```bash
+git diff --check
+flutter analyze
+flutter test
+```
 
-## Manuel Doğrulama
+Davranış değişen oyun için hedefli widget/unit testi eklenmeden faz tamamlanmaz.
 
-- Çocuk ana akışı gerçek cihazda denenmeli.
-- Reklam, dış link ve ödeme çocuk ekranından erişilemez olmalı.
-- 4-5 yaş çocuk için dokunma alanları büyük ve yazıya bağımlılık düşük olmalı.
+## Release Build Kapısı
 
-## Özel Çıktılar
+```bash
+flutter build appbundle --release
+flutter build ios --release --no-codesign
+```
 
-- APK istenirse masaüstüne kaydedilmiş, gereksiz büyük olmayan ve güncel Android telefonlarla uyumlu çıktı doğrulanır.
+- Android release yalnız upload keystore ile imzalı AAB üretilirse geçer.
+- iOS no-codesign build yalnız CocoaPods çözümü ve Xcode derlemesi tamamlanırsa geçer.
+- Public release öncesi gerçek imzalı iOS archive/TestFlight ayrıca doğrulanır.
+
+## Cihaz Matrisi
+
+- En az 2 güncel Android telefon; biri kısa yatay ekran.
+- En az 1 Android tablet.
+- En az 1 iPhone.
+- Mümkünse 1 iPad.
+- Mobil Chrome PWA ve Safari web smoke.
+
+## Kritik Akışlar
+
+- İlk açılış ve yataya yönlendirme.
+- Her ana oyun kartını açma/geri dönme.
+- Boyama, çiz takip, balon, şekil, ses, renk, alışkanlık ve paket tamamlama.
+- Uygulama restart sonrası ilerleme.
+- Offline ilk açılış ve oyun oynama.
+- Ebeveyn kapısı, gizlilik linki ve ilerleme sıfırlama.
+- Ses/titreşim açık-kapalı davranışı.
+- Küçük ekranda taşma, çakışma ve erişilemeyen kontrol olmaması.
+
+## Çocuk/Ebeveyn Gözlemi
+
+- 2-5 çocuk/ebeveyn oturumu.
+- Çocuk ilk hedefi sözlü yardım olmadan anlayabiliyor mu?
+- 15-20 dakika içinde oyunlar arası geçiş ve tekrar isteği var mı?
+- Yanlış geri bildirim korkutmuyor veya kilitlemiyor mu?
+- Ebeveyn güvenlik ve offline/reklamsız vaadini anlayabiliyor mu?
+
+## Go/No-Go
+
+Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değerlendirilmiş ve `brain/RELEASE.md` içinde `GO` kararı yazılmış olmalı.
