@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2N Aktivasyonu
+- **Karar:** Phase 2M tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2N aktif edildi.
+- **Neden:** Onaylı mağaza hazırlık sırasında sıradaki iş çekirdek oyun içerik dengesidir.
+- **Etki:** Yalnız boyama, çiz takip, balon ve Sinek Avı içeriği/testleri değişecek; Phase 2O kapsamına geçilmeyecek.
+- **Geri alma yolu:** Phase 2N değişikliklerini revert et ve `CURRENT_PHASE.md` dosyasını Phase 2M tamamlandı durumuna döndür.
+
 ### 2026-06-21 - Phase 2M Aktivasyonu
 - **Karar:** Phase 2L tamamlandıktan sonra kullanıcının `Devam` talimatıyla Phase 2M aktif edildi.
 - **Neden:** Onaylı mağaza hazırlık sırasında sıradaki iş, en sığ iki içerik alanını derinleştirmektir.

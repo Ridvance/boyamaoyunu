@@ -1,6 +1,6 @@
 # STATE.md - Güncel Durum
 
-> Son güncelleme: 2026-06-21
+> Son güncelleme: 2026-06-22
 > Rol: Yeni pencere açıldığında hızlı bağlam yükleme.
 
 ## Aktif Gerçeklik
@@ -10,9 +10,9 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: COMPLETE.
-- Aktif Faz: Phase 2M - Habits And Learning Pack Depth.
-- Faz durumu: Tamamlandı; Phase 2N aktif edilmedi.
+- Action State: READY.
+- Aktif Faz: Phase 2N - Core Game Content Balance.
+- Faz durumu: Active.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -39,7 +39,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-Phase 2M tamamlandı. Kullanıcı onayı olmadan Phase 2N'yi aktif etme.
+`brain/CURRENT_PHASE.md` içindeki Phase 2N scope locked prompt'u uygula; yalnız çekirdek oyun içerik dengesini genişlet.
 
 ## Son Doğrulama
 

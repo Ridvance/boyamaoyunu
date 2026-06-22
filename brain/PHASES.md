@@ -219,7 +219,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `lib/games/coloring_game.dart`, `lib/games/tracing_game.dart`, `lib/games/balloon_pop_game.dart`, `lib/games/magic_colors_game.dart`, ilgili testler.
 - Çıkış kriterleri: İlk kullanımda en az 20-30 dakikalık çeşitli içerik vardır; bölüm farkları yalnız hız artışı değildir; tüm yeni içerik ilerleme sistemiyle uyumludur.
 - Test: İlgili widget/unit testleri, compact landscape smoke, `flutter analyze`, `flutter test`.
-- Durum: pending.
+- Durum: active.
 
 ### Phase 2O - Store Listing, Compliance And Release Assets
 - Amaç: Google Play ve App Store gönderimi için gerekli mağaza metadatasını, çocuk/gizlilik beyanlarını ve görsel materyalleri hazırlamak.
