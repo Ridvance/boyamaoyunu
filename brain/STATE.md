@@ -5,14 +5,14 @@
 
 ## Aktif Gerçeklik
 
-Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2M sonunda 8 alışkanlık görevi ve 3 farklı öğrenme paketi vardır; `flutter analyze` temiz ve 34 test başarılıdır.
+Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2N sonunda çekirdek oyun içerikleri dengelenmiştir; `flutter analyze` temiz ve 37 test başarılıdır.
 
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: READY.
+- Action State: COMPLETE.
 - Aktif Faz: Phase 2N - Core Game Content Balance.
-- Faz durumu: Active.
+- Faz durumu: Tamamlandı; Phase 2O aktif edilmedi.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -23,7 +23,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 - Balon Patlatma bölüm tamamlaması `balloon` ilerlemesine yazılıyor; `tracing` kaydının değişmediği regresyon testiyle doğrulandı.
 - İlerleme: Sekiz benzersiz chapter, kalıcı tamamlanma/yıldız, çocuk kart rozetleri ve ebeveyn özeti mevcut.
 - Ebeveyn kontrolleri: İkinci onaylı ilerleme sıfırlama ile kalıcı ses/titreşim tercihleri mevcut.
-- İçerik: 7 boyama, 8 çiz takip, 12 eşleştirme şekli, 4 Renk Laboratuvarı modu, 8 alışkanlık görevi, 3 öğrenme paketi ve 10 paket etkinliği.
+- İçerik: 10 boyama, 10 çiz takip, 12 eşleştirme şekli, üç ayırt edilebilir balon bölüm tipi, 5 kalıcı Sinek Avı rozeti, 4 Renk Laboratuvarı modu, 8 alışkanlık görevi, 3 öğrenme paketi ve 10 paket etkinliği.
 - Mağaza materyali: ekran görüntüsü, feature graphic, metadata paketi ve gerçek cihaz görsel QA eksik.
 - Kanonik marka: `Ninnice Çocuk Oyunları`; Android, iOS, Flutter, web ve gizlilik yüzeyleri hizalı.
 - Git: Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi; bu commit korunmalıdır.
@@ -39,13 +39,13 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-`brain/CURRENT_PHASE.md` içindeki Phase 2N scope locked prompt'u uygula; yalnız çekirdek oyun içerik dengesini genişlet.
+Phase 2N tamamlandı. Kullanıcı onayı olmadan Phase 2O'yu aktif etme.
 
 ## Son Doğrulama
 
 ```text
 flutter analyze: PASS
-flutter test: PASS (34)
+flutter test: PASS (37)
 flutter build appbundle --release: PASS (23.5 MB)
 flutter build ios --release --no-codesign: PASS (Runner.app 26.5 MB)
 git diff --check: PASS

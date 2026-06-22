@@ -17,6 +17,31 @@ Future<void> recordBalloonLevelCompletion({int levelIndex = 1}) {
   );
 }
 
+enum BalloonChallengeType { relaxed, targetColor, timedSpecial }
+
+class BalloonChallenge {
+  final BalloonChallengeType type;
+  final String label;
+  final Color? targetColor;
+  final double? seconds;
+
+  const BalloonChallenge(this.type, this.label, {this.targetColor, this.seconds});
+}
+
+const List<BalloonChallenge> balloonChallenges = [
+  BalloonChallenge(BalloonChallengeType.relaxed, 'Rahat Oyun'),
+  BalloonChallenge(
+    BalloonChallengeType.targetColor,
+    'Mavi Balonlar',
+    targetColor: Color(0xFF4D96FF),
+  ),
+  BalloonChallenge(
+    BalloonChallengeType.timedSpecial,
+    'Sihirli Balon Avı',
+    seconds: 25,
+  ),
+];
+
 class BalloonPopGame extends StatefulWidget {
   const BalloonPopGame({super.key});
 
@@ -39,6 +64,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   int _score = 0;
   int _level = 1;
   int _levelPopCount = 0;
+  double _levelTimeRemaining = balloonChallenges.last.seconds!;
   bool _showExitHint = false;
 
   // Son güncelleme zamanı
@@ -115,6 +141,14 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   }
 
   void _updateGame(double dt) {
+    if (_currentChallenge.type == BalloonChallengeType.timedSpecial) {
+      _levelTimeRemaining -= dt;
+      if (_levelTimeRemaining <= 0) {
+        _levelTimeRemaining = _currentChallenge.seconds!;
+        _levelPopCount = 0;
+        _triggerWrongFeedback();
+      }
+    }
     // 1. Bulutları güncelle
     for (var cloud in _clouds) {
       cloud.x -= cloud.speed * dt;
@@ -195,7 +229,8 @@ class _BalloonPopGameState extends State<BalloonPopGame>
       const Color(0xFFFF8AAE), // Pamuk Şeker Pembesi
     ];
 
-    final isSpecial = random.nextDouble() < 0.15;
+    final isSpecial = random.nextDouble() <
+        (_currentChallenge.type == BalloonChallengeType.timedSpecial ? 0.38 : 0.15);
     Color color;
     IconData? icon;
 
@@ -206,7 +241,10 @@ class _BalloonPopGameState extends State<BalloonPopGame>
               ? Icons.star_rounded
               : Icons.redeem_rounded; // Yıldız veya Hediye ikonu
     } else {
-      color = colors[random.nextInt(colors.length)];
+      color = _currentChallenge.type == BalloonChallengeType.targetColor &&
+              random.nextDouble() < 0.38
+          ? _currentChallenge.targetColor!
+          : colors[random.nextInt(colors.length)];
       // %45 ihtimalle içinde sevimli bir sembol gösterilsin
       if (random.nextDouble() < 0.45) {
         final icons = [
@@ -298,6 +336,15 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   }
 
   void _popBalloon(Balloon balloon, int index) {
+    final isCorrectTarget = switch (_currentChallenge.type) {
+      BalloonChallengeType.relaxed => true,
+      BalloonChallengeType.targetColor => balloon.color == _currentChallenge.targetColor,
+      BalloonChallengeType.timedSpecial => balloon.isSpecial,
+    };
+    if (!isCorrectTarget) {
+      _triggerWrongFeedback();
+      return;
+    }
     _balloons.removeAt(index);
     _popCount++;
     _levelPopCount++;
@@ -385,6 +432,7 @@ class _BalloonPopGameState extends State<BalloonPopGame>
     if (_levelPopCount >= levelTarget) {
       _level++;
       _levelPopCount = 0;
+      _levelTimeRemaining = balloonChallenges.last.seconds!;
       _triggerCelebration();
       _triggerLevelCompleteCelebration();
     } else if (_popCount % 8 == 0) {
@@ -410,6 +458,16 @@ class _BalloonPopGameState extends State<BalloonPopGame>
   }
 
   int get _levelTarget => 8 + min(_level - 1, 4) * 2;
+
+  BalloonChallenge get _currentChallenge =>
+      balloonChallenges[(_level - 1) % balloonChallenges.length];
+
+  String get _challengeStatus {
+    final timer = _currentChallenge.type == BalloonChallengeType.timedSpecial
+        ? ' • ${_levelTimeRemaining.ceil()} sn'
+        : '';
+    return '${_currentChallenge.label}$timer';
+  }
 
   // Boş dokunmalar için küçük halka efekti parçacıkları
   void _triggerRipple(Offset point) {
@@ -698,15 +756,31 @@ class _BalloonPopGameState extends State<BalloonPopGame>
                         ),
                       ],
                     ),
-                    child: Text(
-                      'Bölüm $_level  •  Skor $_score  •  $_levelPopCount / $_levelTarget',
-                      style: const TextStyle(
-                        color: Color(0xFF233238),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w900,
-                        decoration: TextDecoration.none,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          _challengeStatus,
+                          key: const ValueKey('balloon-challenge-label'),
+                          style: const TextStyle(
+                            color: Color(0xFF167B75),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        Text(
+                          'Bölüm $_level  •  Skor $_score  •  $_levelPopCount / $_levelTarget',
+                          style: const TextStyle(
+                            color: Color(0xFF233238),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
                       ),
-                    ),
                   ),
                 ),
               ),

@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2N Tamamlandı
+- **Karar:** Çekirdek içerik 10 boyama, 10 çiz takip, üç balon bölüm tipi ve 5 kalıcı Sinek Avı rozetiyle dengelenerek faz kapatıldı.
+- **Neden:** İlk oturum çeşitliliğini yeni ana oyun veya ekonomi eklemeden artırmak gerekiyordu.
+- **Etki:** Yeni içerikler mevcut chapter ilerlemesine yazılıyor; Sinek Avı rozetleri diğer Renk Laboratuvarı modlarıyla çakışmayan indekslerde tutuluyor.
+- **Geri alma yolu:** Phase 2N uygulama/test commit'ini revert et ve brain durumunu aktif Phase 2N'ye döndür.
+
 ### 2026-06-22 - Phase 2N Aktivasyonu
 - **Karar:** Phase 2M tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2N aktif edildi.
 - **Neden:** Onaylı mağaza hazırlık sırasında sıradaki iş çekirdek oyun içerik dengesidir.

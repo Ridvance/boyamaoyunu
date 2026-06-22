@@ -1,12 +1,12 @@
 # RELEASE.md - Mağaza Yayın Durumu
 
-> Son güncelleme: 2026-06-21
+> Son güncelleme: 2026-06-22
 
 ## Ürün
 
 - Kanonik ürün adı: Ninnice Çocuk Oyunları.
 - Kod sürümü: `1.0.0+1`.
-- Aktif Faz: Phase 2N - Core Game Content Balance.
+- Son tamamlanan faz: Phase 2N - Core Game Content Balance. Phase 2O aktif değil.
 - Yayın kararı: `NO-GO PUBLIC`, Android kapalı teste yakın.
 
 ## Platform Durumu
@@ -21,7 +21,7 @@
 
 - [x] Phase 2K platform/build engelleri tamamlandı.
 - [x] Phase 2L ilerleme ve ebeveyn kontrolleri tamamlandı.
-- [ ] Phase 2M/2N içerik dengesi tamamlandı.
+- [x] Phase 2M/2N içerik dengesi tamamlandı.
 - [ ] Phase 2O mağaza metadata ve görselleri tamamlandı.
 - [ ] Gizlilik ve çocuk hedef kitle beyanları gerçek davranışla eşleşiyor.
 - [ ] Android cihaz matrisi ve kapalı test tamamlandı.
@@ -44,7 +44,7 @@ git diff --check
 - Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`.
 - AAB SHA-256: `e44e45c921f6c002e37508adc959c09080ecb0671f01b12414f4c9cc1f0d84db`.
 - iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.5 MB.
-- Otomatik test: 34 PASS; `flutter analyze`: PASS.
+- Otomatik test: 37 PASS; `flutter analyze`: PASS.
 
 ## Mağaza Politikası Notu
 

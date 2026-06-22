@@ -9,6 +9,8 @@ import 'package:cocuk_oyun/games/shape_sorter_game.dart';
 import 'package:cocuk_oyun/games/sound_board_game.dart';
 import 'package:cocuk_oyun/games/habits_game.dart';
 import 'package:cocuk_oyun/games/learning_packs_game.dart';
+import 'package:cocuk_oyun/games/coloring_game.dart' show ColoringGame;
+import 'package:cocuk_oyun/games/tracing_game.dart' show TracingGame;
 import 'package:cocuk_oyun/services/app_settings_service.dart';
 import 'package:cocuk_oyun/services/progress_service.dart';
 
@@ -241,6 +243,59 @@ void main() {
     await tester.pump();
 
     expect(find.text('🎨 Sihirli Oyun Dünyası'), findsOneWidget);
+  });
+
+  testWidgets('phase 2N exposes ten coloring pages and ten tracing paths', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const MaterialApp(home: ColoringGame()));
+    await tester.pump();
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget.key is ValueKey<String> &&
+            (widget.key! as ValueKey<String>).value.startsWith('coloring-template-'),
+      ),
+      findsNWidgets(10),
+    );
+
+    await tester.pumpWidget(const MaterialApp(home: TracingGame()));
+    await tester.pump();
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget.key is ValueKey<String> &&
+            (widget.key! as ValueKey<String>).value.startsWith('tracing-template-'),
+      ),
+      findsNWidgets(10),
+    );
+  });
+
+  testWidgets('fly hunt shows target card and persisted badge cycle', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'journey_completed_magic_colors': ['10'],
+      'journey_stars_magic_colors_10': 3,
+    });
+    await ProgressService.instance.init();
+    await AppSettingsService.instance.init();
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+    await tester.tap(find.byKey(const ValueKey('game-card-magic_colors')));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('magic-colors-mode-flyhunt')));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('flyhunt-target-card')), findsOneWidget);
+    expect(find.byKey(const ValueKey('flyhunt-feedback')), findsOneWidget);
+    expect(find.text('🏅 1/5'), findsOneWidget);
   });
 
   testWidgets('coloring game advances the three-step story flow', (

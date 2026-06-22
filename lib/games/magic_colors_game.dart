@@ -7,6 +7,8 @@ import 'magic_colors/chameleon_painter.dart';
 import '../services/guidance_widgets.dart';
 import '../services/progress_service.dart';
 
+const int flyHuntBadgeProgressStart = 10;
+
 class MagicColorsGame extends StatefulWidget {
   const MagicColorsGame({super.key});
 
@@ -38,6 +40,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   Timer? _kamoExpressionTimer;
   bool _showCelebration = false;
   Timer? _celebrationTimer;
+  Timer? _flyHuntFeedbackTimer;
   bool _showGhostHand = false;
   Offset? _ghostHandPosition;
   final StreamController<void> _wrongFeedbackController = StreamController<void>.broadcast();
@@ -78,7 +81,10 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   // 2. Sinek Avı Modu Durumları
   int _flyHuntLevel = 0;
   String _flyHuntTargetName = '';
+  Color _flyHuntTargetColor = Colors.transparent;
   final List<String> _flyHuntEatenColors = [];
+  int _flyHuntBadges = 0;
+  String _flyHuntFeedback = '';
 
   // 3. Resim Defteri Modu Durumları
   int _coloringLevel = 0;
@@ -147,6 +153,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
     _tickerController.dispose();
     _kamoExpressionTimer?.cancel();
     _celebrationTimer?.cancel();
+    _flyHuntFeedbackTimer?.cancel();
     _wrongFeedbackController.close();
     super.dispose();
   }
@@ -623,6 +630,17 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   void _startFlyHuntMode() {
     _clearBeaker();
     _flyHuntLevel = 1;
+    _flyHuntBadges = List.generate(
+      5,
+      (index) => index + flyHuntBadgeProgressStart,
+    )
+        .where(
+          (index) => ProgressService.instance.isLevelCompleted(
+            ProgressChapters.magicColors,
+            index,
+          ),
+        )
+        .length;
     _setupFlyHuntLevel();
     setState(() {
       _currentMode = 'flyhunt';
@@ -637,6 +655,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
     _tongueProgress = 0.0;
     _tongueTarget = null;
     _targetEatingFly = null;
+    _flyHuntFeedback = '';
 
     final levels = [
       {
@@ -668,6 +687,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
 
     final lvl = levels[(_flyHuntLevel - 1) % levels.length];
     _flyHuntTargetName = lvl['name'] as String;
+    _flyHuntTargetColor = lvl['color'] as Color;
 
     // Sinekleri üret
     final random = Random();
@@ -715,6 +735,22 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   void _onFlyTapped(ChameleonFly fly) {
     if (_isEating || _isCamouflaged) return;
 
+    final requiredColors = _getRequiredBaseColors(_flyHuntTargetName);
+    if (!requiredColors.contains(fly.colorName) ||
+        _flyHuntEatenColors.contains(fly.colorName)) {
+      _wrongFeedbackController.add(null);
+      AppHaptics.lightImpact();
+      _setKamoExpression('surprised');
+      setState(() {
+        _flyHuntFeedback = 'Başka bir renk dene';
+      });
+      _flyHuntFeedbackTimer?.cancel();
+      _flyHuntFeedbackTimer = Timer(const Duration(milliseconds: 1400), () {
+        if (mounted) setState(() => _flyHuntFeedback = '');
+      });
+      return;
+    }
+
     AppHaptics.mediumImpact();
     // Kamo'nun dili hedefe kilitlenir
     setState(() {
@@ -724,6 +760,7 @@ class _MagicColorsGameState extends State<MagicColorsGame>
       _tongueTarget = fly.position;
       _targetEatingFly = fly;
       _lookTarget = fly.position;
+      _flyHuntFeedback = 'Doğru renk!';
     });
   }
 
@@ -756,13 +793,22 @@ class _MagicColorsGameState extends State<MagicColorsGame>
 
         // Seviye bitti mi kontrolü
         if (_chameleonColorName == _flyHuntTargetName) {
+          final badgeIndex = flyHuntBadgeProgressStart +
+              ((_flyHuntLevel - 1) % 5);
+          final earnsNewBadge = !ProgressService.instance.isLevelCompleted(
+            ProgressChapters.magicColors,
+            badgeIndex,
+          );
           _stars += 3;
+          if (earnsNewBadge) {
+            _flyHuntBadges = min(5, _flyHuntBadges + 1);
+          }
           _triggerCelebration();
           _setKamoExpression('happy', delay: const Duration(seconds: 3));
           _showCelebration = true;
           ProgressService.instance.completeLevel(
             ProgressChapters.magicColors,
-            2,
+            badgeIndex,
             stars: 3,
           );
           _celebrationTimer?.cancel();
@@ -1456,6 +1502,9 @@ class _MagicColorsGameState extends State<MagicColorsGame>
   Widget _buildInteractivePanel() {
     final compact = _isCompact;
     return Container(
+      key: _currentMode == 'flyhunt'
+          ? const ValueKey('flyhunt-target-card')
+          : null,
       padding: EdgeInsets.symmetric(
         horizontal: compact ? 10 : 16,
         vertical: compact ? 4 : 8,
@@ -1547,6 +1596,45 @@ class _MagicColorsGameState extends State<MagicColorsGame>
               color: const Color(0xFF53666C),
             ),
           ),
+          if (_currentMode == 'flyhunt') ...[
+            SizedBox(height: compact ? 3 : 5),
+            Row(
+              children: [
+                Container(
+                  width: compact ? 18 : 24,
+                  height: compact ? 18 : 24,
+                  decoration: BoxDecoration(
+                    color: _flyHuntTargetColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    _flyHuntFeedback.isEmpty
+                        ? 'Hedef: $_flyHuntTargetName'
+                        : _flyHuntFeedback,
+                    key: const ValueKey('flyhunt-feedback'),
+                    style: TextStyle(
+                      fontSize: compact ? 9 : 11,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF233238),
+                    ),
+                  ),
+                ),
+                Text(
+                  '🏅 $_flyHuntBadges/5',
+                  key: const ValueKey('flyhunt-badge-cycle'),
+                  style: TextStyle(
+                    fontSize: compact ? 10 : 12,
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF8A6200),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

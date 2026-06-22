@@ -278,6 +278,11 @@ class _ColoringGameState extends State<ColoringGame>
           if (allColored &&
               !_celebratedTemplates.contains(_selectedTemplateIndex)) {
             _celebratedTemplates.add(_selectedTemplateIndex);
+            ProgressService.instance.completeLevel(
+              ProgressChapters.coloring,
+              _selectedTemplateIndex,
+              stars: 3,
+            );
             AppHaptics.heavyImpact();
             AudioSynth.playSparkleSound();
 
@@ -414,6 +419,7 @@ class _ColoringGameState extends State<ColoringGame>
   Widget _buildTemplateButton(int index, ColoringTemplate template) {
     final isSelected = _selectedTemplateIndex == index;
     return GestureDetector(
+      key: ValueKey('coloring-template-$index'),
       onTap: () {
         setState(() {
           _selectedTemplateIndex = index;
@@ -1187,6 +1193,45 @@ class _ColoringGameState extends State<ColoringGame>
             const Offset(230, 270),
             paint,
           );
+        },
+      ),
+      ColoringTemplate(
+        name: 'Fish',
+        icon: Icons.set_meal_rounded,
+        parts: [
+          ColoringPart(id: 'body', path: Path()..addOval(const Rect.fromLTRB(85, 120, 305, 285))),
+          ColoringPart(id: 'tail', path: Path()..moveTo(90, 195)..lineTo(35, 135)..lineTo(35, 260)..close()),
+          ColoringPart(id: 'fin', path: Path()..moveTo(180, 205)..lineTo(235, 245)..lineTo(245, 185)..close()),
+        ],
+        drawDetails: (canvas, size, paint) {
+          canvas.drawCircle(const Offset(260, 170), 7, Paint()..color = paint.color);
+        },
+      ),
+      ColoringTemplate(
+        name: 'Sun',
+        icon: Icons.wb_sunny_rounded,
+        parts: [
+          ColoringPart(id: 'sun', path: Path()..addOval(const Rect.fromLTRB(105, 105, 295, 295))),
+          ColoringPart(id: 'cloud', path: Path()..addOval(const Rect.fromLTRB(35, 255, 155, 335))..addOval(const Rect.fromLTRB(100, 235, 225, 335))),
+        ],
+        drawDetails: (canvas, size, paint) {
+          final rayPaint = Paint()..color = paint.color..strokeWidth = 8..strokeCap = StrokeCap.round;
+          for (var i = 0; i < 8; i++) {
+            final angle = i * pi / 4;
+            canvas.drawLine(Offset(200 + cos(angle) * 110, 200 + sin(angle) * 110), Offset(200 + cos(angle) * 145, 200 + sin(angle) * 145), rayPaint);
+          }
+        },
+      ),
+      ColoringTemplate(
+        name: 'Boat',
+        icon: Icons.sailing_rounded,
+        parts: [
+          ColoringPart(id: 'hull', path: Path()..moveTo(55, 250)..lineTo(345, 250)..quadraticBezierTo(310, 335, 200, 340)..quadraticBezierTo(90, 335, 55, 250)..close()),
+          ColoringPart(id: 'sail', path: Path()..moveTo(195, 65)..lineTo(195, 235)..lineTo(75, 235)..close()),
+          ColoringPart(id: 'small_sail', path: Path()..moveTo(210, 95)..lineTo(325, 235)..lineTo(210, 235)..close()),
+        ],
+        drawDetails: (canvas, size, paint) {
+          canvas.drawLine(const Offset(202, 60), const Offset(202, 255), Paint()..color = paint.color..strokeWidth = 7);
         },
       ),
     ];

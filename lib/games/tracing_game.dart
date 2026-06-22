@@ -8,7 +8,7 @@ import '../services/progress_service.dart';
 import 'magic_colors/chameleon_painter.dart';
 
 /// Şablon Tipleri
-enum ShapeType { circle, star, house, square, heart, triangle, diamond, wave }
+enum ShapeType { circle, star, house, square, heart, triangle, diamond, wave, spiral, zigzag }
 
 /// Parçacık Sınıfı (Başarı Animasyonu Yıldızları)
 class TracingParticle {
@@ -296,6 +296,38 @@ class _TracingGameState extends State<TracingGame>
         points: wavePoints,
         themeColor: const Color(0xFF00A6D6),
         icon: Icons.water_rounded,
+      ),
+    );
+
+    final spiralPoints = <Offset>[];
+    const int spiralSegments = 64;
+    for (int i = 0; i <= spiralSegments; i++) {
+      final t = i / spiralSegments;
+      final angle = t * pi * 4.5;
+      final radius = 0.04 + t * 0.32;
+      spiralPoints.add(Offset(0.5 + cos(angle) * radius, 0.5 + sin(angle) * radius));
+    }
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.spiral,
+        points: spiralPoints,
+        themeColor: const Color(0xFFE85D9E),
+        icon: Icons.gesture_rounded,
+      ),
+    );
+
+    _templates.add(
+      TracingTemplate(
+        type: ShapeType.zigzag,
+        points: const [
+          Offset(0.15, 0.25),
+          Offset(0.32, 0.72),
+          Offset(0.5, 0.25),
+          Offset(0.68, 0.72),
+          Offset(0.85, 0.25),
+        ],
+        themeColor: const Color(0xFFFF7043),
+        icon: Icons.show_chart_rounded,
       ),
     );
   }
@@ -903,6 +935,7 @@ class _TracingGameState extends State<TracingGame>
             ? (isShortHeight ? 26.0 : 36.0)
             : (isShortHeight ? 20.0 : 28.0);
     return GestureDetector(
+      key: ValueKey('tracing-template-$index'),
       onTap: () {
         AppHaptics.lightImpact();
         _selectTemplate(index);

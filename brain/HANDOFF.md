@@ -1,19 +1,19 @@
 # HANDOFF.md - Devir Teslim
 
-> Son güncelleme: 2026-06-21
+> Son güncelleme: 2026-06-22
 
 ## Son Durum
 
 - Son mod: Execution / Handoff.
-- Son yapılan: Phase 2M alışkanlık ve öğrenme paketi derinliği tamamlandı.
-- Aktif faz: Phase 2M - Habits And Learning Pack Depth.
+- Son yapılan: Phase 2N çekirdek oyun içerik dengesi tamamlandı.
+- Son tamamlanan faz: Phase 2N - Core Game Content Balance.
 - Action State: COMPLETE.
-- Faz durumu: Phase 2M tamamlandı; Phase 2N aktif edilmedi.
+- Faz durumu: Phase 2N tamamlandı; Phase 2O aktif edilmedi.
 
 ## Kanıt
 
 - `flutter analyze`: PASS.
-- `flutter test --reporter expanded`: 34 PASS.
+- `flutter test --reporter expanded`: 37 PASS.
 - Android imzalı AAB: PASS, 23.5 MB, target SDK 35.
 - iOS release build: PASS; minimum hedef 13.0, no-codesign Runner.app 26.5 MB.
 - Web release build: PASS; CupertinoIcons font uyarısı var.
@@ -21,12 +21,13 @@
 - Sekiz chapter kimliği benzersiz; tamamlanma/yıldız restart sonrası kalıcı.
 - Çocuk kartlarında ilerleme rozetleri, ebeveyn panelinde özet/onaylı sıfırlama/ses-titreşim kontrolleri mevcut.
 - İyi Alışkanlıklar 8 görev/dört kategori; Öğrenme Paketleri 3 paket/toplam 10 etkinlik sunuyor.
+- Boyama 10 sayfa, çiz takip 10 yol, Balon Patlatma 3 bölüm tipi ve Sinek Avı 5 kalıcı rozet sunuyor.
 - Kanonik ad Android, iOS, Flutter, web ve gizlilik yüzeylerinde `Ninnice Çocuk Oyunları`.
 - Görsel audit: Uygulama içi tarayıcı bu oturumda kullanılamadığı için ekran görüntülü QA yapılmadı.
 
 ## Sıradaki İş
 
-Phase 2M tamamlandı. Kullanıcı onayı olmadan Phase 2N'yi aktif etme.
+Phase 2N tamamlandı. Kullanıcı onayı olmadan Phase 2O'yu aktif etme.
 
 ## Git Uyarısı
 
