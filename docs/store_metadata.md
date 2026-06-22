@@ -9,7 +9,8 @@
 - iOS bundle identifier: `com.ridvance.cocukOyun`
 - Sürüm: `1.0.0` (`1`)
 - Gizlilik URL: `https://ridvance.github.io/boyamaoyunu/privacy.html`
-- Destek URL: `https://ridvance.github.io/boyamaoyunu/support.html`
+- Destek URL: `https://ridvance.github.io/boyamaoyunu/privacy.html` (canlı sayfada iletişim e-postası bulunur)
+- Ayrı destek sayfası adayı: `https://ridvance.github.io/boyamaoyunu/support.html` (repo hazır, deploy bekliyor)
 - Destek e-postası: `ninnicecom@gmail.com`
 
 ## Google Play

@@ -4,7 +4,7 @@
 
 ## Karar
 
-Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA, imzalı iOS archive ve sonraki mağaza kapıları tamamlanmadan herkese açık yayına hazır değildir. İçerik dengesi Phase 2N'de tamamlandı; aktif sınır mağaza metadata, uyumluluk taslakları ve release görsel paketidir.
+Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign release build üretilebilmektedir; ancak kapalı test, gerçek cihaz QA ve imzalı iOS archive tamamlanmadan herkese açık yayına hazır değildir. İçerik dengesi ve mağaza gönderim paketi Phase 2N/2O'da tamamlandı; sıradaki sınır Phase 2P fiziksel cihaz ve kapalı test kapısıdır.
 
 ## Denetim Kanıtı
 

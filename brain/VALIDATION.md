@@ -1,6 +1,6 @@
 # VALIDATION.md - Araştırma ve Ticari Doğrulama
 
-> Son güncelleme: 2026-06-04
+> Son güncelleme: 2026-06-22
 > Rol: Research, commercial validation, AI substitution, SLC ve kill report kapılarını proje özelinde tutar.
 
 ## Kullanma Kuralı
@@ -10,6 +10,17 @@
 - Çocuk güvenliği, ebeveyn güveni, karakter/isim saha doğrulaması ve dağıtım gerçekliği ticari doğrulamanın parçasıdır.
 
 ## Research Gate
+
+### Phase 2O - Mağaza Uyumluluk Denetimi
+
+- Release Android manifestinde çocuk uygulaması için hassas konum, kamera, mikrofon, kişi, telefon, Bluetooth veya `AD_ID` izni bulunmuyor.
+- Uygulama reklam, üçüncü taraf analitik, hesap, sosyal özellik, kullanıcı üretimli içerik veya uygulama içi satın alma içermiyor.
+- `shared_preferences` yalnız cihaz içi ilerleme ve tercihleri tutuyor; cihaz dışı veri iletimi yok.
+- `url_launcher` yalnız ebeveyn kapısı arkasındaki canlı gizlilik sayfasını harici tarayıcıda açıyor.
+- Google Play taslak hedef grubu `Ages 5 & Under`; Apple Kids Category taslağı `Made for Ages 5 and Under`.
+- Google Data Safety ve Apple App Privacy için “veri toplanmıyor” yanıtı mevcut kod ve SDK kullanımıyla uyumlu bulundu.
+- Bu denetim hukuki uygunluk garantisi değildir; hesap sahibi güncel artifact ve formları gönderim anında yeniden doğrulamalıdır.
+- Resmî kaynaklar ve form cevapları `docs/store/*-compliance-draft.md` dosyalarındadır.
 
 ### Phase 2F - Okul Öncesi Paket Doğrulama Notu
 

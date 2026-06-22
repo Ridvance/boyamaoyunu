@@ -5,14 +5,14 @@
 
 ## Aktif Gerçeklik
 
-Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2N sonunda çekirdek oyun içerikleri dengelenmiştir; `flutter analyze` temiz ve 37 test başarılıdır.
+Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2O sonunda iki mağaza için metadata, politika taslakları ve release görsel paketi hazırdır; `flutter analyze` temiz ve 37 test başarılıdır.
 
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: READY.
+- Action State: COMPLETE.
 - Aktif Faz: Phase 2O - Store Listing, Compliance And Release Assets.
-- Faz durumu: Active.
+- Faz durumu: Tamamlandı; Phase 2P aktif edilmedi.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -24,7 +24,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 - İlerleme: Sekiz benzersiz chapter, kalıcı tamamlanma/yıldız, çocuk kart rozetleri ve ebeveyn özeti mevcut.
 - Ebeveyn kontrolleri: İkinci onaylı ilerleme sıfırlama ile kalıcı ses/titreşim tercihleri mevcut.
 - İçerik: 10 boyama, 10 çiz takip, 12 eşleştirme şekli, üç ayırt edilebilir balon bölüm tipi, 5 kalıcı Sinek Avı rozeti, 4 Renk Laboratuvarı modu, 8 alışkanlık görevi, 3 öğrenme paketi ve 10 paket etkinliği.
-- Mağaza materyali: ekran görüntüsü, feature graphic, metadata paketi ve gerçek cihaz görsel QA eksik.
+- Mağaza materyali: metadata/politika taslakları, ikonlar, feature graphic ve release build telefon/iPad ekran setleri hazır; fiziksel cihaz karşılaştırması Phase 2P'de bekliyor.
 - Kanonik marka: `Ninnice Çocuk Oyunları`; Android, iOS, Flutter, web ve gizlilik yüzeyleri hizalı.
 - Git: Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi; bu commit korunmalıdır.
 
@@ -39,7 +39,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-`brain/CURRENT_PHASE.md` içindeki Phase 2O scope locked prompt'unu uygula; yalnız mağaza gönderim paketini hazırla.
+Phase 2O tamamlandı. Kullanıcı onayı olmadan Phase 2P'yi aktif etme.
 
 ## Son Doğrulama
 

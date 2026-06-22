@@ -21,7 +21,8 @@
 - Yerel ilerleme ve tercihler cihaz dışına iletilmez.
 - Üçüncü taraf paketler reklam/analitik amacıyla kullanılmaz.
 - Privacy Policy URL: `https://ridvance.github.io/boyamaoyunu/privacy.html`.
-- Support URL: `https://ridvance.github.io/boyamaoyunu/support.html`.
+- Support URL: `https://ridvance.github.io/boyamaoyunu/privacy.html` (canlı sayfa iletişim e-postası içerir).
+- Ayrı `support.html` sayfası repo içinde hazırdır; canlıya alındığında Support URL buna geçirilebilir.
 
 ## Age Rating Taslak Sinyalleri
 

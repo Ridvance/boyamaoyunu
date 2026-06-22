@@ -6,7 +6,7 @@
 
 - Kanonik ürün adı: Ninnice Çocuk Oyunları.
 - Kod sürümü: `1.0.0+1`.
-- Aktif Faz: Phase 2O - Store Listing, Compliance And Release Assets.
+- Son tamamlanan faz: Phase 2O - Store Listing, Compliance And Release Assets. Phase 2P aktif değil.
 - Yayın kararı: `NO-GO PUBLIC`, Android kapalı teste yakın.
 
 ## Platform Durumu
@@ -22,8 +22,8 @@
 - [x] Phase 2K platform/build engelleri tamamlandı.
 - [x] Phase 2L ilerleme ve ebeveyn kontrolleri tamamlandı.
 - [x] Phase 2M/2N içerik dengesi tamamlandı.
-- [ ] Phase 2O mağaza metadata ve görselleri tamamlandı.
-- [ ] Gizlilik ve çocuk hedef kitle beyanları gerçek davranışla eşleşiyor.
+- [x] Phase 2O mağaza metadata ve görselleri tamamlandı.
+- [x] Gizlilik ve çocuk hedef kitle beyan taslakları mevcut davranışla eşleşiyor.
 - [ ] Android cihaz matrisi ve kapalı test tamamlandı.
 - [ ] iPhone/iPad TestFlight smoke tamamlandı.
 - [ ] P0/P1 açık hata yok.
@@ -48,6 +48,7 @@ git diff --check
 
 ## Mağaza Politikası Notu
 
-- Google Play'de çocuk hedef kitlesi ve Families/Data Safety beyanları Phase 2O'da hazırlanır.
-- App Store Kids Category yaş aralığı, parental gate ve App Privacy cevapları Phase 2O'da hazırlanır.
+- Google Play hedef kitle/Families ve Data Safety cevap taslakları `docs/store/google-play-compliance-draft.md` içinde hazırdır.
+- App Store Kids Category, parental gate ve App Privacy cevap taslakları `docs/store/app-store-compliance-draft.md` içinde hazırdır.
+- Release asset manifesti `docs/store/asset-manifest.md` içindedir.
 - Kullanıcı hesabında nihai beyan gönderme ve public publish açık kullanıcı onayı ister.

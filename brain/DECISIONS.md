@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2O Tamamlandı
+- **Karar:** İki mağaza için metadata, politika cevap taslakları, ikonlar, feature graphic, 14 release ekranı ve checklist hazırlanarak faz kapatıldı.
+- **Neden:** Build ve ürün içeriğini mağaza hesaplarına girmeden önce doğrulanabilir bir gönderim paketine dönüştürmek gerekiyordu.
+- **Etki:** Public yayın kararı hâlâ `NO-GO`; fiziksel cihaz, kapalı test ve imzalı iOS archive Phase 2P'de bekliyor.
+- **Geri alma yolu:** Phase 2O store package ve brain completion commit'lerini revert et.
+
 ### 2026-06-22 - Phase 2O Aktivasyonu
 - **Karar:** Phase 2N tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2O aktif edildi.
 - **Neden:** Build ve içerik baseline'ından sonra sıradaki onaylı kapı mağaza gönderim paketidir.

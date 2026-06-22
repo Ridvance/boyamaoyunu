@@ -84,3 +84,22 @@ Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değe
 - Sekiz alışkanlık görevi/dört kategori tamamlama testi: PASS.
 - Üç paket ve paket içi mikro etkinlik kalıcı ilerleme testi: PASS.
 - Mevcut inactivity, kutlama ve kompakt yatay ekran regresyonları: PASS.
+
+## Son Otomatik Doğrulama - Phase 2N
+
+- `git diff --check`: PASS.
+- `flutter analyze`: PASS.
+- `flutter test`: PASS, 37 test.
+- 10 boyama sayfası ve 10 çiz takip yolu widget testi: PASS.
+- Balon bölüm tipi ve Sinek Avı kalıcı rozet regresyonları: PASS.
+
+## Son Otomatik Doğrulama - Phase 2O
+
+- `git diff --check`: PASS.
+- `flutter analyze`: PASS.
+- `flutter test`: PASS, 37 test.
+- `flutter build web --release`: PASS.
+- Metadata alan uzunlukları: Google Play başlık 22/30, kısa açıklama 58/80; App Store ad 22/30, subtitle 22/30, promotional text 66/170, keywords 75/100.
+- Görsel boyut/kanal doğrulaması: PASS; tüm mağaza PNG'leri 8-bit RGB ve beklenen ölçülerde.
+- Telefon ve iPad contact sheet görsel QA: PASS; taşma veya kırpılma bulunmadı.
+- Canlı privacy/support URL: HTTP 200; ayrı `support.html` deployment'ı release checklist'te izleniyor.

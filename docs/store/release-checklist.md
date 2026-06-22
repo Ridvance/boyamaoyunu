@@ -8,7 +8,8 @@
 - [x] Google Play başlık, kısa ve uzun açıklama hazır.
 - [x] App Store ad, alt başlık, promotional text, açıklama ve keywords hazır.
 - [x] Privacy Policy URL canlı ve HTTP 200 doğrulandı.
-- [x] Support URL sayfası repoda hazır.
+- [x] Geçici Support URL canlı ve HTTP 200 doğrulandı; gizlilik sayfasındaki iletişim e-postasını kullanır.
+- [x] Ayrı `support.html` sayfası repoda hazır.
 - [x] Google Families/Target Audience taslağı hazır.
 - [x] Google Data Safety taslağı hazır.
 - [x] Apple Kids Category/App Privacy taslağı hazır.
@@ -21,7 +22,7 @@
 
 ## Hesap Sahibi / Phase 2P Bekleyen
 
-- [ ] `support.html` GitHub Pages'a deploy edildikten sonra HTTP 200 doğrula.
+- [ ] `support.html` GitHub Pages'a deploy edildikten sonra HTTP 200 doğrula ve Support URL'yi ayrı sayfaya geçir.
 - [ ] Play Console'da uygulama erişimi, hedef kitle, Data Safety ve IARC formlarını taslaktan gir.
 - [ ] App Store Connect'te Kids Category, yaş derecesi ve App Privacy yanıtlarını taslaktan gir.
 - [ ] Android fiziksel cihaz matrisi ve kapalı testi tamamla.
