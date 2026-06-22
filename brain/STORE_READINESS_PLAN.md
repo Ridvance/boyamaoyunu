@@ -10,7 +10,7 @@ Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign rele
 
 - `flutter analyze`: temiz.
 - `flutter test --reporter expanded`: 29 test geçti.
-- Android release AAB: başarılı, yaklaşık 23.5 MB.
+- Android release AAB: başarılı, 23.7 MB.
 - Android release manifest: `targetSdkVersion=35`, `minSdkVersion=21`.
 - Android release signing: `key.properties` ve upload keystore mevcut; imzalı AAB üretildi.
 - iOS release no-codesign build: başarılı; minimum hedef 13.0.
@@ -20,7 +20,7 @@ Uygulama prototip seviyesini geçti. Android imzalı AAB ve iOS no-codesign rele
 - Kalıcı ilerleme altyapısı mevcut fakat oyunların gerçek bölüm derinliğini tutarlı göstermiyor.
 - Mağaza ekran görüntüsü, feature graphic, açıklama paketi ve destek materyalleri repo içinde hazır değil.
 - Kanonik ürün adı Android, iOS, Flutter, web ve gizlilik yüzeylerinde `Ninnice Çocuk Oyunları` olarak hizalandı.
-- Uygulama içi audit tarayıcısı bu oturumda kullanılamadığı için ekran görüntüsüne dayalı tam görsel QA tamamlanmadı.
+- Store ekran setleri ve iPhone/iPad native simulator ana ekranları görsel olarak doğrulandı; fiziksel cihaz karşılaştırması bekliyor.
 - Yerel `master`, `origin/master` üzerinde `3907fe7` commit'iyle 1 commit ilerideydi; yeni çalışma bu commit'i korumalıdır.
 
 ## Sıralı Fazlar

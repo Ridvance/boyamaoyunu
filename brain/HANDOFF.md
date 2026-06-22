@@ -5,17 +5,19 @@
 ## Son Durum
 
 - Son mod: Execution / Handoff.
-- Son yapılan: Phase 2O mağaza gönderim paketi tamamlandı.
+- Son yapılan: Phase 2P otomatik/simülatör QA, P1 küçük iPhone overflow fixi ve final release build doğrulaması tamamlandı.
 - Son tamamlanan faz: Phase 2O - Store Listing, Compliance And Release Assets.
-- Action State: COMPLETE.
-- Faz durumu: Phase 2O tamamlandı; Phase 2P aktif edilmedi.
+- Action State: BLOCKED ON EXTERNAL QA.
+- Faz durumu: Phase 2P aktif; gerçek cihaz, mağaza hesabı ve test katılımcısı bekliyor.
 
 ## Kanıt
 
 - `flutter analyze`: PASS.
-- `flutter test --reporter expanded`: 37 PASS.
-- Android imzalı AAB: PASS, 23.5 MB, target SDK 35.
-- iOS release build: PASS; minimum hedef 13.0, no-codesign Runner.app 26.5 MB.
+- `flutter test --reporter expanded`: 38 PASS.
+- Android imzalı AAB: PASS, 23.7 MB, target SDK 35.
+- iOS release build: PASS; minimum hedef 13.0, no-codesign Runner.app 26.7 MB.
+- iPhone 11 Pro Max simulator overflow P1'i kapatıldı; iPhone/iPad native yatay ana ekran smoke geçti.
+- Fiziksel cihaz matrisi, Play Console kapalı test, TestFlight ve 2-5 çocuk/ebeveyn gözlemi tamamlanmadığı için yayın kararı `NO-GO PUBLIC`.
 - Web release build: PASS; CupertinoIcons font uyarısı var.
 - Balon tamamlaması `balloon` chapter'ına yazılıyor ve regresyon testi mevcut.
 - Sekiz chapter kimliği benzersiz; tamamlanma/yıldız restart sonrası kalıcı.
@@ -26,11 +28,11 @@
 - Telefon ve iPad için 7'şer release ekranı, iki mağaza ikonu ve Google Play feature graphic hazır.
 - Canlı privacy/support URL HTTP 200; ayrı `support.html` repo içinde hazır fakat GitHub Pages deployment'ı bekliyor.
 - Kanonik ad Android, iOS, Flutter, web ve gizlilik yüzeylerinde `Ninnice Çocuk Oyunları`.
-- Görsel audit: Uygulama içi tarayıcı bu oturumda kullanılamadığı için ekran görüntülü QA yapılmadı.
+- Görsel audit: Store ekran setleri Phase 2O'da incelendi; Phase 2P'de iPhone/iPad native simulator ekranları ayrıca görsel olarak doğrulandı.
 
 ## Sıradaki İş
 
-Phase 2O tamamlandı. Kullanıcı onayı olmadan Phase 2P'yi aktif etme.
+Phase 2P'yi tamamlamak için 2 Android telefon, 1 Android tablet, 1 iPhone ve mümkünse iPad erişimi; Play Console/App Store Connect oturumu; 10-20 kapalı test katılımcısı ve 2-5 çocuk/ebeveyn gözlemi sağla. Phase 2P tamamlanmadan sonraki faza geçme.
 
 ## Git Uyarısı
 
@@ -51,12 +53,12 @@ Brain yapısına göre devam et. Önce şu dosyaları sırayla oku:
 7. brain/RELEASE.md
 8. brain/HANDOFF.md
 
-Phase 2O - Store Listing, Compliance And Release Assets tamamlandı. Phase 2P henüz aktif değil; kullanıcı onayı olmadan yeni faza geçme.
+Phase 2P - Real Device QA And Closed Test Gate aktif. Otomatik/simülatör QA ve P1 küçük iPhone overflow fixi tamamlandı; gerçek cihaz, mağaza hesabı ve katılımcı blokajları çözülmeden fazı kapatma veya sonraki faza geçme.
 
 Bilinen baseline:
 - flutter analyze: PASS
-- flutter test: 37 PASS
-- Android AAB: PASS, 23.5 MB, target SDK 35
+- flutter test: 38 PASS
+- Android AAB: PASS, 23.7 MB, target SDK 35
 - iOS no-codesign build: PASS, deployment target 13.0
 - Kanonik ad: Ninnice Çocuk Oyunları
 ```

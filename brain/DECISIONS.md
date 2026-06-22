@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2P Ara NO-GO
+- **Karar:** iPhone küçük yatay ekran P1'i kapatıldı; gerçek cihaz, kapalı test/TestFlight ve çocuk/ebeveyn gözlemi eksik olduğu için `NO-GO PUBLIC` kararı korundu ve Phase 2P aktif bırakıldı.
+- **Neden:** Simülatör ve otomatik test kanıtı fiziksel ses/titreşim, offline/restart, gerçek kullanıcı ve mağaza dağıtım kapılarının yerine geçmez.
+- **Etki:** Phase 3 veya public yayın başlamaz; dış QA erişimi sağlandığında `docs/qa/phase-2p-device-matrix.md` tamamlanır.
+- **Geri alma yolu:** NO-GO kaydını yalnız tüm Phase 2P çıkış kriterleri kanıtlanıp yeni bir GO kararı yazıldığında değiştir.
+
 ### 2026-06-22 - Phase 2P Aktivasyonu
 - **Karar:** Phase 2O tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2P aktif edildi.
 - **Neden:** Public yayın öncesindeki sıradaki onaylı kapı gerçek cihaz, kapalı test ve çocuk/ebeveyn gözlemidir.

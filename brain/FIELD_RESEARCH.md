@@ -1,6 +1,6 @@
 # FIELD_RESEARCH.md - Saha Doğrulama Notları
 
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-22
 > Rol: Karakter, isim, tema ve çocuk çekiciliği gibi AI'ın zayıf kalabileceği kararları gerçek gözleme bağlar.
 
 ## Temel İlke
@@ -164,3 +164,12 @@ Ana karakter, uygulama adı ve ilk görsel dünya; aktif fazda sadece aday olara
 - Bir karakter/tema yönü çocukların en az 2'sinde ilk seçim veya uzun ilgi sinyali alır.
 - Ebeveyn aynı yönü güvenilir ve rahatsız etmeyen bulur.
 - Çocukların belirgin korku, kaçınma veya kafa karışıklığı gösterdiği seçenek elenir.
+
+## Phase 2P - Çocuk/Ebeveyn Gözlem Durumu
+
+- Durum: `BLOCKED / NOT RUN`.
+- 22 Haziran 2026 itibarıyla bu çalışma ortamında çocuk/ebeveyn katılımcısı ve fiziksel test cihazı sağlanmadı.
+- Katılımcı gözlemi yapılmış gibi veri üretilmedi; 2-5 gerçek oturum çıkış kriteri olarak açık bırakıldı.
+- Gözlem başına 15-20 dakika; kişisel veri, fotoğraf, ses veya çocuk adı alınmayacak.
+- Kritik sorular: İlk hedef yardımsız anlaşılıyor mu; oyunlar arası geçiş var mı; yanlış geri bildirim korkutuyor mu; ebeveyn reklamsız/offline güven vaadini anlıyor mu?
+- Kayıt şablonu olarak yukarıdaki anonim playtest formu kullanılacak; sonuçlar alınmadan ürün davranışı genişletilmeyecek.

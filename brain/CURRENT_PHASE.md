@@ -8,7 +8,7 @@ Phase 2P - Real Device QA And Closed Test Gate
 
 ## Durum
 
-Active.
+Active; external QA blocked.
 
 ## Neden Bu Faz
 

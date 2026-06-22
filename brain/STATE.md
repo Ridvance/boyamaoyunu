@@ -10,14 +10,14 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: READY.
+- Action State: BLOCKED ON EXTERNAL QA.
 - Aktif Faz: Phase 2P - Real Device QA And Closed Test Gate.
-- Faz durumu: Aktif.
+- Faz durumu: Aktif; gerçek cihaz, mağaza hesabı ve katılımcı bekliyor.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
 
-- Android AAB: başarılı, yaklaşık 23.5 MB, target SDK 35, min SDK 21.
+- Android AAB: başarılı, 23.7 MB, target SDK 35, min SDK 21.
 - Android signing: upload keystore ile çalışıyor.
 - iOS minimum hedefi Podfile ve Xcode yapılandırmalarında 13.0; no-codesign release build başarılı.
 - Balon Patlatma bölüm tamamlaması `balloon` ilerlemesine yazılıyor; `tracing` kaydının değişmediği regresyon testiyle doğrulandı.
@@ -25,6 +25,8 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 - Ebeveyn kontrolleri: İkinci onaylı ilerleme sıfırlama ile kalıcı ses/titreşim tercihleri mevcut.
 - İçerik: 10 boyama, 10 çiz takip, 12 eşleştirme şekli, üç ayırt edilebilir balon bölüm tipi, 5 kalıcı Sinek Avı rozeti, 4 Renk Laboratuvarı modu, 8 alışkanlık görevi, 3 öğrenme paketi ve 10 paket etkinliği.
 - Mağaza materyali: metadata/politika taslakları, ikonlar, feature graphic ve release build telefon/iPad ekran setleri hazır; fiziksel cihaz karşılaştırması Phase 2P'de bekliyor.
+- Phase 2P simulator QA: iPhone 11 Pro Max dashboard overflow P1'i kapatıldı; iPhone ve iPad native yatay ana ekran smoke geçti.
+- Phase 2P dış blokajları: bağlı Android cihaz yok; fiziksel iPhone Developer Mode/kilit nedeniyle erişilemiyor; Play Console kayıt, App Store Connect giriş sayfasında; test katılımcısı yok.
 - Kanonik marka: `Ninnice Çocuk Oyunları`; Android, iOS, Flutter, web ve gizlilik yüzeyleri hizalı.
 - Git: Planlama başlamadan önce yerel `master`, `origin/master` üzerinde kullanıcıya ait `3907fe7` commit'iyle 1 commit ilerideydi; bu commit korunmalıdır.
 
@@ -39,14 +41,14 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-Phase 2P cihaz matrisini, kapalı test ve çocuk/ebeveyn gözlem kapılarını kanıtla; yalnız kanıtlanan P0/P1 bulgularına dar fix uygula.
+Fiziksel cihazları ve mağaza hesabı erişimini sağladıktan sonra cihaz matrisi, 10-20 kişilik kapalı test/TestFlight ve 2-5 çocuk/ebeveyn gözlemini tamamla. Phase 2P aktif kalır.
 
 ## Son Doğrulama
 
 ```text
 flutter analyze: PASS
-flutter test: PASS (37)
-flutter build appbundle --release: PASS (23.5 MB)
-flutter build ios --release --no-codesign: PASS (Runner.app 26.5 MB)
+flutter test: PASS (38)
+flutter build appbundle --release: PASS (23.7 MB)
+flutter build ios --release --no-codesign: PASS (Runner.app 26.7 MB)
 git diff --check: PASS
 ```

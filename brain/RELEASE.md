@@ -7,14 +7,14 @@
 - Kanonik ürün adı: Ninnice Çocuk Oyunları.
 - Kod sürümü: `1.0.0+1`.
 - Son tamamlanan faz: Phase 2O - Store Listing, Compliance And Release Assets. Phase 2P aktif.
-- Yayın kararı: `NO-GO PUBLIC`, Android kapalı teste yakın.
+- Yayın kararı: `NO-GO PUBLIC`; cihaz matrisi, kapalı test/TestFlight ve saha gözlemi tamamlanmadı.
 
 ## Platform Durumu
 
 | Platform | Durum | Kanıt / Eksik |
 |---|---|---|
-| Android | BUILD READY | İmzalı AAB üretildi, 23.5 MB, target SDK 35. Kapalı test ve cihaz QA bekliyor. |
-| iOS | NO-CODESIGN BUILD READY | Deployment target 13.0; CocoaPods ve release build başarılı. İmzalı archive/TestFlight ve cihaz QA bekliyor. |
+| Android | BUILD READY / TEST BLOCKED | İmzalı AAB üretildi, 23.7 MB, target SDK 35. Play Console erişimi, 2 telefon + 1 tablet ve 10-20 kapalı test katılımcısı bekliyor. |
+| iOS | NO-CODESIGN BUILD READY / TEST BLOCKED | Deployment target 13.0; release build ve iPhone/iPad simulator smoke başarılı. İmzalı archive, TestFlight ve fiziksel cihaz QA bekliyor. |
 | Web/PWA | BUILD PASS | Release build başarılı; gerçek cihaz Chrome/Safari QA gerekli. |
 
 ## Public Release Kapıları
@@ -41,10 +41,17 @@ git diff --check
 
 ## Son Build Kanıtı
 
-- Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`.
-- AAB SHA-256: `e44e45c921f6c002e37508adc959c09080ecb0671f01b12414f4c9cc1f0d84db`.
-- iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.5 MB.
-- Otomatik test: 37 PASS; `flutter analyze`: PASS.
+- Android AAB: PASS, `build/app/outputs/bundle/release/app-release.aab`, 23.7 MB.
+- AAB SHA-256: `e8fefc77aa54863d17ed2735bddcbba149cb41fa7e81c9a23875aa1bf7da2e0a`.
+- iOS release no-codesign: PASS, `build/ios/iphoneos/Runner.app`, 26.7 MB.
+- Otomatik test: 38 PASS; `flutter analyze`: PASS.
+- Phase 2P kanıtı: `docs/qa/phase-2p-device-matrix.md`.
+
+## Phase 2P Go/No-Go Kararı
+
+Karar: `NO-GO PUBLIC`.
+
+Bir P1 küçük iPhone dashboard overflow hatası doğrulandı ve regresyon testiyle kapatıldı. Ancak gerçek Android/iOS cihaz matrisi, fiziksel ses/titreşim ve offline/restart smoke, 10-20 kişilik Google Play kapalı test, imzalı TestFlight ve 2-5 çocuk/ebeveyn gözlemi henüz tamamlanmadı. Phase 2P aktif kalır; bu kapılar kanıtlanmadan Phase 3'e veya public yayına geçilmez.
 
 ## Mağaza Politikası Notu
 

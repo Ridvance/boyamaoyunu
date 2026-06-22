@@ -1,6 +1,6 @@
 # TESTING.md - Test ve Doğrulama
 
-> Son güncelleme: 2026-06-21
+> Son güncelleme: 2026-06-22
 
 ## Her Kod Değişikliğinde
 
@@ -103,3 +103,17 @@ Public release için P0/P1 hata sıfır, cihaz matrisi tamam, kapalı test değe
 - Görsel boyut/kanal doğrulaması: PASS; tüm mağaza PNG'leri 8-bit RGB ve beklenen ölçülerde.
 - Telefon ve iPad contact sheet görsel QA: PASS; taşma veya kırpılma bulunmadı.
 - Canlı privacy/support URL: HTTP 200; ayrı `support.html` deployment'ı release checklist'te izleniyor.
+
+## Phase 2P Ara Doğrulama
+
+- `flutter analyze`: PASS.
+- `flutter test --reporter expanded`: PASS, 38 test.
+- Android AAB: PASS, 23.7 MB (`23722610` byte), SHA-256 `e8fefc77aa54863d17ed2735bddcbba149cb41fa7e81c9a23875aa1bf7da2e0a`.
+- iOS no-codesign release: PASS, `Runner.app` 26.7 MB.
+- iPhone 11 Pro Max iOS 18.4 simulator: P1 dashboard overflow bulundu, dar fix sonrası native yatay smoke PASS.
+- iPad Pro 13-inch M4 iOS 18.4 simulator: native yatay açılış/grid smoke PASS.
+- Fiziksel Android/iOS cihaz matrisi: BLOCKED; bağlı ADB cihazı yok, erişilebilir iPhone Developer Mode/kilit nedeniyle bağlanamadı.
+- Google Play kapalı test: BLOCKED; tarayıcı oturumu Play Console kayıt sayfasına yönleniyor.
+- TestFlight: BLOCKED; App Store Connect oturumu giriş sayfasına yönleniyor.
+- Çocuk/ebeveyn gözlemi: NOT RUN; gerçek katılımcı sağlanmadı.
+- Ayrıntılı matris: `docs/qa/phase-2p-device-matrix.md`.
