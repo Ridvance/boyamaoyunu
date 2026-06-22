@@ -49,6 +49,20 @@ void main() {
     },
   );
 
+  testWidgets('dashboard fits a notched landscape iPhone without overflow', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(896, 414);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const CocukOyunApp());
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('game-card-coloring')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('dashboard shows persisted progress for each game', (
     WidgetTester tester,
   ) async {

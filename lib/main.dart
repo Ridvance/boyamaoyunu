@@ -108,7 +108,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isParentUnlocked = false;
   bool _showFullscreenHint = false;
 
-  bool get _isCompact => MediaQuery.sizeOf(context).height < 400;
+  // Landscape iPhones report up to 430 logical pixels before SafeArea insets.
+  bool get _isCompact => MediaQuery.sizeOf(context).height < 440;
 
   void _openParentArea() {
     setState(() {
