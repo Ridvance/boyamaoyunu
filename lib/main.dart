@@ -108,7 +108,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isParentUnlocked = false;
   bool _showFullscreenHint = false;
 
-  bool get _isCompact => MediaQuery.sizeOf(context).height < 400;
+  // Landscape iPhones can report 414-430 logical pixels before SafeArea
+  // removes the notch/home-indicator insets. Keep their dashboard cards in
+  // the compact layout as well.
+  bool get _isCompact => MediaQuery.sizeOf(context).height < 440;
 
   void _openParentArea() {
     setState(() {
@@ -127,7 +130,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final didEnter = await FullscreenController.toggleImmersiveMode();
     if (!mounted) return;
     setState(() {
-      _showFullscreenHint = !didEnter && !FullscreenController.isStandaloneMode();
+      _showFullscreenHint =
+          !didEnter && !FullscreenController.isStandaloneMode();
     });
   }
 
@@ -354,7 +358,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       elevation: 2,
       shadowColor: color.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: color.withValues(alpha: 0.3), width: compact ? 2 : 3),
+        side: BorderSide(
+          color: color.withValues(alpha: 0.3),
+          width: compact ? 2 : 3,
+        ),
         borderRadius: BorderRadius.circular(compact ? 16 : 24),
       ),
       child: InkWell(
@@ -455,7 +462,7 @@ class _MathParentGateDialogState extends State<MathParentGateDialog> {
         break;
       case 1: // -
         a = _random.nextInt(9) + 10; // 10-18
-        b = _random.nextInt(9) + 1;  // 1-9
+        b = _random.nextInt(9) + 1; // 1-9
         _question = '$a - $b = ?';
         _correctAnswer = a - b;
         break;
@@ -541,7 +548,10 @@ class _MathParentGateDialogState extends State<MathParentGateDialog> {
                   ),
                   const SizedBox(height: 20),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 24,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE6ECE8),
                       borderRadius: BorderRadius.circular(16),
@@ -580,9 +590,11 @@ class _MathParentGateDialogState extends State<MathParentGateDialog> {
                           width: 110,
                           height: 50,
                           child: ElevatedButton(
-                            key: ValueKey(isCorrect
-                                ? 'parent-gate-option-correct'
-                                : 'parent-gate-option-wrong-${wrongIndex++}'),
+                            key: ValueKey(
+                              isCorrect
+                                  ? 'parent-gate-option-correct'
+                                  : 'parent-gate-option-wrong-${wrongIndex++}',
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2FA7A0),
                               foregroundColor: Colors.white,
@@ -633,9 +645,10 @@ class ParentSafetyScreen extends StatefulWidget {
 }
 
 class _ParentSafetyScreenState extends State<ParentSafetyScreen> {
-
   Future<void> _launchPrivacyPolicy(BuildContext context) async {
-    final url = Uri.parse('https://ridvance.github.io/boyamaoyunu/privacy.html');
+    final url = Uri.parse(
+      'https://ridvance.github.io/boyamaoyunu/privacy.html',
+    );
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -657,23 +670,24 @@ class _ParentSafetyScreenState extends State<ParentSafetyScreen> {
   Future<void> _confirmResetProgress() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('İlerleme sıfırlansın mı?'),
-        content: const Text(
-          'Tamamlanan bölümler ve yıldızlar silinecek. Bu işlem geri alınamaz.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Vazgeç'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('İlerleme sıfırlansın mı?'),
+            content: const Text(
+              'Tamamlanan bölümler ve yıldızlar silinecek. Bu işlem geri alınamaz.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Vazgeç'),
+              ),
+              FilledButton(
+                key: const ValueKey('confirm-reset-progress'),
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Sıfırla'),
+              ),
+            ],
           ),
-          FilledButton(
-            key: const ValueKey('confirm-reset-progress'),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Sıfırla'),
-          ),
-        ],
-      ),
     );
     if (confirmed != true) return;
     await ProgressService.instance.resetAllProgress();
@@ -749,7 +763,9 @@ class _ParentSafetyScreenState extends State<ParentSafetyScreen> {
                       icon: Icons.volume_up_rounded,
                       value: AppSettingsService.instance.soundEnabled,
                       onChanged: (value) async {
-                        await AppSettingsService.instance.setSoundEnabled(value);
+                        await AppSettingsService.instance.setSoundEnabled(
+                          value,
+                        );
                         if (mounted) setState(() {});
                       },
                     ),
@@ -760,7 +776,9 @@ class _ParentSafetyScreenState extends State<ParentSafetyScreen> {
                       icon: Icons.vibration_rounded,
                       value: AppSettingsService.instance.hapticsEnabled,
                       onChanged: (value) async {
-                        await AppSettingsService.instance.setHapticsEnabled(value);
+                        await AppSettingsService.instance.setHapticsEnabled(
+                          value,
+                        );
                         if (mounted) setState(() {});
                       },
                     ),
