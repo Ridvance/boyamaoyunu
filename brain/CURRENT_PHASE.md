@@ -4,54 +4,59 @@
 
 ## Active Phase
 
-Phase 2N - Core Game Content Balance
+Phase 2O - Store Listing, Compliance And Release Assets
 
 ## Durum
 
-Completed. Phase 2O aktif edilmedi.
+Active.
 
 ## Neden Bu Faz
 
-Phase 2M ile en sığ paket alanları derinleştirildi. Boyama ve çiz takip içerik sayısı ilk sürüm hedefinin altında; Balon Patlatma bölümleri ağırlıkla hız farkına dayanıyor ve Sinek Avı hedef/geri bildirim/rozet döngüsünü net sunmuyor. Yeni ana oyun eklemeden çekirdek içerik dengelenmeli.
+Phase 2N sonunda ürün içeriği dengelendi ve release build baseline'ı hazır. Mağaza gönderiminden önce iki platformun metadata, çocuk/gizlilik beyanı ve gerçek uygulama kaynaklı görsel paketleri tek, doğrulanabilir bir teslim halinde hazırlanmalı.
 
 ## Scope
 
-- Boyama kitabını 10-12 farklı sayfaya çıkar.
-- Çiz takibi en az 10 farklı şekil/yola çıkar.
-- Balon Patlatma'ya hedef renk, süre/rahat mod ve özel balonla ayırt edilen bölüm varyasyonları ekle.
-- Sinek Avı V2'ye hedef kartı, doğru/yanlış geri bildirim ve rozet döngüsü ekle.
-- Yeni içerikleri birleşik ilerleme sistemiyle uyumlu tut.
-- Mevcut 12 şekil eşleştirme içeriğini koru.
+- Kanonik ürün adıyla Google Play ve App Store metadata paketini tamamla.
+- Destek ve gizlilik URL'lerini doğrula.
+- Google Play hedef kitle/Families ve Data Safety cevap taslağını hazırla.
+- Apple Kids Category yaş aralığı ve App Privacy cevap taslağını hazırla.
+- Güncel uygulama ikonunun mağaza kırpımını doğrula.
+- Gerçek release build'den telefon/tablet yatay ekran görüntüleri üret.
+- Google Play feature graphic oluştur.
+- Sürüm notları ve release checklist'i güncelle.
 
 ## Scope Dışı
 
-- Yeni ana oyun.
-- AI/fotoğraf veya sınırsız içerik üretimi.
-- Rekabetçi skor tablosu veya karmaşık ekonomi.
-- Ödeme/reklam.
-- Mağaza görseli ve metadata; Phase 2O.
+- Mağaza hesabında nihai beyan gönderme veya public publish.
+- Ücretlendirme kararı.
+- Reklam, analitik veya yeni veri toplama.
+- Yeni oyun, level veya ürün davranışı.
+- Phase 2P gerçek cihaz/kapalı test yürütmesi.
 
 ## Beklenen Dosya Etki Alanı
 
-- `lib/games/coloring_game.dart`
-- `lib/games/tracing_game.dart`
-- `lib/games/balloon_pop_game.dart`
-- `lib/games/magic_colors_game.dart`
-- İlgili testler
+- `brain/RELEASE.md`
+- `brain/VALIDATION.md`
+- `docs/store/*`
+- `docs/store_metadata.md`
+- `docs/privacy_policy_tr.md`
+- `web/privacy.html`
+- İkon ve mağaza görsel varlıkları
 - `brain/*`
 
 ## Exit Criteria
 
-- Boyama kitabında 10-12 ayırt edilebilir sayfa vardır.
-- Çiz takipte en az 10 farklı yol vardır.
-- Balon bölümleri yalnız hız farkı değil hedef/süre/özel balon davranışı sunar.
-- Sinek Avı hedefi görünür, yanlış seçim yumuşak geri bildirim verir ve tamamlanma rozeti kalıcı ilerlemeye yazılır.
+- İki mağaza için metadata ve asset paketi eksiksizdir.
+- Gizlilik ve çocuk hedef kitle taslakları kod davranışıyla tutarlıdır.
+- Destek/gizlilik URL'leri belgelenmiş ve doğrulanmıştır.
+- Ekran görüntüleri gerçek release build kaynaklıdır.
+- İkon ve feature graphic boyutları mağaza gereksinimlerine uygundur.
 - `flutter analyze`, `flutter test` ve `git diff --check` temiz geçer.
 
 ## Scope Locked Prompt
 
 ```text
-Sadece çekirdek oyun içeriğini dengeli genişlet: boyamayı 10-12 sayfaya, çiz takibi en az 10 farklı yola çıkar; Balon Patlatma'ya hedef/süre/özel balon varyasyonları ekle; Sinek Avı V2 hedef kartı, geri bildirim ve rozet döngüsünü tamamla. Yeni ana oyun, AI/fotoğraf, rekabetçi skor, ekonomi veya sınırsız içerik sistemi ekleme.
+Sadece Google Play ve App Store gönderim paketini hazırla: kanonik ürün adı ve mağaza açıklamaları, destek/gizlilik URL'leri, Families/Data Safety ve Kids Category/App Privacy cevap taslakları, ikon kırpımı, gerçek release build'den telefon/tablet ekran görüntüleri, Google Play feature graphic ve release checklist oluştur. Mağaza hesabında nihai beyan gönderme, public publish, reklam/analitik veya ücretlendirme ekleme.
 ```
 
 ## Test
@@ -61,14 +66,3 @@ flutter analyze
 flutter test
 git diff --check
 ```
-
-## Tamamlanma Kanıtı
-
-- Boyama kitabı 7'den 10 ayırt edilebilir sayfaya çıktı ve her sayfa kalıcı ilerlemeye yazılıyor.
-- Çiz takip 8'den 10 yola çıktı; spiral ve zikzak eklendi.
-- Balon Patlatma rahat oyun, hedef renk ve süreli özel balon avı döngüsü sunuyor.
-- Sinek Avı hedef kartı, doğru/yanlış seçim geri bildirimi ve diğer modlardan ayrılmış 5 kalıcı rozet sunuyor.
-- Mevcut 12 şekil eşleştirme içeriği korunuyor.
-- `flutter analyze`: PASS.
-- `flutter test`: PASS, 37 test.
-- `git diff --check`: PASS.

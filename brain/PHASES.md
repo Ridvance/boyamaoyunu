@@ -56,7 +56,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Amaç: Çocuk boyama oyunu fikrinin rakip, fiyat, ödeme isteği, dağıtım, AI ikamesi ve zayıf yanlarını hızlı taramayla netleştirmek.
 - Scope: 5-10 rakip, fiyat/özellik/dağıtım karşılaştırması, AI substitution notu, kısa kill report, Go/Pivot/Research More kararı.
 - Test: Kaynaklı tablo ve `git diff --check`.
-- Durum: pending.
+- Durum: active.
 
 ## Phase 1 - First Playable App
 

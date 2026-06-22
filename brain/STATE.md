@@ -10,9 +10,9 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: COMPLETE.
-- Aktif Faz: Phase 2N - Core Game Content Balance.
-- Faz durumu: Tamamlandı; Phase 2O aktif edilmedi.
+- Action State: READY.
+- Aktif Faz: Phase 2O - Store Listing, Compliance And Release Assets.
+- Faz durumu: Active.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -39,7 +39,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-Phase 2N tamamlandı. Kullanıcı onayı olmadan Phase 2O'yu aktif etme.
+`brain/CURRENT_PHASE.md` içindeki Phase 2O scope locked prompt'unu uygula; yalnız mağaza gönderim paketini hazırla.
 
 ## Son Doğrulama
 

@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2O Aktivasyonu
+- **Karar:** Phase 2N tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2O aktif edildi.
+- **Neden:** Build ve içerik baseline'ından sonra sıradaki onaylı kapı mağaza gönderim paketidir.
+- **Etki:** Yalnız metadata, politika taslakları, gizlilik/destek yüzeyleri ve mağaza görselleri değişecek; mağaza hesabında gönderim yapılmayacak.
+- **Geri alma yolu:** Phase 2O değişikliklerini revert et ve `CURRENT_PHASE.md` dosyasını Phase 2N tamamlandı durumuna döndür.
+
 ### 2026-06-22 - Phase 2N Tamamlandı
 - **Karar:** Çekirdek içerik 10 boyama, 10 çiz takip, üç balon bölüm tipi ve 5 kalıcı Sinek Avı rozetiyle dengelenerek faz kapatıldı.
 - **Neden:** İlk oturum çeşitliliğini yeni ana oyun veya ekonomi eklemeden artırmak gerekiyordu.
