@@ -5,6 +5,12 @@
 
 ## Kararlar
 
+### 2026-06-22 - Phase 2P Aktivasyonu
+- **Karar:** Phase 2O tamamlandıktan sonra kullanıcının `devam` talimatıyla Phase 2P aktif edildi.
+- **Neden:** Public yayın öncesindeki sıradaki onaylı kapı gerçek cihaz, kapalı test ve çocuk/ebeveyn gözlemidir.
+- **Etki:** Yalnız cihaz/kapalı test kanıtı ve kanıtlanan P0/P1 bulgularına dar fix üretilecek; public publish yapılmayacak.
+- **Geri alma yolu:** Aktivasyon commit'ini revert et ve `CURRENT_PHASE.md` dosyasını Phase 2O tamamlandı durumuna döndür.
+
 ### 2026-06-22 - Phase 2O Tamamlandı
 - **Karar:** İki mağaza için metadata, politika cevap taslakları, ikonlar, feature graphic, 14 release ekranı ve checklist hazırlanarak faz kapatıldı.
 - **Neden:** Build ve ürün içeriğini mağaza hesaplarına girmeden önce doğrulanabilir bir gönderim paketine dönüştürmek gerekiyordu.

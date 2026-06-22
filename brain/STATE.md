@@ -5,14 +5,14 @@
 
 ## Aktif Gerçeklik
 
-Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2O sonunda iki mağaza için metadata, politika taslakları ve release görsel paketi hazırdır; `flutter analyze` temiz ve 37 test başarılıdır.
+Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ürünüdür. Phase 2O sonunda iki mağaza için metadata, politika taslakları ve release görsel paketi hazırdır; Phase 2P gerçek cihaz ve kapalı test yayın kapısını işletir.
 
 ## Aktif Odak
 
 - Mod / Rol: Execution Mode / Execution Engineer.
-- Action State: COMPLETE.
-- Aktif Faz: Phase 2O - Store Listing, Compliance And Release Assets.
-- Faz durumu: Tamamlandı; Phase 2P aktif edilmedi.
+- Action State: READY.
+- Aktif Faz: Phase 2P - Real Device QA And Closed Test Gate.
+- Faz durumu: Aktif.
 - Scope kaynağı: `brain/CURRENT_PHASE.md`.
 
 ## Denetim Özeti
@@ -39,7 +39,7 @@ Uygulama 8 ana girişli, reklamsız ve çevrimdışı okul öncesi mini oyun ür
 
 ## Sıradaki Güvenli İş
 
-Phase 2O tamamlandı. Kullanıcı onayı olmadan Phase 2P'yi aktif etme.
+Phase 2P cihaz matrisini, kapalı test ve çocuk/ebeveyn gözlem kapılarını kanıtla; yalnız kanıtlanan P0/P1 bulgularına dar fix uygula.
 
 ## Son Doğrulama
 

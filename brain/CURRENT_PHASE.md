@@ -4,59 +4,51 @@
 
 ## Active Phase
 
-Phase 2O - Store Listing, Compliance And Release Assets
+Phase 2P - Real Device QA And Closed Test Gate
 
 ## Durum
 
-Completed. Phase 2P aktif edilmedi.
+Active.
 
 ## Neden Bu Faz
 
-Phase 2N sonunda ürün içeriği dengelendi ve release build baseline'ı hazır. Mağaza gönderiminden önce iki platformun metadata, çocuk/gizlilik beyanı ve gerçek uygulama kaynaklı görsel paketleri tek, doğrulanabilir bir teslim halinde hazırlanmalı.
+Phase 2O sonunda mağaza gönderim paketi hazırlandı. Public yayın kararı öncesinde ürünün gerçek cihaz matrisinde, kapalı testte ve çocuk/ebeveyn gözleminde kararlı ve anlaşılır olduğu kanıtlanmalı.
 
 ## Scope
 
-- Kanonik ürün adıyla Google Play ve App Store metadata paketini tamamla.
-- Destek ve gizlilik URL'lerini doğrula.
-- Google Play hedef kitle/Families ve Data Safety cevap taslağını hazırla.
-- Apple Kids Category yaş aralığı ve App Privacy cevap taslağını hazırla.
-- Güncel uygulama ikonunun mağaza kırpımını doğrula.
-- Gerçek release build'den telefon/tablet yatay ekran görüntüleri üret.
-- Google Play feature graphic oluştur.
-- Sürüm notları ve release checklist'i güncelle.
+- En az 2 Android telefon, 1 Android tablet, 1 iPhone ve mümkünse 1 iPad üzerinde kritik akışları doğrula.
+- Küçük yatay ekran, ses/titreşim, offline açılış ve restart sonrası ilerlemeyi kontrol et.
+- Ebeveyn kapısı ve dış link davranışını doğrula.
+- 10-20 kişilik Google Play kapalı test sonucunu kaydet.
+- 2-5 çocuk/ebeveyn gözlemini anonim olarak değerlendir.
+- Final AAB/archive kanıtını ve gerekçeli Go/No-Go kararını yaz.
 
 ## Scope Dışı
 
-- Mağaza hesabında nihai beyan gönderme veya public publish.
-- Ücretlendirme kararı.
-- Reklam, analitik veya yeni veri toplama.
-- Yeni oyun, level veya ürün davranışı.
-- Phase 2P gerçek cihaz/kapalı test yürütmesi.
+- Test bulgusu olmadan yeni özellik genişletme.
+- Herkese açık mağaza yayını.
+- Analitik SDK veya yeni veri toplama ekleme.
+- Kanıtlanmamış veya P2/P3 düzeyindeki bulgular için kapsamlı refactor.
 
 ## Beklenen Dosya Etki Alanı
 
+- `brain/FIELD_RESEARCH.md`
+- `brain/TESTING.md`
 - `brain/RELEASE.md`
-- `brain/VALIDATION.md`
-- `docs/store/*`
-- `docs/store_metadata.md`
-- `docs/privacy_policy_tr.md`
-- `web/privacy.html`
-- İkon ve mağaza görsel varlıkları
-- `brain/*`
+- Cihaz/kapalı test kanıt dosyaları
+- Yalnız kanıtlanan P0/P1 bulgularının gerektirdiği dar fix dosyaları
 
 ## Exit Criteria
 
-- İki mağaza için metadata ve asset paketi eksiksizdir.
-- Gizlilik ve çocuk hedef kitle taslakları kod davranışıyla tutarlıdır.
-- Destek/gizlilik URL'leri belgelenmiş ve doğrulanmıştır.
-- Ekran görüntüleri gerçek release build kaynaklıdır.
-- İkon ve feature graphic boyutları mağaza gereksinimlerine uygundur.
-- `flutter analyze`, `flutter test` ve `git diff --check` temiz geçer.
+- Cihaz matrisi tamamdır.
+- P0/P1 açık hata yoktur.
+- Kapalı test ve çocuk/ebeveyn gözlemi değerlendirilmiştir.
+- `brain/RELEASE.md` içinde GO veya gerekçeli NO-GO vardır.
 
 ## Scope Locked Prompt
 
 ```text
-Sadece Google Play ve App Store gönderim paketini hazırla: kanonik ürün adı ve mağaza açıklamaları, destek/gizlilik URL'leri, Families/Data Safety ve Kids Category/App Privacy cevap taslakları, ikon kırpımı, gerçek release build'den telefon/tablet ekran görüntüleri, Google Play feature graphic ve release checklist oluştur. Mağaza hesabında nihai beyan gönderme, public publish, reklam/analitik veya ücretlendirme ekleme.
+Sadece gerçek cihaz ve kapalı test yayın kapısını işlet: Android/iOS telefon-tablet matrisinde kritik akışları, offline/restart/ilerleme, ebeveyn kapısı, ses/titreşim ve küçük yatay ekranı doğrula; 10-20 kişilik Google Play kapalı test ve 2-5 çocuk/ebeveyn gözlemi sonuçlarını kaydet; yalnız kanıtlanan P0/P1 hatalara dar fix uygula; final Go/No-Go kararı yaz. Yeni özellik veya public publish yapma.
 ```
 
 ## Test

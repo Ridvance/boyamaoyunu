@@ -6,7 +6,7 @@
 
 - Kanonik ürün adı: Ninnice Çocuk Oyunları.
 - Kod sürümü: `1.0.0+1`.
-- Son tamamlanan faz: Phase 2O - Store Listing, Compliance And Release Assets. Phase 2P aktif değil.
+- Son tamamlanan faz: Phase 2O - Store Listing, Compliance And Release Assets. Phase 2P aktif.
 - Yayın kararı: `NO-GO PUBLIC`, Android kapalı teste yakın.
 
 ## Platform Durumu

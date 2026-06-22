@@ -98,7 +98,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Amaç: Yeni boyama alanı ve küçük içerik paketlerini düzenli eklenebilir yapmak.
 - Scope: Asset/content yapısı.
 - Test: Yeni içerik ekleme smoke.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: İki mağaza için metadata, politika cevap taslakları, ikonlar, feature graphic, 14 release ekranı ve checklist hazırlandı.
 
 ### Phase 2C - Story Coloring Flow
 - Amaç: Mevcut boyama ekranını tekil aktiviteden çıkarıp kısa görev hissi veren hikayeli akışa dönüştürmek.
@@ -239,7 +240,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `brain/FIELD_RESEARCH.md`, `brain/TESTING.md`, `brain/RELEASE.md`, yalnız bulguların gerektirdiği dar fix dosyaları.
 - Çıkış kriterleri: P0/P1 hata yoktur; kritik akışlar cihaz matrisinde geçer; çocuk hedefi yardımsız anlayabilir; mağaza kapalı test geri bildirimi değerlendirilmiştir; Go/No-Go kararı yazılmıştır.
 - Test: Cihaz matrisi, çocuk/ebeveyn gözlem formu, Android closed testing, iOS TestFlight smoke, final AAB/archive doğrulaması.
-- Durum: pending.
+- Durum: active.
 
 ## Phase 3 - Differentiator
 
