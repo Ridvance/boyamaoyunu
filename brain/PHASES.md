@@ -98,8 +98,7 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Amaç: Yeni boyama alanı ve küçük içerik paketlerini düzenli eklenebilir yapmak.
 - Scope: Asset/content yapısı.
 - Test: Yeni içerik ekleme smoke.
-- Durum: completed.
-- Sonuç: İki mağaza için metadata, politika cevap taslakları, ikonlar, feature graphic, 14 release ekranı ve checklist hazırlandı.
+- Durum: pending.
 
 ### Phase 2C - Story Coloring Flow
 - Amaç: Mevcut boyama ekranını tekil aktiviteden çıkarıp kısa görev hissi veren hikayeli akışa dönüştürmek.
@@ -231,7 +230,8 @@ Sıralama prensibi: Önce mevcut boyama deneyimini hikayeyle güçlendir, sonra 
 - Beklenen dosya etki alanı: `brain/RELEASE.md`, `brain/VALIDATION.md`, `docs/store/*`, ikon ve mağaza görsel varlıkları, gerekirse `web/privacy.html`.
 - Çıkış kriterleri: Her iki mağaza için eksiksiz metadata paketi vardır; gizlilik metni gerçek uygulama davranışıyla eşleşir; ekran görüntüleri gerçek release build'den alınmıştır.
 - Test: Bağlantı kontrolü, asset boyut kontrolü, metadata tutarlılık incelemesi, gerçek cihaz görsel QA.
-- Durum: pending.
+- Durum: completed.
+- Sonuç: İki mağaza için metadata, politika cevap taslakları, ikonlar, feature graphic, 14 release ekranı ve checklist hazırlandı.
 
 ### Phase 2P - Real Device QA And Closed Test Gate
 - Amaç: Herkese açık yayından önce gerçek cihaz ve çocuk/ebeveyn gözlemiyle kararlılık ve anlaşılabilirliği doğrulamak.
